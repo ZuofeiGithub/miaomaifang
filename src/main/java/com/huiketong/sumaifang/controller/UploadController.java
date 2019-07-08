@@ -32,7 +32,7 @@ public class UploadController {
                     os.close();
                     file.transferTo(newfile);
                     //上传到OSS
-                    String uploadUrl = AliyunOSSUtil.upload(newfile);
+                    String imageUrl = AliyunOSSUtil.upload(newfile);
                 }
             }
         }catch (Exception ex){

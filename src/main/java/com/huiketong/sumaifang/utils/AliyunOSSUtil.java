@@ -55,6 +55,7 @@ public class AliyunOSSUtil {
             if (null != request) {
                 logger.info("========>OSS文件上传成功,OSS地址: " + url);
             }
+            return url;
         } catch (OSSException os) {
 
         } catch (ClientException ce) {
