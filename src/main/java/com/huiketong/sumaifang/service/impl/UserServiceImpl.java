@@ -1,8 +1,8 @@
-package com.huiketong.miaomaifang.service.impl;
+package com.huiketong.sumaifang.service.impl;
 
-import com.huiketong.miaomaifang.domain.User;
-import com.huiketong.miaomaifang.repository.UserDao;
-import com.huiketong.miaomaifang.service.UserService;
+import com.huiketong.sumaifang.domain.User;
+import com.huiketong.sumaifang.repository.UserDao;
+import com.huiketong.sumaifang.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 

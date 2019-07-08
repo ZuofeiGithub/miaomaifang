@@ -1,4 +1,4 @@
-package com.huiketong.miaomaifang.service;
+package com.huiketong.sumaifang.service;
 
 public interface UserService {
     //用户注册

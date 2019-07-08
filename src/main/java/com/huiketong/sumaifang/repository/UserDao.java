@@ -1,6 +1,6 @@
-package com.huiketong.miaomaifang.repository;
+package com.huiketong.sumaifang.repository;
 
-import com.huiketong.miaomaifang.domain.User;
+import com.huiketong.sumaifang.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

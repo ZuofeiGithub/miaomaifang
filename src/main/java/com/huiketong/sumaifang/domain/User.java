@@ -1,4 +1,4 @@
-package com.huiketong.miaomaifang.domain;
+package com.huiketong.sumaifang.domain;
 
 import lombok.Data;
 

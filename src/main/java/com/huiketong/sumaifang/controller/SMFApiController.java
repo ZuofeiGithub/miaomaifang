@@ -1,4 +1,4 @@
-package com.huiketong.miaomaifang.controller;
+package com.huiketong.sumaifang.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api")
-public class MMFApiController {
+public class SMFApiController {
 
     /**
      * 用户注册

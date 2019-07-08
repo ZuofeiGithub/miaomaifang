@@ -7,11 +7,18 @@ spring:
       ddl-auto: update
 
   datasource:
-    url: jdbc:mysql://localhost:3306/miaomaifang?useSSL=false&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/sumaifang?useSSL=false&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
     #连接池配置
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
-
+#对象存储
+oss:
+  file:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    keyid: LTAID7owPVleFPC5
+    keysecret: ubCTSt5xjZXmUEm77ywAj6s8xFgJG3
+    bucketname: sumaifang
+    filehost: images
