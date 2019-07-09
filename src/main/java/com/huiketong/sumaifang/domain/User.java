@@ -8,7 +8,6 @@ import java.util.Date;
 @Data
 @Entity
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;

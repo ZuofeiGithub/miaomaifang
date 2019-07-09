@@ -15,15 +15,18 @@ public class LoginAuthServiceImpl implements LoginAuthService {
     @Autowired
     LoginAuthDao loginAuthDao;
     @Override
-    public boolean login(String userid,String code) {
-       LoginAuth loginAuth =  loginAuthDao.findLoginAuthByUserTelphone(userid);
+    public boolean login(String userid,String code,String token) {
+       LoginAuth loginAuth =  loginAuthDao.findLoginAuthByToken(token);
        if(!ObjectUtils.isEmpty(loginAuth)){
            if(loginAuth.getVerifyCode().equals(code)){
-               if(TokenUtil.verifyToken(loginAuth.getToken())){
-                   return true;
-               }else{
-                    updateUserToken(userid);
-               }
+               loginAuthDao.bindUserTelphone(userid,token);
+               return true;
+//               if(TokenUtil.verifyToken(loginAuth.getToken())){
+//
+//                   return true;
+//               }else{
+//                    updateUserToken(userid);
+//               }
            }
        }
         return false;
@@ -31,7 +34,7 @@ public class LoginAuthServiceImpl implements LoginAuthService {
 
     @Override
     public boolean saveUser(String telphone, String verifyCode, String token) {
-        LoginAuth loginAuth = loginAuthDao.findLoginAuthByUserTelphone(telphone);
+        LoginAuth loginAuth = loginAuthDao.findLoginAuthByToken(token);
         if(loginAuth == null){
             loginAuth = new LoginAuth();
             loginAuth.setUserTelphone(telphone);
@@ -39,6 +42,8 @@ public class LoginAuthServiceImpl implements LoginAuthService {
             loginAuth.setToken(TokenUtil.createJwtToken(telphone));
             loginAuthDao.save(loginAuth);
             return true;
+        }else{
+            loginAuthDao.updateTelphoneVerifyCode(telphone,verifyCode,token);
         }
         return false;
     }
@@ -52,4 +57,47 @@ public class LoginAuthServiceImpl implements LoginAuthService {
             return false;
         }
     }
+
+    @Override
+    public boolean save(LoginAuth auth) {
+        try {
+            loginAuthDao.save(auth);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    /**
+     * 是否已经登陆
+     * @param openid
+     * @return
+     */
+    @Override
+    public boolean isLogin(String openid) {
+
+       LoginAuth auth =  loginAuthDao.findLoginAuthByOpenid(openid);
+       if(ObjectUtils.isEmpty(auth)){
+           return false;
+       }
+        return true;
+    }
+
+    /**
+     * 是否已经绑定手机
+     * @param openid
+     * @return
+     */
+    @Override
+    public boolean isBind(String openid) {
+        LoginAuth auth = loginAuthDao.findLoginAuthByOpenid(openid);
+        if(ObjectUtils.isEmpty(auth)){
+            return false;
+        }
+        if(ObjectUtils.isEmpty(auth.getUserTelphone())){
+            return false;
+        }
+        return true;
+    }
+
 }

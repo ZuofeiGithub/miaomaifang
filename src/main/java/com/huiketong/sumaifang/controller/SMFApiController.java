@@ -1,13 +1,20 @@
 package com.huiketong.sumaifang.controller;
 
 import com.aliyuncs.exceptions.ClientException;
+import com.google.gson.Gson;
+import com.huiketong.sumaifang.data.LoginData;
 import com.huiketong.sumaifang.domain.LoginAuth;
 import com.huiketong.sumaifang.service.LoginAuthService;
+import com.huiketong.sumaifang.service.WXService;
 import com.huiketong.sumaifang.utils.AlicomDysmsUtil;
 import com.huiketong.sumaifang.utils.TokenUtil;
 import com.huiketong.sumaifang.vo.BaseResp;
+import com.huiketong.sumaifang.vo.WxBaseResp;
+import com.huiketong.sumaifang.vo.WxErrorResp;
+import com.huiketong.sumaifang.vo.WxSuccessResp;
 import jdk.nashorn.internal.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,24 +25,17 @@ public class SMFApiController {
 
     @Autowired
     LoginAuthService loginAuthService;
-    /**
-     * 用户注册
-     * @return
-     */
-    @PostMapping(value = "/register")
-    public boolean register(String city_name,String user_name,String user_type,String agree){
-
-        return false;
-    }
+    @Autowired
+    WXService wxService;
 
 
     @PostMapping(value = "getverifycode")
-    public BaseResp getVerifyCode(String telphone){
+    public BaseResp getVerifyCode(String telphone,String token) {
         BaseResp resp = new BaseResp();
         String code = AlicomDysmsUtil.getCode(); //验证码
         try {
-            AlicomDysmsUtil.sendSms(telphone,code,"SMS_169898923");
-            loginAuthService.saveUser(telphone,code,TokenUtil.createJwtToken(telphone));
+            AlicomDysmsUtil.sendSms(telphone, code, "SMS_169898923");
+            loginAuthService.saveUser(telphone, code, token);
             resp.setCode("0").setMsg("获取验证码成功");
         } catch (ClientException e) {
             e.printStackTrace();
@@ -45,15 +45,75 @@ public class SMFApiController {
     }
 
     /**
-     *
-      * @param telphone
+     * @param telphone
      * @param verifyCode
      * @return
      */
     @PostMapping(value = "/login")
-    public BaseResp login(String telphone,String verifyCode){
+    public BaseResp login(String telphone, String verifyCode, String token) {
         BaseResp resp = new BaseResp();
-        loginAuthService.login(telphone,verifyCode);
+        try{
+            loginAuthService.login(telphone, verifyCode, token);
+            resp.setCode("1").setMsg("登陆成功");
+        }catch (Exception e){
+            resp.setMsg("登陆失败").setCode("2");
+        }
+        return resp;
+    }
+
+
+    /**
+     * 微信登陆
+     *
+     * @param code
+     * @param nickName
+     * @param gender
+     * @param language
+     * @param city
+     * @param province
+     * @param country
+     * @param avatarUrl
+     * @return
+     */
+    @PostMapping(value = "/wxlogin")
+    public BaseResp wxlogin(String code, String nickName, Integer gender, String language, String city, String province, String country, String avatarUrl) {
+        BaseResp resp = new BaseResp();
+        LoginData data = new LoginData();
+        WxErrorResp errorResp = new Gson().fromJson(wxService.login(code), WxErrorResp.class);
+        if (!ObjectUtils.isEmpty(errorResp)) {
+            if (errorResp.getErrcode() == 0) {
+                boolean islogin = loginAuthService.isLogin(errorResp.getOpenid());
+                boolean isbind = loginAuthService.isBind(errorResp.getOpenid());
+                String token = TokenUtil.createJwtToken(errorResp.getOpenid());
+                if (isbind) {
+                    data.setIsbind("1");
+                } else {
+                    data.setIsbind("0");
+                }
+                if (islogin) {
+                    data.setIslogin("1");
+                    data.setToken(token);
+                    resp.setMsg("登陆成功").setCode("1").setData(data);
+                } else {
+
+                    LoginAuth auth = new LoginAuth();
+                    auth.setOpenid(errorResp.getOpenid());
+                    auth.setToken(token);
+                    auth.setNickName(nickName == null ? "" : nickName);
+                    auth.setGender(String.valueOf(gender));
+                    auth.setLanguage(language == null ? "" : language);
+                    auth.setCity(city == null ? "" : city);
+                    auth.setProvince(province == null ? "" : province);
+                    auth.setCountry(country == null ? "" : country);
+                    auth.setAvatarUrl(avatarUrl == null ? "" : avatarUrl);
+                    loginAuthService.save(auth);
+                    data.setIslogin(String.valueOf(1));
+                    resp.setMsg("授权成功").setCode("1").setData(data);
+                }
+            } else {
+                resp.setMsg(errorResp.getErrmsg()).setCode(String.valueOf(errorResp.getErrcode())).setData(data);
+            }
+        }
         return resp;
     }
 }
