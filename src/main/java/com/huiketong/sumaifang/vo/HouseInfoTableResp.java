@@ -1,4 +1,4 @@
-package com.huiketong.sumaifang.data;
+package com.huiketong.sumaifang.vo;
 
 import java.util.List;
 

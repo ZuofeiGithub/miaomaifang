@@ -1,6 +1,6 @@
 package com.huiketong.sumaifang.controller;
 
-import com.huiketong.sumaifang.data.HouseInfoTableResp;
+import com.huiketong.sumaifang.vo.HouseInfoTableResp;
 import com.huiketong.sumaifang.domain.HouseInfo;
 import com.huiketong.sumaifang.service.HouseInfoService;
 import com.huiketong.sumaifang.service.SysUserService;

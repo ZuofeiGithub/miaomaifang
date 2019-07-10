@@ -1,7 +1,9 @@
 package com.huiketong.sumaifang.controller;
 
 import com.aliyuncs.exceptions.ClientException;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.google.gson.Gson;
+import com.huiketong.sumaifang.data.HomeData;
 import com.huiketong.sumaifang.data.LoginData;
 import com.huiketong.sumaifang.domain.LoginAuth;
 import com.huiketong.sumaifang.service.HouseInfoService;
@@ -13,10 +15,7 @@ import com.huiketong.sumaifang.vo.BaseResp;
 import com.huiketong.sumaifang.vo.WxErrorResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -29,6 +28,17 @@ public class SMFApiController {
     @Autowired
     HouseInfoService houseInfoService;
 
+
+    @GetMapping(value = "/homeinfo")
+    public BaseResp homeInfo(String token){
+        BaseResp resp = new BaseResp();
+        HomeData data = new HomeData();
+
+
+
+        resp.setCode("1").setMsg("获取首页信息成功").setData(data);
+        return resp;
+    }
 
     @PostMapping(value = "/upload_house_info")
     @ResponseBody

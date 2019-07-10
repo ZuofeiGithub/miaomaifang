@@ -2,6 +2,9 @@ package com.huiketong.sumaifang.data;
 
 import lombok.Data;
 
+/**
+ * 我的房子
+ */
 @Data
 public class MyHouseData {
     //房子描述

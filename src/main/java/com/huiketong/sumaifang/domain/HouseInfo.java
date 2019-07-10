@@ -75,4 +75,6 @@ public class HouseInfo {
     Date workOffTime;
     @Column(columnDefinition = "varchar(1024) default '' COMMENT '用户token'")
     String token;
+    @Column(columnDefinition = "varchar(255) default '' COMMENT '房子所在的城市'")
+    String houseCity;
 }
