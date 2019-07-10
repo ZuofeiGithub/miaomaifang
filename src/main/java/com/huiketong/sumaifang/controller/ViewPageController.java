@@ -19,4 +19,9 @@ public class ViewPageController {
     public String main(){
         return "main/main";
     }
+
+    @GetMapping("/houseinfomanager")
+    public String houseinfo(){
+        return "houseinfomanager/houseinfomanager";
+    }
 }

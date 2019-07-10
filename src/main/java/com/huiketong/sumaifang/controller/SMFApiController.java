@@ -4,19 +4,18 @@ import com.aliyuncs.exceptions.ClientException;
 import com.google.gson.Gson;
 import com.huiketong.sumaifang.data.LoginData;
 import com.huiketong.sumaifang.domain.LoginAuth;
+import com.huiketong.sumaifang.service.HouseInfoService;
 import com.huiketong.sumaifang.service.LoginAuthService;
 import com.huiketong.sumaifang.service.WXService;
 import com.huiketong.sumaifang.utils.AlicomDysmsUtil;
 import com.huiketong.sumaifang.utils.TokenUtil;
 import com.huiketong.sumaifang.vo.BaseResp;
-import com.huiketong.sumaifang.vo.WxBaseResp;
 import com.huiketong.sumaifang.vo.WxErrorResp;
-import com.huiketong.sumaifang.vo.WxSuccessResp;
-import jdk.nashorn.internal.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,7 +26,21 @@ public class SMFApiController {
     LoginAuthService loginAuthService;
     @Autowired
     WXService wxService;
+    @Autowired
+    HouseInfoService houseInfoService;
 
+
+    @PostMapping(value = "/upload_house_info")
+    @ResponseBody
+    public BaseResp uploadHouseInfo(String little_district,double house_area,Double expect_price,String token){
+        BaseResp resp = new BaseResp();
+        if(houseInfoService.uploadHouseInfo(little_district,house_area,expect_price,token)){
+            resp.setCode("1").setMsg("发布成功");
+        }else{
+            resp.setCode("0").setMsg("发布失败");
+        }
+        return resp;
+    }
 
     @PostMapping(value = "getverifycode")
     public BaseResp getVerifyCode(String telphone,String token) {

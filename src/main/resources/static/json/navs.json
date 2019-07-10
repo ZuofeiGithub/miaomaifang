@@ -3,7 +3,7 @@
 		{
 			"title": "房源管理",
 			"icon": "icon-text",
-			"href": "page/news/newsList.html",
+			"href": "/houseinfomanager",
 			"spread": false
 		}
 	],
