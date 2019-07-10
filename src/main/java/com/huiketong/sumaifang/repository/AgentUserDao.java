@@ -1,13 +1,13 @@
 package com.huiketong.sumaifang.repository;
 
-import com.huiketong.sumaifang.domain.User;
+import com.huiketong.sumaifang.domain.AgentUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserDao extends JpaRepository<User,Integer> {
+public interface AgentUserDao extends JpaRepository<AgentUser,Integer> {
     @Override
-    <S extends User> S save(S s);
+    <S extends AgentUser> S save(S s);
 
 
     /**
@@ -15,5 +15,5 @@ public interface UserDao extends JpaRepository<User,Integer> {
      * @param uuid
      * @return
      */
-    User findUserByUuid(String uuid);
+    AgentUser findUserByUuid(String uuid);
 }

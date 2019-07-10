@@ -77,4 +77,6 @@ public class HouseInfo {
     String token;
     @Column(columnDefinition = "varchar(255) default '' COMMENT '房子所在的城市'")
     String houseCity;
+    @Column(columnDefinition = "boolean default 0 COMMENT '是否成交'")
+    boolean isdeal;
 }

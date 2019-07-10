@@ -1,8 +1,8 @@
 package com.huiketong.sumaifang.service.impl;
 
-import com.huiketong.sumaifang.domain.User;
-import com.huiketong.sumaifang.repository.UserDao;
-import com.huiketong.sumaifang.service.UserService;
+import com.huiketong.sumaifang.domain.AgentUser;
+import com.huiketong.sumaifang.repository.AgentUserDao;
+import com.huiketong.sumaifang.service.AgentUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -10,11 +10,11 @@ import javax.annotation.Resource;
 import java.util.Date;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class AgentUserServiceImpl implements AgentUserService {
 
     @Resource
-    UserDao userDao;
-    private User newUser;
+    AgentUserDao userDao;
+    private AgentUser newUser;
 
     /**
      * 注册成功返回true,注册失败返回false
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public boolean register(String user_name, String user_phone, String uuid, Integer user_type, String city_name, String company_info) {
-        User olduser = userDao.findUserByUuid(uuid);
+        AgentUser olduser = userDao.findUserByUuid(uuid);
         if (!ObjectUtils.isEmpty(olduser)) {
             return false;
         }
@@ -52,12 +52,11 @@ public class UserServiceImpl implements UserService {
      */
     private void initUserData(String user_name, String user_phone, String uuid, Integer user_type, String city_name, String company_info) {
         if(newUser  == null) {
-            newUser = new User();
+            newUser = new AgentUser();
         }
         newUser.setUserName(user_name);
         newUser.setUserPhone(user_phone);
         newUser.setUuid(uuid);
-        newUser.setUserType(user_type);
         newUser.setCityName(city_name);
         newUser.setRegisterTime(new Date());
         newUser.setCompanyInfo(company_info);

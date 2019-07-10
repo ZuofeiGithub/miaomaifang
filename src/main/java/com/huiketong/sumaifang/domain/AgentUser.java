@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class User {
+public class AgentUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
@@ -27,6 +27,4 @@ public class User {
     Date loginTime;
     @Column(columnDefinition = "int(1) default 0 COMMENT '是否认证(0未认证,1已认证)'")
     Integer certification;
-    @Column(columnDefinition = "int(11) default 1 COMMENT '1 普通用户 2 经纪人'")
-    Integer userType;
 }
