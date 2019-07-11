@@ -13,4 +13,6 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
 
     @Override
     List<HouseInfo> findAll();
+
+    List<HouseInfo> findHouseInfosByToken(String token);
 }

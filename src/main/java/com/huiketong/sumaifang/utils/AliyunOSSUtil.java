@@ -10,7 +10,6 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.huiketong.sumaifang.constant.OSSProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.thymeleaf.util.StringUtils;
 
 import java.io.File;
 import java.net.URL;

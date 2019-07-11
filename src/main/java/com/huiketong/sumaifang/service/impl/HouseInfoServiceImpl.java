@@ -20,8 +20,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
         HouseInfo houseInfo = new HouseInfo();
         houseInfo.setHouseAddress(little_district);
         houseInfo.setHouseArea(house_area);
-        houseInfo.setHouseTotalPrice(expect_price);
-        houseInfo.setHouseUnitPrice((expect_price/house_area));
+        houseInfo.setExpectPrice(expect_price);
         houseInfo.setToken(token);
         houseInfo.setCreateTime(new Date());
         houseInfo.setAssessor(false);
@@ -36,5 +35,10 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     @Override
     public List<HouseInfo> getHouseInfoList() {
         return houseInfoDao.findAll();
+    }
+
+    @Override
+    public List<HouseInfo> findMyHouseList(String token) {
+        return houseInfoDao.findHouseInfosByToken(token);
     }
 }

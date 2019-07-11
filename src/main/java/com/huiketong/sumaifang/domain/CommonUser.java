@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Data
-public class LoginAuth {
+public class CommonUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;

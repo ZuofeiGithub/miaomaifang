@@ -8,4 +8,6 @@ public interface HouseInfoService {
     boolean uploadHouseInfo(String little_district,Double house_area,Double expect_price,String token);
 
     List<HouseInfo> getHouseInfoList();
+
+    List<HouseInfo> findMyHouseList(String token);
 }

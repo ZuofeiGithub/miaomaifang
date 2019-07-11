@@ -79,4 +79,12 @@ public class HouseInfo {
     String houseCity;
     @Column(columnDefinition = "boolean default 0 COMMENT '是否成交'")
     boolean isdeal;
+    @Column(columnDefinition = "int(255) default 0 COMMENT '浏览次数'")
+    Integer visitNum;
+    @Column(columnDefinition = "int(255) default 0 COMMENT '带看次数'")
+    Integer seeNum;
+    @Column(columnDefinition = "int(11) default 0 COMMENT '房屋类型:1、房主售卖，2、官方直售'")
+    Integer houseType;
+    @Column(columnDefinition = "double(10,2) default 0.00 COMMENT '房屋期望价格'")
+    Double expectPrice;
 }

@@ -1,40 +1,109 @@
 package com.huiketong.sumaifang.controller;
 
 import com.aliyuncs.exceptions.ClientException;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.google.gson.Gson;
-import com.huiketong.sumaifang.data.HomeData;
-import com.huiketong.sumaifang.data.LoginData;
-import com.huiketong.sumaifang.domain.LoginAuth;
-import com.huiketong.sumaifang.service.HouseInfoService;
-import com.huiketong.sumaifang.service.LoginAuthService;
-import com.huiketong.sumaifang.service.WXService;
+import com.huiketong.sumaifang.constant.TencentProperties;
+import com.huiketong.sumaifang.constant.TencentUrl;
+import com.huiketong.sumaifang.data.*;
+import com.huiketong.sumaifang.domain.Banner;
+import com.huiketong.sumaifang.domain.CommonUser;
+import com.huiketong.sumaifang.domain.HouseInfo;
+import com.huiketong.sumaifang.repository.BannerDao;
+import com.huiketong.sumaifang.service.*;
 import com.huiketong.sumaifang.utils.AlicomDysmsUtil;
 import com.huiketong.sumaifang.utils.TokenUtil;
 import com.huiketong.sumaifang.vo.BaseResp;
+import com.huiketong.sumaifang.vo.LocationResp;
 import com.huiketong.sumaifang.vo.WxErrorResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api")
 public class SMFApiController {
 
     @Autowired
-    LoginAuthService loginAuthService;
+    CommonUserService commonUserService;
     @Autowired
     WXService wxService;
     @Autowired
     HouseInfoService houseInfoService;
 
+    @Autowired
+    CitiesService citiesService;
+    @Autowired
+    BannerService bannerService;
+    @Autowired
+    HouseImgService houseImgService;
+
 
     @GetMapping(value = "/homeinfo")
-    public BaseResp homeInfo(String token){
+    public BaseResp homeInfo(String token,Double latitude,Double longitude){
         BaseResp resp = new BaseResp();
         HomeData data = new HomeData();
 
 
+        //获取地址信息
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String,String> map = new HashMap<>();
+        map.put("location",(latitude==null ? "39.984154":latitude)+","+(longitude == null ? "116.307490":longitude));
+        map.put("key", TencentProperties.KEY);
+        map.put("get_poi","0");
+
+        LocationResp locationResp =  restTemplate.getForObject(TencentUrl.LOCATIONURL, LocationResp.class,map);
+        if(!ObjectUtils.isEmpty(locationResp)){
+            String city = locationResp.getResult().getAddress_component().getCity();
+            if(!ObjectUtils.isEmpty(city)){
+                CityData cityData = new CityData();
+                if(citiesService.isOpen(city)){
+                    cityData.setIsopen(true);
+                    cityData.setDefault_city("南通");
+                }else{
+                    cityData.setIsopen(false);
+                    cityData.setDefault_city("南通");
+                }
+                data.setCityinfo(cityData);
+            }
+        }
+        List<Banner> bannerList = bannerService.findAllBanner();
+        List<BannerData> bannerDataList = new ArrayList<>();
+        if(bannerList.size() > 0){
+            for(int i = 0; i < bannerList.size();i++){
+                BannerData bannerData = new BannerData();
+                bannerData.setImgurl(bannerList.get(i).getImgurl());
+                bannerData.setLinkurl(bannerList.get(i).getLinkurl());
+                bannerDataList.add(bannerData);
+            }
+        }
+        data.setBannerlist(bannerDataList);
+
+       List<HouseInfo> houseInfoList = houseInfoService.findMyHouseList(token);
+       List<MyHouseData> houseDataList = new ArrayList<>();
+       if(houseInfoList.size() > 0){
+           for(int i = 0 ; i < houseInfoList.size();i++){
+               MyHouseData houseData = new MyHouseData();
+               houseData.setTitle(houseInfoList.get(i).getHouseTitle());
+               houseData.setHouseArea(houseInfoList.get(i).getHouseArea());
+               houseData.setHouseImg(houseImgService.findHouseImg(houseInfoList.get(i).getId()).getImgurl());
+               houseData.setIspass(houseInfoList.get(i).getAssessor());
+               houseData.setSeeNum(houseInfoList.get(i).getSeeNum());
+               houseData.setVisitsNum(houseInfoList.get(i).getVisitNum());
+               houseData.setHouse_id(houseInfoList.get(i).getId());
+               DateFormat df = new SimpleDateFormat("yyyy-MM-dd E a HH:mm:ss");
+               houseData.setSubmitTime(df.format(houseInfoList.get(i).getCreateTime()));
+               houseDataList.add(houseData);
+           }
+       }
+        data.setMyhouselist(houseDataList);
 
         resp.setCode("1").setMsg("获取首页信息成功").setData(data);
         return resp;
@@ -58,8 +127,8 @@ public class SMFApiController {
         String code = AlicomDysmsUtil.getCode(); //验证码
         try {
             AlicomDysmsUtil.sendSms(telphone, code, "SMS_169898923");
-            loginAuthService.saveUser(telphone, code, token);
-            resp.setCode("0").setMsg("获取验证码成功");
+            commonUserService.saveUser(telphone, code, token);
+            resp.setCode("1").setMsg("获取验证码成功");
         } catch (ClientException e) {
             e.printStackTrace();
             resp.setCode("300").setMsg("获取验证码失败");
@@ -76,7 +145,7 @@ public class SMFApiController {
     public BaseResp login(String telphone, String verifyCode, String token) {
         BaseResp resp = new BaseResp();
         try{
-            loginAuthService.login(telphone, verifyCode, token);
+            commonUserService.login(telphone, verifyCode, token);
             resp.setCode("1").setMsg("登陆成功");
         }catch (Exception e){
             resp.setMsg("登陆失败").setCode("2");
@@ -105,8 +174,8 @@ public class SMFApiController {
         WxErrorResp errorResp = new Gson().fromJson(wxService.login(code), WxErrorResp.class);
         if (!ObjectUtils.isEmpty(errorResp)) {
             if (errorResp.getErrcode() == 0) {
-                boolean islogin = loginAuthService.isLogin(errorResp.getOpenid());
-                boolean isbind = loginAuthService.isBind(errorResp.getOpenid());
+                boolean islogin = commonUserService.isLogin(errorResp.getOpenid());
+                boolean isbind = commonUserService.isBind(errorResp.getOpenid());
                 String token = TokenUtil.createJwtToken(errorResp.getOpenid());
                 if (isbind) {
                     data.setIsbind("1");
@@ -119,7 +188,7 @@ public class SMFApiController {
                     resp.setMsg("登陆成功").setCode("1").setData(data);
                 } else {
 
-                    LoginAuth auth = new LoginAuth();
+                    CommonUser auth = new CommonUser();
                     auth.setOpenid(errorResp.getOpenid());
                     auth.setToken(token);
                     auth.setNickName(nickName == null ? "" : nickName);
@@ -129,7 +198,7 @@ public class SMFApiController {
                     auth.setProvince(province == null ? "" : province);
                     auth.setCountry(country == null ? "" : country);
                     auth.setAvatarUrl(avatarUrl == null ? "" : avatarUrl);
-                    loginAuthService.save(auth);
+                    commonUserService.save(auth);
                     data.setIslogin(String.valueOf(1));
                     resp.setMsg("授权成功").setCode("1").setData(data);
                 }

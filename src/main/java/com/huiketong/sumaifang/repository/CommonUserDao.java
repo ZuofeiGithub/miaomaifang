@@ -1,22 +1,22 @@
 package com.huiketong.sumaifang.repository;
 
-import com.huiketong.sumaifang.domain.LoginAuth;
+import com.huiketong.sumaifang.domain.CommonUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
 
-public interface LoginAuthDao extends JpaRepository<LoginAuth,Integer> {
+public interface CommonUserDao extends JpaRepository<CommonUser,Integer> {
     @Override
-    <S extends LoginAuth> S save(S s);
+    <S extends CommonUser> S save(S s);
 
     /**
      * 根据电话号码查找用户
      * @param telphone
      * @return
      */
-    LoginAuth findLoginAuthByUserTelphone(String telphone);
+    CommonUser findCommonUserByUserTelphone(String telphone);
 
 
     /**
@@ -33,20 +33,20 @@ public interface LoginAuthDao extends JpaRepository<LoginAuth,Integer> {
      * @param openId
      * @return
      */
-    LoginAuth findLoginAuthByOpenid(String openId);
+    CommonUser findCommonUserByOpenid(String openId);
 
     /**
      * 根据token找到用户
      * @param token
      * @return
      */
-    LoginAuth findLoginAuthByToken(String token);
+    CommonUser findCommonUserByToken(String token);
 
 
 
     @Transactional
     @Modifying
-    @Query(value = "update login_auth set user_telphone = ?1 where token = ?2",nativeQuery = true)
+    @Query(value = "update common_user set user_telphone = ?1 where token = ?2",nativeQuery = true)
     void bindUserTelphone(String telphone,String token);
 
 

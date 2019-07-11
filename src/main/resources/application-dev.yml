@@ -27,3 +27,6 @@ oss:
 wx:
   appid: wxade7a1fdaa226cea
   secret: 8d8076a823f38d771087912c1625e04a
+
+tencent:
+  key: P6DBZ-PYJ6S-7SMO4-6YSGV-EV6W6-37BSV
