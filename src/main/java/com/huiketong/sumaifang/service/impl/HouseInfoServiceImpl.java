@@ -41,4 +41,9 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     public List<HouseInfo> findMyHouseList(String token) {
         return houseInfoDao.findHouseInfosByToken(token);
     }
+
+    @Override
+    public List<HouseInfo> findLessThanForty(){
+        return houseInfoDao.findHouseLessThanForty();
+    }
 }

@@ -109,6 +109,14 @@ public class SMFApiController {
         return resp;
     }
 
+    /**
+     *
+     * @param little_district
+     * @param house_area
+     * @param expect_price
+     * @param token
+     * @return
+     */
     @PostMapping(value = "/upload_house_info")
     @ResponseBody
     public BaseResp uploadHouseInfo(String little_district,double house_area,Double expect_price,String token){
@@ -121,6 +129,12 @@ public class SMFApiController {
         return resp;
     }
 
+    /**
+     * 获取验证码
+     * @param telphone
+     * @param token
+     * @return
+     */
     @PostMapping(value = "getverifycode")
     public BaseResp getVerifyCode(String telphone,String token) {
         BaseResp resp = new BaseResp();
@@ -137,6 +151,7 @@ public class SMFApiController {
     }
 
     /**
+     * 手机号登陆
      * @param telphone
      * @param verifyCode
      * @return
@@ -208,4 +223,6 @@ public class SMFApiController {
         }
         return resp;
     }
+
+
 }

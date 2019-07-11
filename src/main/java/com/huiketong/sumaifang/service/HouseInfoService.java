@@ -10,4 +10,6 @@ public interface HouseInfoService {
     List<HouseInfo> getHouseInfoList();
 
     List<HouseInfo> findMyHouseList(String token);
+
+    List<HouseInfo> findLessThanForty();
 }
