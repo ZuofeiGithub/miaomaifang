@@ -1,6 +1,6 @@
 package com.huiketong.sumaifang.vo;
 
-public class BaseResp {
+public class BaseResp{
     String code;
     String msg;
     Object data;

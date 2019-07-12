@@ -13,4 +13,8 @@ public interface CommonUserService {
     boolean isLogin(String openid);
 
     boolean isBind(String openid);
+
+    String findVerifyCode(String telphone);
+
+    CommonUser findMine(String token);
 }

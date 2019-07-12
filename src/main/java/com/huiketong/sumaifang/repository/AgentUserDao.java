@@ -16,4 +16,7 @@ public interface AgentUserDao extends JpaRepository<AgentUser,Integer> {
      * @return
      */
     AgentUser findUserByUuid(String uuid);
+
+    @Override
+    long count();
 }

@@ -53,7 +53,7 @@ public class HouseInfoTableResp {
         String houseAddress;
         Double houseArea;
         Double housePrice;
-        Boolean assessor;
+        Integer assessor;
 
         public Integer getId() {
             return id;
@@ -87,11 +87,11 @@ public class HouseInfoTableResp {
             this.housePrice = housePrice;
         }
 
-        public Boolean getAssessor() {
+        public Integer getAssessor() {
             return assessor;
         }
 
-        public void setAssessor(Boolean assessor) {
+        public void setAssessor(Integer assessor) {
             this.assessor = assessor;
         }
     }

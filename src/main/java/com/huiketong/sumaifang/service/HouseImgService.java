@@ -2,6 +2,8 @@ package com.huiketong.sumaifang.service;
 
 import com.huiketong.sumaifang.domain.HouseImg;
 
+import java.util.List;
+
 public interface HouseImgService {
-    HouseImg findHouseImg(Integer house_id);
+    List<HouseImg> findHouseImg(Integer house_id);
 }

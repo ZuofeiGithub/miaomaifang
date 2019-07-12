@@ -69,8 +69,8 @@ public class HouseInfo {
     Double brokeragePercentage;
     @Column(columnDefinition = "double(10,2) default 0.00 COMMENT '佣金价格'")
     Double brokeragePrice;
-    @Column(columnDefinition = "boolean default 0 COMMENT '是否审核'")
-    Boolean assessor;
+    @Column(columnDefinition = "int(3) default 0 COMMENT '1.审核通过 2.待审核,3.审核未通过'")
+    Integer assessor;
     @Column(columnDefinition = "datetime  COMMENT '售出时间'")
     Date workOffTime;
     @Column(columnDefinition = "varchar(1024) default '' COMMENT '用户token'")
@@ -87,4 +87,10 @@ public class HouseInfo {
     Integer houseType;
     @Column(columnDefinition = "double(10,2) default 0.00 COMMENT '房屋期望价格'")
     Double expectPrice;
+    @Column(columnDefinition = "varchar(255) default '' COMMENT '小区'")
+    String district;
+    @Column(columnDefinition = "int(11) default 0 COMMENT '呼叫次数'")
+    Integer callNum;
+    @Column(columnDefinition = "int(11) default 0 COMMENT '关注数'")
+    Integer attentionNum;
 }

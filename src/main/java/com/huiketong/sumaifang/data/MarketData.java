@@ -14,9 +14,9 @@ public class MarketData {
     //储备买家
     Integer clientNum;
     //全城经纪人
-    Integer agentNum;
+    long agentNum;
     //全市均价
-    Integer averagePrice;
+    Double averagePrice;
     //环比上月增长
     Double increase;
 }

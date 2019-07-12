@@ -6,13 +6,15 @@ import com.huiketong.sumaifang.service.HouseImgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class HouseImgServiceImpl implements HouseImgService {
     @Autowired
     HouseImgDao houseImgDao;
 
     @Override
-    public HouseImg findHouseImg(Integer house_id) {
-        return houseImgDao.findHouseImgByHouseId(house_id);
+    public List<HouseImg> findHouseImg(Integer house_id) {
+        return houseImgDao.findHouseImgsByHouseId(house_id);
     }
 }

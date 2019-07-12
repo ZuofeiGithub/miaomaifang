@@ -14,36 +14,30 @@ public class CommonUserServiceImpl implements CommonUserService {
 
     @Autowired
     CommonUserDao commonUserDao;
+
     @Override
-    public boolean login(String userid,String code,String token) {
-       CommonUser commonUser =  commonUserDao.findCommonUserByToken(token);
-       if(!ObjectUtils.isEmpty(commonUser)){
-           if(commonUser.getVerifyCode().equals(code)){
-               commonUserDao.bindUserTelphone(userid,token);
-               return true;
-//               if(TokenUtil.verifyToken(commonUser.getToken())){
-//
-//                   return true;
-//               }else{
-//                    updateUserToken(userid);
-//               }
-           }
-       }
+    public boolean login(String userid, String code, String token) {
+        CommonUser commonUser = commonUserDao.findCommonUserByUserTelphone(userid);
+        if(ObjectUtils.isEmpty(commonUser)){
+            commonUserDao.updateTelphoneVerifyCode(userid,code,token);
+        }else{
+
+        }
         return false;
     }
 
     @Override
     public boolean saveUser(String telphone, String verifyCode, String token) {
         CommonUser commonUser = commonUserDao.findCommonUserByToken(token);
-        if(commonUser == null){
+        if (commonUser == null) {
             commonUser = new CommonUser();
             commonUser.setUserTelphone(telphone);
             commonUser.setVerifyCode(verifyCode);
             commonUser.setToken(TokenUtil.createJwtToken(telphone));
             commonUserDao.save(commonUser);
             return true;
-        }else{
-            commonUserDao.updateTelphoneVerifyCode(telphone,verifyCode,token);
+        } else {
+            commonUserDao.updateTelphoneVerifyCode(telphone, verifyCode, token);
         }
         return false;
     }
@@ -54,41 +48,51 @@ public class CommonUserServiceImpl implements CommonUserService {
         try {
             commonUserDao.save(auth);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
     /**
      * 是否已经登陆
+     *
      * @param openid
      * @return
      */
     @Override
     public boolean isLogin(String openid) {
 
-       CommonUser auth =  commonUserDao.findCommonUserByOpenid(openid);
-       if(ObjectUtils.isEmpty(auth)){
-           return false;
-       }
+        CommonUser auth = commonUserDao.findUserByOpenId(openid);
+        if (ObjectUtils.isEmpty(auth)) {
+            return false;
+        }
         return true;
     }
 
     /**
      * 是否已经绑定手机
-     * @param openid
+     *
+     * @param telphone
      * @return
      */
     @Override
-    public boolean isBind(String openid) {
-        CommonUser auth = commonUserDao.findCommonUserByOpenid(openid);
-        if(ObjectUtils.isEmpty(auth)){
-            return false;
+    public boolean isBind(String telphone) {
+        CommonUser auth = commonUserDao.findCommonUserByUserTelphone(telphone);
+        return auth.isIsbind();
+    }
+
+    @Override
+    public String findVerifyCode(String telphone) {
+        CommonUser user = commonUserDao.findCommonUserByUserTelphone(telphone);
+        if (!ObjectUtils.isEmpty(user)) {
+            return user.getVerifyCode();
         }
-        if(ObjectUtils.isEmpty(auth.getUserTelphone())){
-            return false;
-        }
-        return true;
+        return null;
+    }
+
+    @Override
+    public CommonUser findMine(String token) {
+        return commonUserDao.findCommonUserByToken(token);
     }
 
 }

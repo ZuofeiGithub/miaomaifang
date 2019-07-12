@@ -25,15 +25,9 @@ public interface CommonUserDao extends JpaRepository<CommonUser,Integer> {
      * @param telphone
      */
     @Transactional
-    @Query(value = "update login_auth set token = ?1 where user_telphone = ?2",nativeQuery = true)
+    @Query(value = "update common_user set token = ?1 where user_telphone = ?2",nativeQuery = true)
     void updateToken(String token,String telphone);
 
-    /**
-     * 根据openid找到用户
-     * @param openId
-     * @return
-     */
-    CommonUser findCommonUserByOpenid(String openId);
 
     /**
      * 根据token找到用户
@@ -55,6 +49,16 @@ public interface CommonUserDao extends JpaRepository<CommonUser,Integer> {
      */
     @Transactional
     @Modifying
-    @Query(value = "update login_auth set user_telphone = ?1,verify_code = ?2 where token = ?3",nativeQuery = true)
+    @Query(value = "update common_user set user_telphone = ?1,verify_code = ?2 where token = ?3",nativeQuery = true)
     void updateTelphoneVerifyCode(String telphone,String verifyCode,String token);
+
+
+    /**
+     * 根据openid找到用户
+     * @param openid
+     * @return
+     */
+
+    @Query(value = "select * from common_user where openid = ?1 and isbind = 1",nativeQuery = true)
+    CommonUser  findUserByOpenId(String openid);
 }

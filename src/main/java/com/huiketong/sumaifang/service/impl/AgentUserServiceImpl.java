@@ -41,6 +41,11 @@ public class AgentUserServiceImpl implements AgentUserService {
         }
     }
 
+    @Override
+    public long getAgentNum() {
+        return userDao.count();
+    }
+
     /**
      * 初始化新用户
      * @param user_name

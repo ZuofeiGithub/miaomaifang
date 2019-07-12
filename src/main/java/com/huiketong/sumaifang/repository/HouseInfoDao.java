@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
@@ -15,8 +16,15 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
     @Override
     List<HouseInfo> findAll();
 
-    List<HouseInfo> findHouseInfosByToken(String token);
+    @Query(value = "select * from house_info where token = 1? limit 2?,3?",nativeQuery = true)
+    List<HouseInfo> findHouseInfosByTokenLimit(String token,Integer page,Integer limit);
 
     @Query(value = "select *  from house_info where house_total_price between 0 and 40",nativeQuery = true)
     List<HouseInfo> findHouseLessThanForty();
+
+
+    @Query(value = "select avg(house_total_price)  from house_info where assessor = 1",nativeQuery = true)
+    Double getAveragePrice();
+
+    HouseInfo findHouseInfoById(Integer id);
 }

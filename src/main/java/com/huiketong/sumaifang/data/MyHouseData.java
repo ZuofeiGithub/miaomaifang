@@ -11,7 +11,7 @@ public class MyHouseData {
     //房子描述
     String title;
     //是否通过审核
-    boolean ispass;
+    String ispass;
     //我的房屋图片
     String houseImg;
     //提交时间
@@ -22,4 +22,6 @@ public class MyHouseData {
     Integer visitsNum;
     //带看次数
     Integer seeNum;
+    //期望售价
+    Double expect_price;
 }

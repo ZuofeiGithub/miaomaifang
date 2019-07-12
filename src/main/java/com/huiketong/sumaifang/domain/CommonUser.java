@@ -35,4 +35,6 @@ public class CommonUser {
     String country;
     @Column(columnDefinition = "varchar(255) default '' COMMENT '头像'")
     String avatarUrl;
+    @Column(columnDefinition = "boolean default 0 comment '是否绑定'")
+    boolean isbind;
 }

@@ -13,7 +13,6 @@ public class HomeData {
     CityData cityinfo ;
     List<BannerData> bannerlist;
 
-    List<MyHouseData> myhouselist;
 
     List<HeadlineNewsData> tipslist;
 
