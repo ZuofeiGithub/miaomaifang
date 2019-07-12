@@ -20,4 +20,6 @@ public class SysUser {
     Integer userType;
     @Column(columnDefinition = "datetime COMMENT '注册时间'")
     Date registerTime;
+    @Column(columnDefinition = "varchar(1024) default '' comment '系统用户token'")
+    String token;
 }
