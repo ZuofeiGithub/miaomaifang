@@ -15,6 +15,8 @@ public class Biotope {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
+    @Column(columnDefinition = "varchar(6) default '' comment '所属城市ids'")
+    String cityid;
     @Column(columnDefinition = "varchar(6) default '' comment '所属区id'")
     String areaid;
     @Column(columnDefinition = "varchar(255) default '' comment '小区名字'")

@@ -14,10 +14,12 @@ public class Headline {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    @Column(columnDefinition = "varchar(255) default '' comment '头条类型'")
-    String headType;
+    @Column(columnDefinition = "int(255) default '' comment '头条类型'")
+    Integer headType;
     @Column(columnDefinition = "varchar(1024) default '' comment '头条消息'")
     String headMsg;
     @Column(columnDefinition = "datetime comment '头条时间'")
     Date createTime;
+    @Column(columnDefinition = "varchar(255) default '' comment '城市'")
+    String cityname;
 }

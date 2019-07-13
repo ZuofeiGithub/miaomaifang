@@ -43,4 +43,9 @@ public class CitiesServiceImpl implements CitiesService {
         }
         return cities;
     }
+
+    @Override
+    public Cities findCityByName(String cityname) {
+        return citiesDao.findCitiesByCity(cityname);
+    }
 }

@@ -5,19 +5,21 @@ import com.google.gson.Gson;
 import com.huiketong.sumaifang.constant.TencentProperties;
 import com.huiketong.sumaifang.constant.TencentUrl;
 import com.huiketong.sumaifang.data.*;
-import com.huiketong.sumaifang.domain.Banner;
-import com.huiketong.sumaifang.domain.CommonUser;
-import com.huiketong.sumaifang.domain.HouseImg;
-import com.huiketong.sumaifang.domain.HouseInfo;
+import com.huiketong.sumaifang.domain.*;
+import com.huiketong.sumaifang.repository.MessageDao;
 import com.huiketong.sumaifang.service.*;
 import com.huiketong.sumaifang.utils.AlicomDysmsUtil;
 import com.huiketong.sumaifang.utils.TokenUtil;
 import com.huiketong.sumaifang.vo.BaseResp;
+import com.huiketong.sumaifang.vo.GeoCoderResp;
 import com.huiketong.sumaifang.vo.LocationResp;
 import com.huiketong.sumaifang.vo.WxErrorResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DateFormat;
@@ -46,10 +48,25 @@ public class SMFApiController {
     HouseImgService houseImgService;
     @Autowired
     AgentUserService agentUserService;
-
+    @Autowired
+    ClientShowService clientShowService;
+    @Autowired
+    HeadlineService headlineService;
+    @Autowired
+    NotificationService notificationService;
+    @Autowired
+    HousePriceService housePriceService;
+    @Autowired
+    MessageService messageService;
+    @Autowired
+    ChatMessageService chatMessageService;
+    @Autowired
+    AreasService areasService;
+    @Autowired
+    BiotopeService biotopeService;
 
     /**
-     * 主页信息
+     * 首页信息(第一次测试完成)
      *
      * @param token
      * @param latitude
@@ -57,10 +74,9 @@ public class SMFApiController {
      * @return
      */
     @GetMapping(value = "/homeinfo")
-    public BaseResp homeInfo(String token, Double latitude, Double longitude) {
+    public BaseResp homeInfo(String token, Double latitude, Double longitude, String city_name) {
         BaseResp resp = new BaseResp();
         HomeData data = new HomeData();
-
 
         //获取地址信息
         RestTemplate restTemplate = new RestTemplate();
@@ -71,15 +87,31 @@ public class SMFApiController {
 
         LocationResp locationResp = restTemplate.getForObject(TencentUrl.LOCATIONURL, LocationResp.class, map);
         if (!ObjectUtils.isEmpty(locationResp)) {
+            if (locationResp.getStatus() != 0) {
+                resp.setCode("0").setMsg("坐标解析错误");
+                return resp;
+            }
             String city = locationResp.getResult().getAddress_component().getCity();
-            if (!ObjectUtils.isEmpty(city)) {
+            if (ObjectUtils.isEmpty(city_name)) {
+                if (!ObjectUtils.isEmpty(city)) {
+                    CityData cityData = new CityData();
+                    if (citiesService.isOpen(city)) {
+                        cityData.setIsopen(true);
+                        cityData.setDefault_city(city);
+                    } else {
+                        cityData.setIsopen(false);
+                        cityData.setDefault_city("南通市");
+                    }
+                    data.setCityinfo(cityData);
+                }
+            } else {
                 CityData cityData = new CityData();
-                if (citiesService.isOpen(city)) {
+                if (citiesService.isOpen(city_name)) {
                     cityData.setIsopen(true);
-                    cityData.setDefault_city("南通");
+                    cityData.setDefault_city(city_name);
                 } else {
                     cityData.setIsopen(false);
-                    cityData.setDefault_city("南通");
+                    cityData.setDefault_city("南通市");
                 }
                 data.setCityinfo(cityData);
             }
@@ -95,20 +127,29 @@ public class SMFApiController {
             }
         }
         data.setBannerlist(bannerDataList);
-        MarketData marketData = new MarketData();
-        marketData.setAgentNum(agentUserService.getAgentNum());
-        marketData.setAveragePrice(houseInfoService.getAveragePrice());
-        marketData.setAverageWorkOffDays(10);
-        marketData.setClientNum(3123123);
-        marketData.setIntermediaryNum(312310);
-        marketData.setIncrease(-0.12d);
-
+        MarketData marketData = clientShowService.findMarketByCity(city_name);
         data.setMarket(marketData);
         data.setOrglist(new ArrayList<>());
+
+        List<HeadlineNewsData> newsDataList = headlineService.findHeadlineByCity(city_name);
+        data.setTipslist(newsDataList);
 
         resp.setCode("1").setMsg("获取首页信息成功").setData(data);
         return resp;
     }
+
+
+    @PostMapping(value = "logout")
+    public BaseResp logout(String token) {
+        BaseResp resp = new BaseResp();
+        if (commonUserService.unBind(token)) {
+            resp.setMsg("解绑成功").setCode("1");
+        } else {
+            resp.setMsg("解绑失败").setCode("0");
+        }
+        return resp;
+    }
+
 
     /**
      * @param little_district
@@ -118,14 +159,13 @@ public class SMFApiController {
      * @return
      */
     @PostMapping(value = "/upload_house_info")
-    @ResponseBody
-    public BaseResp uploadHouseInfo(String little_district, double house_area, Double expect_price, String token, String telphone, String verify_code) {
+    public BaseResp uploadHouseInfo(String little_district, String city_name, double house_area, Double expect_price, String token, String telphone, String verify_code) {
         BaseResp resp = new BaseResp();
         if (!ObjectUtils.isEmpty(telphone) && !ObjectUtils.isEmpty(verify_code) && ObjectUtils.isEmpty(token)) {
             String verifyCode = commonUserService.findVerifyCode(telphone);
             if (!ObjectUtils.isEmpty(verifyCode)) {
                 if (verifyCode.equals(verify_code)) {
-                    if (houseInfoService.uploadHouseInfo(little_district, house_area, expect_price, telphone, token)) {
+                    if (houseInfoService.uploadHouseInfo(little_district, city_name, house_area, expect_price, telphone, token)) {
                         resp.setCode("1").setMsg("发布成功");
                     } else {
                         resp.setCode("0").setMsg("发布失败");
@@ -137,12 +177,68 @@ public class SMFApiController {
         } else if ((ObjectUtils.isEmpty(telphone) || ObjectUtils.isEmpty(verify_code)) && ObjectUtils.isEmpty(token)) {
             resp.setCode("200").setMsg("请先获取验证码");
         } else {
-            if (houseInfoService.uploadHouseInfo(little_district, house_area, expect_price, telphone, token)) {
+            if (houseInfoService.uploadHouseInfo(little_district, city_name, house_area, expect_price, telphone, token)) {
                 resp.setCode("1").setMsg("发布成功");
             } else {
                 resp.setCode("0").setMsg("发布失败");
             }
         }
+        return resp;
+    }
+
+    @GetMapping(value = "/messagelist")
+    public BaseResp messageList(String token) {
+        BaseResp resp = new BaseResp();
+        CommonUser commonUser = commonUserService.findMine(token);
+        if (!ObjectUtils.isEmpty(commonUser)) {
+            List<Message> messageList = messageService.findMsgList(token);
+            List<MessageData> messageDataList = new ArrayList<>();
+            if (messageList.size() > 0) {
+                for (Message message : messageList) {
+                    if (message.getMsgType() == 1) {
+                        List<Notification> notificationList = notificationService.findMyNotic(token);
+                        if (notificationList.size() > 0) {
+                            for (Notification notification : notificationList) {
+                                MessageData data = new MessageData();
+                                data.setMsgcontent(notification.getNotifyMsg());
+                                DateFormat dateFormat = new SimpleDateFormat("MM/dd");
+                                data.setMsgdate(dateFormat.format(notification.getNotifyTime()));
+                                data.setMsgid(notification.getId().toString());
+                                data.setMsgtype(String.valueOf(1));
+                                data.setMsgtitle("通知");
+                                messageDataList.add(data);
+                            }
+                        }
+                    } else if (message.getMsgType() == 2) {
+                        MessageData data = new MessageData();
+                        ChatMessage chatMessage = chatMessageService.findChatMsgById(message.getMsgId());
+                        if (chatMessage.getUserType() == 1) {
+                            CommonUser commonUser1 = commonUserService.findMineById(chatMessage.getReceiverId());
+
+                            data.setMsgtitle(commonUser1.getNickName());
+                            data.setMsgtype(String.valueOf(2));
+                            DateFormat dateFormat = new SimpleDateFormat("MM/dd");
+                            data.setMsgdate(dateFormat.format(chatMessage.getCreateTime()));
+                            data.setMsgcontent(chatMessage.getContent());
+                            data.setMsgicon(commonUser1.getAvatarUrl());
+                        } else if (chatMessage.getUserType() == 2) {
+                            AgentUser agentUser = agentUserService.findAgentById(chatMessage.getSenderId());
+                            data.setMsgtitle(agentUser.getUserName());
+                            data.setMsgtype(String.valueOf(2));
+                            DateFormat dateFormat = new SimpleDateFormat("MM/dd");
+                            data.setMsgdate(dateFormat.format(chatMessage.getCreateTime()));
+                            data.setMsgcontent(chatMessage.getContent());
+                            data.setMsgicon(agentUser.getAvatarUrl());
+                        }
+                        messageDataList.add(data);
+                    }
+                }
+            }
+            resp.setCode("1").setMsg("获取消息列表成功").setData(messageDataList);
+        } else {
+            resp.setMsg("用户不存在").setCode("0");
+        }
+
         return resp;
     }
 
@@ -258,10 +354,19 @@ public class SMFApiController {
                         break;
                 }
                 data.setIspass(isPassData);
-                NewsData newsData = new NewsData();
-                DateFormat df1 = new SimpleDateFormat("yyyy");
-                //newsData.setTime(df1.format());
-                data.setNews(newsData);
+
+                DateFormat df1 = new SimpleDateFormat("MM/dd");
+                List<Notification> notifications = notificationService.findMyNotic(token);
+                List<NewsData> newsDataList = new ArrayList<>();
+                if (notifications.size() > 0) {
+                    for (int i = 0; i < notifications.size(); i++) {
+                        NewsData newsData = new NewsData();
+                        newsData.setTime(df1.format(notifications.get(i).getNotifyTime()));
+                        newsData.setContent(notifications.get(i).getSummarizeMsg());
+                    }
+                }
+                data.setNews(newsDataList);
+
                 CountData countData = new CountData();
                 countData.setBrowse_num(houseInfoList.get(0).getVisitNum());
                 countData.setCall_num(houseInfoList.get(0).getCallNum());
@@ -275,6 +380,66 @@ public class SMFApiController {
         }
 
         resp.setCode("0").setMsg("获取卖房动态成功").setData(data);
+        return resp;
+    }
+
+
+    @GetMapping("/getdistrictlist")
+    public BaseResp getDistrictList(String cityname, String districtname) {
+        BaseResp resp = new BaseResp();
+        Cities cities = citiesService.findCityByName(cityname);
+        if (ObjectUtils.isEmpty(cities)) {
+            List<Biotope> biotopeList = biotopeService.findBiotopList(cities.getCityid(), districtname);
+            DistrictData data = new DistrictData();
+            List<String> distri = new ArrayList<>();
+            if (biotopeList.size() > 0) {
+
+                for (Biotope biotope : biotopeList) {
+                    distri.add(biotope.getName());
+                }
+                data.setDistrict_name(distri);
+            }
+            resp.setCode("1").setMsg("获取区域列表成功").setData(data);
+
+        } else {
+            resp.setCode("0").setMsg("获取失败");
+        }
+        return resp;
+    }
+
+    /**
+     * 房屋详情
+     *
+     * @param house_id
+     * @return
+     */
+    @PostMapping(value = "/house_detail")
+    public BaseResp houseDetail(Integer house_id) {
+        BaseResp resp = new BaseResp();
+        HouseDetailData data = new HouseDetailData();
+        HouseInfo houseInfo = houseInfoService.findMyHouseById(house_id);
+        if (!ObjectUtils.isEmpty(houseInfo)) {
+
+            //获取地址坐标
+            RestTemplate restTemplate = new RestTemplate();
+            Map<String, String> map = new HashMap<>();
+            map.put("address", houseInfo.getHouseDetailAddress());
+            map.put("key", TencentProperties.KEY);
+            GeoCoderResp geoCoderResp = restTemplate.getForObject(TencentUrl.GEOCODERURL, GeoCoderResp.class, map);
+            if (geoCoderResp.getStatus() == 0) {
+                data.setLatitude(String.valueOf(geoCoderResp.getResult().getLocation().getLat()));
+                data.setLongitude(String.valueOf(geoCoderResp.getResult().getLocation().getLng()));
+            }
+            PriceTimeMachineData priceTimeMachineData = housePriceService.findHouseData(house_id);
+            data.setPrice_time_machine(priceTimeMachineData);
+            List<SameSellHouseData> sameSellHouseDataList = houseInfoService.findSameSellHouse(house_id);
+            data.setSamesellhouse(sameSellHouseDataList);
+
+            List<SameDealHouseData> sameDealHouseDataList = houseInfoService.findSameDealHouse(house_id);
+            data.setSamedealhouse(sameDealHouseDataList);
+        } else {
+            resp.setCode("0").setMsg("没有房屋信息");
+        }
         return resp;
     }
 

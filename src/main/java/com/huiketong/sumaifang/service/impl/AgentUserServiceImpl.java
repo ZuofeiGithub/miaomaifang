@@ -46,6 +46,11 @@ public class AgentUserServiceImpl implements AgentUserService {
         return userDao.count();
     }
 
+    @Override
+    public AgentUser findAgentById(Integer id) {
+        return userDao.findAgentUserById(id);
+    }
+
     /**
      * 初始化新用户
      * @param user_name

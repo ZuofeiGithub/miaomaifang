@@ -29,4 +29,6 @@ public class AgentUser {
     Integer certification;
     @Column(columnDefinition = "int(3) default 0 COMMENT '1中介 2经纪人'")
     Integer userType;
+    @Column(columnDefinition = "varchar(255) default '' comment '经纪人头像'")
+    String avatarUrl;
 }

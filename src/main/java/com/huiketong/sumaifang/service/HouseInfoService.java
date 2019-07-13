@@ -1,11 +1,13 @@
 package com.huiketong.sumaifang.service;
 
+import com.huiketong.sumaifang.data.SameDealHouseData;
+import com.huiketong.sumaifang.data.SameSellHouseData;
 import com.huiketong.sumaifang.domain.HouseInfo;
 
 import java.util.List;
 
 public interface HouseInfoService {
-    boolean uploadHouseInfo(String little_district,Double house_area,Double expect_price,String telphone,String token);
+    boolean uploadHouseInfo(String little_district,String city_name,Double house_area,Double expect_price,String telphone,String token);
 
     List<HouseInfo> getHouseInfoList();
 
@@ -16,5 +18,9 @@ public interface HouseInfoService {
     HouseInfo findMyHouseById(Integer house_id);
 
     Double getAveragePrice();
+
+    List<SameSellHouseData> findSameSellHouse(Integer house_id);
+
+    List<SameDealHouseData> findSameDealHouse(Integer house_id);
 
 }

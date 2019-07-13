@@ -1,15 +1,22 @@
 package com.huiketong.sumaifang.service.impl;
 
+import com.huiketong.sumaifang.data.SameDealHouseData;
+import com.huiketong.sumaifang.data.SameSellHouseData;
+import com.huiketong.sumaifang.domain.Cities;
 import com.huiketong.sumaifang.domain.CommonUser;
+import com.huiketong.sumaifang.domain.HouseImg;
 import com.huiketong.sumaifang.domain.HouseInfo;
-import com.huiketong.sumaifang.repository.CommonUserDao;
-import com.huiketong.sumaifang.repository.HouseInfoDao;
+import com.huiketong.sumaifang.repository.*;
+import com.huiketong.sumaifang.service.BiotopeService;
 import com.huiketong.sumaifang.service.HouseInfoService;
 import com.huiketong.sumaifang.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,12 +27,24 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     HouseInfoDao houseInfoDao;
     @Autowired
     CommonUserDao commonUserDao;
+    @Autowired
+    HouseImgDao houseImgDao;
+    @Autowired
+    CitiesDao citiesDao;
+    @Autowired
+    BiotopeService biotopeService;
 
     @Override
-    public boolean uploadHouseInfo(String little_district, Double house_area, Double expect_price,String telphone,String token) {
+    public boolean uploadHouseInfo(String little_district,String city_name, Double house_area, Double expect_price,String telphone,String token) {
+
+        Cities cities = citiesDao.findCitiesByCity(city_name);
+        if(!ObjectUtils.isEmpty(cities)){
+            biotopeService.saveBiotopeInfo(cities.getCityid(),little_district);
+        }
         HouseInfo houseInfo = new HouseInfo();
-        houseInfo.setHouseAddress(little_district);
+        houseInfo.setDistrict(little_district);
         houseInfo.setHouseArea(house_area);
+        houseInfo.setHouseCity(city_name);
         houseInfo.setExpectPrice(expect_price);
         if(!ObjectUtils.isEmpty(token)) {
             houseInfo.setToken(token);
@@ -68,5 +87,64 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     @Override
     public Double getAveragePrice() {
         return houseInfoDao.getAveragePrice();
+    }
+
+    /**
+     * 查找同小区在售房源
+     * @param house_id
+     * @return
+     */
+    @Override
+    public List<SameSellHouseData> findSameSellHouse(Integer house_id) {
+        List<SameSellHouseData> sellHouseDataList = new ArrayList<>();
+        HouseInfo houseInfo =  houseInfoDao.findHouseInfoById(house_id);
+        if(!ObjectUtils.isEmpty(houseInfo)){
+            List<HouseInfo> houseInfoList = houseInfoDao.findSameSellHouse(houseInfo.getDistrict());
+            if(houseInfoList.size() > 0){
+                for(HouseInfo houseInfo1:houseInfoList){
+                    SameSellHouseData data = new SameSellHouseData();
+                    data.setHouse_area(houseInfo1.getHouseArea().toString());
+                    data.setHouse_id(houseInfo1.getId());
+                    List<HouseImg> houseImgList = houseImgDao.findHouseImgsByHouseId(house_id);
+                    if(houseImgList.size() > 0) {
+                        data.setHouse_img(houseImgList.get(0).getImgurl());
+                    }
+                    data.setHouse_layout(houseInfo1.getHouseLayout());
+                    data.setHouse_orientation(houseInfo1.getHouseOrientation());
+                    data.setHouse_total_price(houseInfo1.getHouseTotalPrice().toString());
+                    data.setHouse_unit_price(houseInfo1.getHouseUnitPrice().toString());
+                    sellHouseDataList.add(data);
+                }
+            }
+        }
+        return sellHouseDataList;
+    }
+
+    @Override
+    public List<SameDealHouseData> findSameDealHouse(Integer house_id) {
+        List<SameDealHouseData> sellHouseDataList = new ArrayList<>();
+        HouseInfo houseInfo =  houseInfoDao.findHouseInfoById(house_id);
+        if(!ObjectUtils.isEmpty(houseInfo)){
+            List<HouseInfo> houseInfoList = houseInfoDao.findSameDealHouse(houseInfo.getDistrict());
+            if(houseInfoList.size() > 0){
+                for(HouseInfo houseInfo1:houseInfoList){
+                    SameDealHouseData data = new SameDealHouseData();
+                    data.setHouse_area(houseInfo1.getHouseArea().toString());
+                    data.setHouse_id(houseInfo1.getId());
+                    List<HouseImg> houseImgList = houseImgDao.findHouseImgsByHouseId(house_id);
+                    if(houseImgList.size() > 0) {
+                        data.setHouse_img(houseImgList.get(0).getImgurl());
+                    }
+                    data.setHouse_layout(houseInfo1.getHouseLayout());
+                    data.setHouse_orientation(houseInfo1.getHouseOrientation());
+                    data.setHouse_total_price(houseInfo1.getHouseTotalPrice().toString());
+                    data.setHouse_unit_price(houseInfo1.getHouseUnitPrice().toString());
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+                    data.setWork_off_time(dateFormat.format(houseInfo1.getWorkOffTime()));
+                    sellHouseDataList.add(data);
+                }
+            }
+        }
+        return sellHouseDataList;
     }
 }

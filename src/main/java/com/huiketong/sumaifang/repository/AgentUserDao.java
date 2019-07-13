@@ -19,4 +19,6 @@ public interface AgentUserDao extends JpaRepository<AgentUser,Integer> {
 
     @Override
     long count();
+
+    AgentUser findAgentUserById(Integer id);
 }

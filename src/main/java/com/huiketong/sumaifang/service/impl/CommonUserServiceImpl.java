@@ -20,6 +20,7 @@ public class CommonUserServiceImpl implements CommonUserService {
         CommonUser commonUser = commonUserDao.findCommonUserByUserTelphone(userid);
         if(ObjectUtils.isEmpty(commonUser)){
             commonUserDao.updateTelphoneVerifyCode(userid,code,token);
+            commonUserDao.updateBindStatusByTelphoneAndToken(userid,token);
         }else{
 
         }
@@ -28,7 +29,7 @@ public class CommonUserServiceImpl implements CommonUserService {
 
     @Override
     public boolean saveUser(String telphone, String verifyCode, String token) {
-        CommonUser commonUser = commonUserDao.findCommonUserByToken(token);
+        CommonUser commonUser = commonUserDao.findCommonUserByTokenAndIsbind(token,false);
         if (commonUser == null) {
             commonUser = new CommonUser();
             commonUser.setUserTelphone(telphone);
@@ -92,7 +93,21 @@ public class CommonUserServiceImpl implements CommonUserService {
 
     @Override
     public CommonUser findMine(String token) {
-        return commonUserDao.findCommonUserByToken(token);
+        return commonUserDao.findCommonUserByTokenAndIsbind(token,true);
     }
 
+    @Override
+    public boolean unBind(String token) {
+        try {
+            commonUserDao.updateBindStatusByToken(token);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public CommonUser findMineById(Integer id) {
+        return commonUserDao.findCommonUserById(id);
+    }
 }

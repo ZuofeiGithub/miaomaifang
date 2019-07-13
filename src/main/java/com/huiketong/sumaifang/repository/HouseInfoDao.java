@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
@@ -27,4 +26,10 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
     Double getAveragePrice();
 
     HouseInfo findHouseInfoById(Integer id);
+
+    @Query(value = "select * from house_info where isdeal = 0 and assessor = 1 and district like concat('%',district,'%')",nativeQuery = true)
+    List<HouseInfo> findSameSellHouse(String district);
+
+    @Query(value = "select * from house_info where isdeal = 1 and district like concat('%',district,'%')",nativeQuery = true)
+    List<HouseInfo> findSameDealHouse(String district);
 }

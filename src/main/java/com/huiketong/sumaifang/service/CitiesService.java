@@ -1,5 +1,7 @@
 package com.huiketong.sumaifang.service;
 
+import com.huiketong.sumaifang.domain.Cities;
+
 import java.util.List;
 
 public interface CitiesService {
@@ -12,4 +14,7 @@ public interface CitiesService {
     boolean isOpen(String city);
 
     List<String> findOpenCities();
+
+    Cities findCityByName(String cityname);
+
 }

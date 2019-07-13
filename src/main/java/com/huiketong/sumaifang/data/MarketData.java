@@ -8,15 +8,15 @@ import lombok.Data;
 @Data
 public class MarketData {
     //平均售出天数
-    Integer averageWorkOffDays;
+    String averageWorkOffDays;
     //合作中介个数
-    Integer intermediaryNum;
+    String intermediaryNum;
     //储备买家
-    Integer clientNum;
+    String clientNum;
     //全城经纪人
-    long agentNum;
+    String agentNum;
     //全市均价
-    Double averagePrice;
+    String averagePrice;
     //环比上月增长
-    Double increase;
+    String increase;
 }

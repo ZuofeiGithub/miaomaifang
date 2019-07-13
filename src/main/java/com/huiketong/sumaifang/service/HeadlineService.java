@@ -1,5 +1,9 @@
 package com.huiketong.sumaifang.service;
 
-public interface HeadlineService {
+import com.huiketong.sumaifang.data.HeadlineNewsData;
 
+import java.util.List;
+
+public interface HeadlineService {
+    List<HeadlineNewsData> findHeadlineByCity(String city);
 }

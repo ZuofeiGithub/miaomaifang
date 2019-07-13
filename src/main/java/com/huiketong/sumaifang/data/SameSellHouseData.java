@@ -13,4 +13,5 @@ public class SameSellHouseData {
     String house_orientation;
     String house_total_price;
     String house_unit_price;
+    Integer house_id;
 }

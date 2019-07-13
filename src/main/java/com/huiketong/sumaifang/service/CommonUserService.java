@@ -17,4 +17,8 @@ public interface CommonUserService {
     String findVerifyCode(String telphone);
 
     CommonUser findMine(String token);
+
+    boolean unBind(String token);
+
+    CommonUser findMineById(Integer id);
 }
