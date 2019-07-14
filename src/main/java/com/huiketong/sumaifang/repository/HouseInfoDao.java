@@ -32,4 +32,6 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
 
     @Query(value = "select * from house_info where isdeal = 1 and district like concat('%',district,'%')",nativeQuery = true)
     List<HouseInfo> findSameDealHouse(String district);
+
+    HouseInfo findHouseInfoByDistrict(String district);
 }

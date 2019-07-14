@@ -18,13 +18,13 @@ public class CommonUserServiceImpl implements CommonUserService {
     @Override
     public boolean login(String userid, String code, String token) {
         CommonUser commonUser = commonUserDao.findCommonUserByUserTelphone(userid);
-        if(ObjectUtils.isEmpty(commonUser)){
+        if(!ObjectUtils.isEmpty(commonUser)){
             commonUserDao.updateTelphoneVerifyCode(userid,code,token);
             commonUserDao.updateBindStatusByTelphoneAndToken(userid,token);
+            return true;
         }else{
-
+            return false;
         }
-        return false;
     }
 
     @Override

@@ -66,7 +66,7 @@ public class SMFApiController {
     BiotopeService biotopeService;
 
     /**
-     * 首页信息(第一次测试完成)
+     * 首页信息(17)
      *
      * @param token
      * @param latitude
@@ -139,6 +139,11 @@ public class SMFApiController {
     }
 
 
+    /**
+     * 退出登录(8)
+     * @param token
+     * @return
+     */
     @PostMapping(value = "logout")
     public BaseResp logout(String token) {
         BaseResp resp = new BaseResp();
@@ -152,6 +157,8 @@ public class SMFApiController {
 
 
     /**
+     *
+     * 上传房源信息(18)
      * @param little_district
      * @param house_area
      * @param expect_price
@@ -186,6 +193,11 @@ public class SMFApiController {
         return resp;
     }
 
+    /**
+     * 消息列表(5)
+     * @param token
+     * @return
+     */
     @GetMapping(value = "/messagelist")
     public BaseResp messageList(String token) {
         BaseResp resp = new BaseResp();
@@ -243,7 +255,27 @@ public class SMFApiController {
     }
 
     /**
-     * 我的房源
+     * 城市列表(6)
+     * @return
+     */
+    @GetMapping(value = "/citylist")
+    public BaseResp cityList(){
+        BaseResp resp = new BaseResp();
+        return resp;
+    }
+
+    /**
+     * 区域列表(7)
+     * @return
+     */
+    @GetMapping(value = "/arealist")
+    public BaseResp areaList(){
+        BaseResp resp = new BaseResp();
+        return resp;
+    }
+
+    /**
+     * 我的房源(9)
      *
      * @param token
      * @param page
@@ -289,7 +321,7 @@ public class SMFApiController {
     }
 
     /**
-     * 我的
+     * 我的(12)
      *
      * @param token
      * @return
@@ -313,6 +345,23 @@ public class SMFApiController {
         return resp;
     }
 
+    /**
+     * 市场行情详情页(价格趋势)(13)
+     * @param city_name
+     * @return
+     */
+    @GetMapping(value = "market_detail")
+    public BaseResp marketDetail(String city_name){
+        BaseResp resp = new BaseResp();
+        return resp;
+    }
+
+    /**
+     * 卖房动态(14)
+     * @param token
+     * @param house_id
+     * @return
+     */
     @PostMapping(value = "/sellers")
     public BaseResp sellers(String token, Integer house_id) {
         BaseResp resp = new BaseResp();
@@ -384,11 +433,17 @@ public class SMFApiController {
     }
 
 
+    /**
+     * 获取小区列表(1)
+     * @param cityname
+     * @param districtname
+     * @return
+     */
     @GetMapping("/getdistrictlist")
     public BaseResp getDistrictList(String cityname, String districtname) {
         BaseResp resp = new BaseResp();
         Cities cities = citiesService.findCityByName(cityname);
-        if (ObjectUtils.isEmpty(cities)) {
+        if (!ObjectUtils.isEmpty(cities)) {
             List<Biotope> biotopeList = biotopeService.findBiotopList(cities.getCityid(), districtname);
             DistrictData data = new DistrictData();
             List<String> distri = new ArrayList<>();
@@ -400,7 +455,6 @@ public class SMFApiController {
                 data.setDistrict_name(distri);
             }
             resp.setCode("1").setMsg("获取区域列表成功").setData(data);
-
         } else {
             resp.setCode("0").setMsg("获取失败");
         }
@@ -408,7 +462,49 @@ public class SMFApiController {
     }
 
     /**
-     * 房屋详情
+     * 房屋估价(2)
+     * @return
+     */
+    @PostMapping(value = "housevaluation")
+    public BaseResp houseValuation(String community,String house_type,String toward,String floor,String area){
+        BaseResp resp = new BaseResp();
+        HouseInfo houseInfo = houseInfoService.findHouseByDistrict(community);
+        if(!ObjectUtils.isEmpty(houseInfo)){
+
+        }else{
+
+        }
+        return resp;
+    }
+
+    /**
+     * 发送消息(3)
+     * @return
+     */
+    @PostMapping(value = "sendmsg")
+    public BaseResp sendMsg(){
+        BaseResp resp = new BaseResp();
+        return resp;
+    }
+
+    /**
+     * 消息详情列表(4)
+     * @return
+     */
+    @GetMapping(value = "msg_detail")
+    public BaseResp msgDetail(){
+        BaseResp resp = new BaseResp();
+        return resp;
+    }
+
+
+
+    /**
+     *
+     */
+
+    /**
+     * 房屋详情(15)
      *
      * @param house_id
      * @return
@@ -444,7 +540,17 @@ public class SMFApiController {
     }
 
     /**
-     * 获取验证码
+     * 最近成交(16)
+     * @return
+     */
+    @PostMapping(value = "recently_deal_house")
+    public BaseResp recentlyDealHouse(){
+        BaseResp resp = new BaseResp();
+        return resp;
+    }
+
+    /**
+     * 获取验证码(10)
      *
      * @param telphone
      * @param token
@@ -466,7 +572,7 @@ public class SMFApiController {
     }
 
     /**
-     * 手机号登陆
+     * 手机绑定(11)
      *
      * @param telphone
      * @param verifyCode
@@ -476,19 +582,22 @@ public class SMFApiController {
     public BaseResp login(String telphone, String verifyCode, String token) {
         BaseResp resp = new BaseResp();
         try {
-            commonUserService.login(telphone, verifyCode, token);
-            TokenData data = new TokenData();
-            data.setToken(token);
-            resp.setCode("1").setMsg("登陆成功").setData(data);
+            if(commonUserService.login(telphone, verifyCode, token)) {
+                TokenData data = new TokenData();
+                data.setToken(token);
+                resp.setCode("1").setMsg("绑定成功").setData(data);
+            }else{
+                resp.setCode("0").setMsg("绑定失败");
+            }
         } catch (Exception e) {
-            resp.setMsg("登陆失败").setCode("2");
+            resp.setMsg("绑定失败").setCode("2");
         }
         return resp;
     }
 
 
     /**
-     * 微信登陆
+     * 微信登陆(19)
      *
      * @param code
      * @param nickName

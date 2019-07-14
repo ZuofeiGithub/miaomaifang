@@ -37,7 +37,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     @Override
     public boolean uploadHouseInfo(String little_district,String city_name, Double house_area, Double expect_price,String telphone,String token) {
 
-        Cities cities = citiesDao.findCitiesByCity(city_name);
+        Cities cities = citiesDao.findCitiesByCityName(city_name);
         if(!ObjectUtils.isEmpty(cities)){
             biotopeService.saveBiotopeInfo(cities.getCityid(),little_district);
         }
@@ -146,5 +146,10 @@ public class HouseInfoServiceImpl implements HouseInfoService {
             }
         }
         return sellHouseDataList;
+    }
+
+    @Override
+    public HouseInfo findHouseByDistrict(String district) {
+        return houseInfoDao.findHouseInfoByDistrict(district);
     }
 }

@@ -17,7 +17,7 @@ public class CitiesServiceImpl implements CitiesService {
 
     @Override
     public boolean isOpen(String city) {
-       Cities cities  = citiesDao.findCitiesByCity(city);
+       Cities cities  = citiesDao.findCitiesByCityName(city);
        if(!ObjectUtils.isEmpty(cities)){
            if(cities.isIsopen()){
                return true;
@@ -46,6 +46,6 @@ public class CitiesServiceImpl implements CitiesService {
 
     @Override
     public Cities findCityByName(String cityname) {
-        return citiesDao.findCitiesByCity(cityname);
+        return citiesDao.findCitiesByCityName(cityname);
     }
 }

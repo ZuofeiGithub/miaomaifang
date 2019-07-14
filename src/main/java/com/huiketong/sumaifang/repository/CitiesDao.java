@@ -2,6 +2,7 @@ package com.huiketong.sumaifang.repository;
 
 import com.huiketong.sumaifang.domain.Cities;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,7 +15,8 @@ public interface CitiesDao extends JpaRepository<Cities,Integer> {
      * @param city
      * @return
      */
-    Cities findCitiesByCity(String city);
+    @Query(value = "select * from cities where city like concat('%',?1,'%')",nativeQuery = true)
+    Cities findCitiesByCityName(String city);
 
     List<Cities> findAllByIsopen(boolean bopen);
 }

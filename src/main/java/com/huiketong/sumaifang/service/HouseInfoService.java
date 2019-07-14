@@ -23,4 +23,6 @@ public interface HouseInfoService {
 
     List<SameDealHouseData> findSameDealHouse(Integer house_id);
 
+    HouseInfo findHouseByDistrict(String district);
+
 }
