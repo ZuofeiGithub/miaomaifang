@@ -1,5 +1,6 @@
 package com.huiketong.sumaifang.service;
 
+import com.huiketong.sumaifang.data.EstimateData;
 import com.huiketong.sumaifang.data.SameDealHouseData;
 import com.huiketong.sumaifang.data.SameSellHouseData;
 import com.huiketong.sumaifang.domain.HouseInfo;
@@ -25,8 +26,13 @@ public interface HouseInfoService {
 
     HouseInfo findHouseByDistrict(String district);
 
-    boolean stopSale(Integer houseId);
+    boolean stopSale(Integer houseId,Integer salestop);
 
     boolean orderTable(Integer houseId,String seetime);
 
+    boolean adjustPrice(Integer house_id, Double price);
+
+   EstimateData estimateResult(Integer house_id);
+
+   Integer houseValuation(String community,String house_type, String toward, String floor, Double area);
 }

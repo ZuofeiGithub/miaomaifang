@@ -9,11 +9,13 @@ import com.huiketong.sumaifang.domain.*;
 import com.huiketong.sumaifang.repository.MessageDao;
 import com.huiketong.sumaifang.service.*;
 import com.huiketong.sumaifang.utils.AlicomDysmsUtil;
+import com.huiketong.sumaifang.utils.PinyinUtil;
 import com.huiketong.sumaifang.utils.TokenUtil;
 import com.huiketong.sumaifang.vo.BaseResp;
 import com.huiketong.sumaifang.vo.GeoCoderResp;
 import com.huiketong.sumaifang.vo.LocationResp;
 import com.huiketong.sumaifang.vo.WxErrorResp;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,6 +66,8 @@ public class SMFApiController {
     AreasService areasService;
     @Autowired
     BiotopeService biotopeService;
+    @Autowired
+    HouseAgentService houseAgentService;
 
     /**
      * 首页信息(17)
@@ -139,78 +143,133 @@ public class SMFApiController {
     }
 
 
+    /**
+     * 房屋估价结果(20)
+     *
+     * @param token
+     * @param house_id
+     * @return
+     */
     @GetMapping(value = "estimates_result")
-    public BaseResp estimatesResult(){
+    public BaseResp estimatesResult(String token, Integer house_id) {
         BaseResp resp = new BaseResp();
+        CommonUser user = commonUserService.findMine(token);
+        if (!ObjectUtils.isEmpty(user)) {
+            EstimateData data = new EstimateData();
+            HouseInfo houseInfo = houseInfoService.findMyHouseById(house_id);
+            if (!ObjectUtils.isEmpty(houseInfo)) {
+                data.setHouser_total_price(houseInfo.getHouseTotalPrice().toString());
+                data.setHouse_layout(houseInfo.getHouseLayout());
+                data.setHouse_layer(houseInfo.getHouseTier());
+                data.setHouse_area(houseInfo.getHouseArea().toString());
+                data.setDistrict(houseInfo.getDistrict());
+                resp.setMsg("获取评估结果成功").setCode("1").setData(data);
+
+            } else {
+                resp.setCode("0").setMsg("房屋信息不存在");
+            }
+//            resp.setCode("1").setMsg("房屋估价结果获取成功").setData();
+        } else {
+            resp.setCode("0").setMsg("用户未登陆");
+        }
         return resp;
     }
 
 
     /**
      * 带看经纪人列表
+     *
      * @return
      */
     @GetMapping(value = "take_look_at_agent_list")
-    public BaseResp takeLookAtAgentList(){
+    public BaseResp takeLookAtAgentList(String token, Integer house_id, Integer page, Integer limit) {
         BaseResp resp = new BaseResp();
+        CommonUser user = commonUserService.findMine(token);
+        if (!ObjectUtils.isEmpty(user)) {
+            List<TakeLookData> dataList = houseAgentService.findAgentsLook(house_id, page, limit);
+            resp.setCode("1").setMsg("获取带看经纪人列表成功").setData(dataList);
+        } else {
+            resp.setCode("0").setMsg("用户未登陆");
+        }
         return resp;
     }
 
     /**
      * 通话经纪人
+     *
      * @return
      */
     @GetMapping(value = "take_phone_agent_list")
-    public BaseResp takePhoneAgentList(){
+    public BaseResp takePhoneAgentList(String token, Integer house_id, Integer page, Integer limit) {
         BaseResp resp = new BaseResp();
+        CommonUser user = commonUserService.findMine(token);
+        if (!ObjectUtils.isEmpty(user)) {
+            List<CallerData> dataList = houseAgentService.findAgentsCaller(house_id, page, limit);
+            resp.setCode("1").setMsg("获取").setData(dataList);
+        } else {
+            resp.setMsg("用户未登陆").setCode("0");
+        }
         return resp;
     }
 
     /**
      * 调价
+     *
      * @return
      */
     @GetMapping(value = "adjust_price")
-    public BaseResp adjustPrice(){
+    public BaseResp adjustPrice(Integer house_id, String token, Double price) {
         BaseResp resp = new BaseResp();
+        CommonUser user = commonUserService.findMine(token);
+        if (!ObjectUtils.isEmpty(user)) {
+            if (houseInfoService.adjustPrice(house_id, price)) {
+                resp.setCode("1").setMsg("调价成功");
+            } else {
+                resp.setCode("0").setMsg("调价失败");
+            }
+        } else {
+            resp.setCode("0").setMsg("用户没有绑定.");
+        }
         return resp;
     }
 
     /**
      * 看房时间(4)
+     *
      * @return
      */
     @PostMapping(value = "open_home")
-    public BaseResp openHome(Integer houseid,String seetime,String token){
+    public BaseResp openHome(Integer houseid, String seetime, String token) {
         BaseResp resp = new BaseResp();
-       CommonUser user = commonUserService.findMine(token);
-       if(!ObjectUtils.isEmpty(user)){
-           if(houseInfoService.orderTable(houseid,seetime)){
-               resp.setCode("1").setMsg("预约成功");
-           }else{
-               resp.setCode("0").setMsg("预约失败");
-           }
+        CommonUser user = commonUserService.findMine(token);
+        if (!ObjectUtils.isEmpty(user)) {
+            if (houseInfoService.orderTable(houseid, seetime)) {
+                resp.setCode("1").setMsg("预约成功");
+            } else {
+                resp.setCode("0").setMsg("预约失败");
+            }
 
-       }else{
-           resp.setCode("0").setMsg("用户为登陆,请先登陆");
-       }
+        } else {
+            resp.setCode("0").setMsg("用户为登陆,请先登陆");
+        }
         return resp;
     }
 
     /**
-     * 停售(25)
+     * 停售或出售(25)
+     *
      * @return
      */
     @PostMapping(value = "halt_sales")
-    public BaseResp haltSales(Integer house_id,String token){
+    public BaseResp haltSales(Integer house_id, String token,Integer salestop) {
         BaseResp resp = new BaseResp();
         CommonUser user = commonUserService.findMine(token);
-        if(ObjectUtils.isEmpty(user)){
+        if (ObjectUtils.isEmpty(user)) {
             resp.setMsg("用户未登陆,请先登陆").setCode("0");
-        }else{
-            if( houseInfoService.stopSale(house_id)){
+        } else {
+            if (houseInfoService.stopSale(house_id,salestop)) {
                 resp.setMsg("下架成功").setCode("1");
-            }else{
+            } else {
                 resp.setMsg("下架失败").setCode("0");
             }
         }
@@ -343,20 +402,191 @@ public class SMFApiController {
     public BaseResp cityList() {
         BaseResp resp = new BaseResp();
         CityData data = new CityData();
-        CityData.DefaultCityBean defaultCityBean = new CityData.DefaultCityBean();
-        CityData.CityInitials cityInitials = new CityData.CityInitials();
         List<CityData.CityInitials> group = new ArrayList<>();
-        cityInitials.setCity_initials("N");
-        List<String> cityname = new ArrayList<>();
-        cityname.add("南京市");
-        cityname.add("南通市");
-        cityInitials.setCity_name(cityname);
+        CityData.DefaultCityBean defaultCityBean = new CityData.DefaultCityBean();
         defaultCityBean.setCity_name("南通市");
         defaultCityBean.setIs_open("1");
-        group.add(cityInitials);
-        data.setGroup(group);
         data.setDefault_city(defaultCityBean);
+        List<String> citiesList = citiesService.findOpenCities();
 
+        for (String city : citiesList) {
+            String letter = PinyinUtil.getPinYinHeadChar(city).substring(0, 1).toUpperCase();
+            CityData.CityInitials cityInitials = new CityData.CityInitials();
+            switch (letter) {
+                case "A":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname = new ArrayList<>();
+                    cityname.add(city);
+                    cityInitials.setCity_name(cityname);
+                    break;
+                case "B":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname1 = new ArrayList<>();
+                    cityname1.add(city);
+                    cityInitials.setCity_name(cityname1);
+                    break;
+                case "C":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname2 = new ArrayList<>();
+                    cityname2.add(city);
+                    cityInitials.setCity_name(cityname2);
+                    break;
+                case "D":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname3 = new ArrayList<>();
+                    cityname3.add(city);
+                    cityInitials.setCity_name(cityname3);
+                    break;
+                case "E":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname4 = new ArrayList<>();
+                    cityname4.add(city);
+                    cityInitials.setCity_name(cityname4);
+                    break;
+                case "F":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname5 = new ArrayList<>();
+                    cityname5.add(city);
+                    cityInitials.setCity_name(cityname5);
+                    break;
+                case "G":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname6 = new ArrayList<>();
+                    cityname6.add(city);
+                    cityInitials.setCity_name(cityname6);
+                    break;
+                case "H":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname7 = new ArrayList<>();
+                    cityname7.add(city);
+                    cityInitials.setCity_name(cityname7);
+                    break;
+                case "I":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname8 = new ArrayList<>();
+                    cityname8.add(city);
+                    cityInitials.setCity_name(cityname8);
+                    break;
+                case "J":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname9 = new ArrayList<>();
+                    cityname9.add(city);
+                    cityInitials.setCity_name(cityname9);
+                    break;
+                case "K":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname10 = new ArrayList<>();
+                    cityname10.add(city);
+                    cityInitials.setCity_name(cityname10);
+                    break;
+                case "L":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname11 = new ArrayList<>();
+                    cityname11.add(city);
+                    cityInitials.setCity_name(cityname11);
+                    break;
+                case "M":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname12 = new ArrayList<>();
+                    cityname12.add(city);
+                    cityInitials.setCity_name(cityname12);
+                    break;
+                case "N":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname13 = new ArrayList<>();
+                    cityname13.add(city);
+                    cityInitials.setCity_name(cityname13);
+                    break;
+                case "O":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname14 = new ArrayList<>();
+                    cityname14.add(city);
+                    cityInitials.setCity_name(cityname14);
+                    break;
+                case "P":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname15 = new ArrayList<>();
+                    cityname15.add(city);
+                    cityInitials.setCity_name(cityname15);
+                    break;
+                case "Q":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname16 = new ArrayList<>();
+                    cityname16.add(city);
+                    cityInitials.setCity_name(cityname16);
+                    break;
+
+                case "R":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname17 = new ArrayList<>();
+                    cityname17.add(city);
+                    cityInitials.setCity_name(cityname17);
+                    break;
+
+                case "S":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname18 = new ArrayList<>();
+                    cityname18.add(city);
+                    cityInitials.setCity_name(cityname18);
+                    break;
+
+                case "T":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname19 = new ArrayList<>();
+                    cityname19.add(city);
+                    cityInitials.setCity_name(cityname19);
+                    break;
+
+                case "U":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname20 = new ArrayList<>();
+                    cityname20.add(city);
+                    cityInitials.setCity_name(cityname20);
+                    break;
+
+                case "V":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname21 = new ArrayList<>();
+                    cityname21.add(city);
+                    cityInitials.setCity_name(cityname21);
+                    break;
+
+                case "W":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname22 = new ArrayList<>();
+                    cityname22.add(city);
+                    cityInitials.setCity_name(cityname22);
+                    break;
+
+                case "X":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname23 = new ArrayList<>();
+                    cityname23.add(city);
+                    cityInitials.setCity_name(cityname23);
+                    break;
+
+                case "Y":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname24 = new ArrayList<>();
+                    cityname24.add(city);
+                    cityInitials.setCity_name(cityname24);
+                    break;
+
+                case "Z":
+                    cityInitials.setCity_initials(letter);
+                    List<String> cityname25 = new ArrayList<>();
+                    cityname25.add(city);
+                    cityInitials.setCity_name(cityname25);
+                    break;
+
+            }
+            group.add(cityInitials);
+        }
+
+
+        data.setGroup(group);
+
+        resp.setData(data).setMsg("获取城市列表成功").setCode("1");
         return resp;
     }
 
@@ -482,6 +712,8 @@ public class SMFApiController {
                 data.setHouse_unit_price(houseInfoList.get(0).getHouseUnitPrice());
                 data.setProperty_rights_type(houseInfoList.get(0).getPropertyRightsType());
                 data.setHouse_use(houseInfoList.get(0).getHouseUse());
+                data.setSalestop(String.valueOf(houseInfoList.get(0).isSaleStop()));
+                data.setService_telphone("18051661999");
                 List<HouseImg> houseImgList = houseImgService.findHouseImg(houseInfoList.get(0).getId());
                 if (houseImgList.size() > 0) {
                     data.setHouseimgs(houseImgList.get(0).getImgurl());
@@ -553,6 +785,8 @@ public class SMFApiController {
                     distri.add(biotope.getName());
                 }
                 data.setDistrict_name(distri);
+            } else {
+                data.setDistrict_name(new ArrayList<>());
             }
             resp.setCode("1").setMsg("获取区域列表成功").setData(data);
         } else {
@@ -567,14 +801,22 @@ public class SMFApiController {
      * @return
      */
     @PostMapping(value = "housevaluation")
-    public BaseResp houseValuation(String community, String house_type, String toward, String floor, String area) {
+    public BaseResp houseValuation(String community, String house_type, String toward, String floor, Double area, String token) {
         BaseResp resp = new BaseResp();
-        HouseInfo houseInfo = houseInfoService.findHouseByDistrict(community);
-        if (!ObjectUtils.isEmpty(houseInfo)) {
-            //houseInfoService.up
+        CommonUser user = commonUserService.findMine(token);
+        if (!ObjectUtils.isEmpty(user)) {
+            Integer id = houseInfoService.houseValuation(community, house_type, toward, floor, area);
+            if (id != 0) {
+                HouseValuationData data = new HouseValuationData();
+                data.setHouse_id(String.valueOf(id));
+                resp.setMsg("房屋评价成功").setCode("1").setData(data);
+            } else {
+                resp.setMsg("房屋评价失败").setCode("0");
+            }
         } else {
-
+            resp.setCode("0").setMsg("用户未登陆");
         }
+
         return resp;
     }
 
@@ -698,6 +940,17 @@ public class SMFApiController {
         return resp;
     }
 
+    @PostMapping(value = "/modify_nickname")
+    public BaseResp modifyNickName(String token,String newname){
+        BaseResp resp = new BaseResp();
+        CommonUser user = commonUserService.findMine(token);
+        if(!ObjectUtils.isEmpty(user)){
+
+        }else{
+            resp.setCode("0").setMsg("用户未登陆");
+        }
+        return resp;
+    }
 
     /**
      * 微信登陆(19)

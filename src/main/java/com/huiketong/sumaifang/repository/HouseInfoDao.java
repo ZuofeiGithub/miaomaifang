@@ -40,13 +40,25 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
 
    // @Query(value = "update house_info set ",nativeQuery = true)
 
-    @Query(value = "update house_info set sale_stop = true where id = ?1 ",nativeQuery = true)
+    @Query(value = "update house_info set sale_stop = ?2 where id = ?1 ",nativeQuery = true)
     @Modifying
     @Transactional
-    void updateSaleStopById(Integer id);
+    void updateSaleStopById(Integer id,Integer salestop);
 
     @Query(value = "update house_info set see_time = ?1 where id = ?2",nativeQuery = true)
     @Modifying
     @Transactional
     void updateSeeTimeById(Date seeTime,Integer id);
+
+
+    @Query(value = "update house_info set house_total_price = ?1 where id=?2",nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updatePriceById(Double price,Integer houseId);
+
+    @Query(value = "update house_info set house_layout = ?1,house_orientation = ?2,house_tier = ?3,house_area = ?4 where district like concat('%',?5,'%')",nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateInfo(String community,String house_type, String toward, String floor, String area);
+
 }

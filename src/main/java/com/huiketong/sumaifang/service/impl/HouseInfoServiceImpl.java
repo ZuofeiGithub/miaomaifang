@@ -1,5 +1,6 @@
 package com.huiketong.sumaifang.service.impl;
 
+import com.huiketong.sumaifang.data.EstimateData;
 import com.huiketong.sumaifang.data.SameDealHouseData;
 import com.huiketong.sumaifang.data.SameSellHouseData;
 import com.huiketong.sumaifang.domain.Cities;
@@ -36,22 +37,22 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     BiotopeService biotopeService;
 
     @Override
-    public boolean uploadHouseInfo(String little_district,String city_name, Double house_area, Double expect_price,String telphone,String token) {
+    public boolean uploadHouseInfo(String little_district, String city_name, Double house_area, Double expect_price, String telphone, String token) {
 
         Cities cities = citiesDao.findCitiesByCityName(city_name);
-        if(!ObjectUtils.isEmpty(cities)){
-            biotopeService.saveBiotopeInfo(cities.getCityid(),little_district);
+        if (!ObjectUtils.isEmpty(cities)) {
+            biotopeService.saveBiotopeInfo(cities.getCityid(), little_district);
         }
         HouseInfo houseInfo = new HouseInfo();
         houseInfo.setDistrict(little_district);
         houseInfo.setHouseArea(house_area);
         houseInfo.setHouseCity(city_name);
         houseInfo.setExpectPrice(expect_price);
-        if(!ObjectUtils.isEmpty(token)) {
+        if (!ObjectUtils.isEmpty(token)) {
             houseInfo.setToken(token);
-        }else{
+        } else {
             CommonUser commonUser = commonUserDao.findCommonUserByUserTelphone(telphone);
-            if(!ObjectUtils.isEmpty(commonUser)) {
+            if (!ObjectUtils.isEmpty(commonUser)) {
                 houseInfo.setToken(TokenUtil.createJwtToken(commonUser.getOpenid()));
             }
         }
@@ -60,7 +61,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
         try {
             houseInfoDao.save(houseInfo);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -71,8 +72,8 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     }
 
     @Override
-    public List<HouseInfo> findMyHouseList(String token,Integer page,Integer limit) {
-        return houseInfoDao.findHouseInfosByTokenLimit(token,page,limit);
+    public List<HouseInfo> findMyHouseList(String token, Integer page, Integer limit) {
+        return houseInfoDao.findHouseInfosByTokenLimit(token, page, limit);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     }
 
     @Override
-    public List<HouseInfo> findLessThanForty(){
+    public List<HouseInfo> findLessThanForty() {
         return houseInfoDao.findHouseLessThanForty();
     }
 
@@ -92,22 +93,23 @@ public class HouseInfoServiceImpl implements HouseInfoService {
 
     /**
      * 查找同小区在售房源
+     *
      * @param house_id
      * @return
      */
     @Override
     public List<SameSellHouseData> findSameSellHouse(Integer house_id) {
         List<SameSellHouseData> sellHouseDataList = new ArrayList<>();
-        HouseInfo houseInfo =  houseInfoDao.findHouseInfoById(house_id);
-        if(!ObjectUtils.isEmpty(houseInfo)){
+        HouseInfo houseInfo = houseInfoDao.findHouseInfoById(house_id);
+        if (!ObjectUtils.isEmpty(houseInfo)) {
             List<HouseInfo> houseInfoList = houseInfoDao.findSameSellHouse(houseInfo.getDistrict());
-            if(houseInfoList.size() > 0){
-                for(HouseInfo houseInfo1:houseInfoList){
+            if (houseInfoList.size() > 0) {
+                for (HouseInfo houseInfo1 : houseInfoList) {
                     SameSellHouseData data = new SameSellHouseData();
                     data.setHouse_area(houseInfo1.getHouseArea().toString());
                     data.setHouse_id(houseInfo1.getId());
                     List<HouseImg> houseImgList = houseImgDao.findHouseImgsByHouseId(house_id);
-                    if(houseImgList.size() > 0) {
+                    if (houseImgList.size() > 0) {
                         data.setHouse_img(houseImgList.get(0).getImgurl());
                     }
                     data.setHouse_layout(houseInfo1.getHouseLayout());
@@ -124,16 +126,16 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     @Override
     public List<SameDealHouseData> findSameDealHouse(Integer house_id) {
         List<SameDealHouseData> sellHouseDataList = new ArrayList<>();
-        HouseInfo houseInfo =  houseInfoDao.findHouseInfoById(house_id);
-        if(!ObjectUtils.isEmpty(houseInfo)){
+        HouseInfo houseInfo = houseInfoDao.findHouseInfoById(house_id);
+        if (!ObjectUtils.isEmpty(houseInfo)) {
             List<HouseInfo> houseInfoList = houseInfoDao.findSameDealHouse(houseInfo.getDistrict());
-            if(houseInfoList.size() > 0){
-                for(HouseInfo houseInfo1:houseInfoList){
+            if (houseInfoList.size() > 0) {
+                for (HouseInfo houseInfo1 : houseInfoList) {
                     SameDealHouseData data = new SameDealHouseData();
                     data.setHouse_area(houseInfo1.getHouseArea().toString());
                     data.setHouse_id(houseInfo1.getId());
                     List<HouseImg> houseImgList = houseImgDao.findHouseImgsByHouseId(house_id);
-                    if(houseImgList.size() > 0) {
+                    if (houseImgList.size() > 0) {
                         data.setHouse_img(houseImgList.get(0).getImgurl());
                     }
                     data.setHouse_layout(houseInfo1.getHouseLayout());
@@ -155,17 +157,17 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     }
 
     @Override
-    public boolean stopSale(Integer houseId) {
+    public boolean stopSale(Integer houseId,Integer salestop) {
         try {
 
-           HouseInfo houseInfo = houseInfoDao.findHouseInfoById(houseId);
-           if(!ObjectUtils.isEmpty(houseInfo)) {
-               houseInfoDao.updateSaleStopById(houseId);
-               return true;
-           }else{
-               return false;
-           }
-        }catch (Exception e){
+            HouseInfo houseInfo = houseInfoDao.findHouseInfoById(houseId);
+            if (!ObjectUtils.isEmpty(houseInfo)) {
+                houseInfoDao.updateSaleStopById(houseId,salestop);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
             return false;
         }
     }
@@ -176,15 +178,67 @@ public class HouseInfoServiceImpl implements HouseInfoService {
         try {
             Date time = dateFormat.parse(seetime);
             HouseInfo houseInfo = houseInfoDao.findHouseInfoById(houseId);
-            if(!ObjectUtils.isEmpty(houseInfo)) {
+            if (!ObjectUtils.isEmpty(houseInfo)) {
                 houseInfoDao.updateSeeTimeById(time, houseId);
                 return true;
-            }else {
+            } else {
                 return false;
             }
         } catch (ParseException e) {
             return false;
         }
 
+    }
+
+    @Override
+    public boolean adjustPrice(Integer house_id, Double price) {
+        HouseInfo houseInfo = houseInfoDao.findHouseInfoById(house_id);
+        if (!ObjectUtils.isEmpty(houseInfo)) {
+            try {
+                houseInfoDao.updatePriceById(price, house_id);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public EstimateData estimateResult(Integer house_id) {
+        HouseInfo houseInfo = houseInfoDao.findHouseInfoById(house_id);
+        EstimateData data = new EstimateData();
+        if (!ObjectUtils.isEmpty(houseInfo)) {
+
+            data.setDistrict(houseInfo.getDistrict());
+            data.setHouse_area(houseInfo.getHouseArea().toString());
+            data.setHouse_layer(houseInfo.getHouseTier());
+            data.setHouse_layout(houseInfo.getHouseLayout());
+            data.setHouse_price_wave("房价可能在" + (houseInfo.getHouseTotalPrice() - 9.3) + "万-" + (houseInfo.getHouseTotalPrice() + 9.3) + "万之间波动");
+            data.setHouser_total_price(houseInfo.getHouseTotalPrice().toString());
+//            data.setArea_history_aver_price();
+//            data.setCity_history_aver_price();
+            return data;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Integer houseValuation(String community, String house_type, String toward, String floor, Double area) {
+        HouseInfo houseInfo = new HouseInfo();
+        houseInfo.setDistrict(community);
+        houseInfo.setHouseLayout(house_type);
+        houseInfo.setHouseOrientation(toward);
+        houseInfo.setHouseTier(floor);
+        houseInfo.setHouseArea(area);
+        try {
+            houseInfoDao.save(houseInfo);
+            return houseInfo.getId();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

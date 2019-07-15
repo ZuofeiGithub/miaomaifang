@@ -24,5 +24,7 @@ public class SellerData {
     String property_rights_type;
     String district;
     CountData count;
+    String salestop;
+    String service_telphone;
 
 }

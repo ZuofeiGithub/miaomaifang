@@ -27,8 +27,8 @@ public class AgentUser {
     Date loginTime;
     @Column(columnDefinition = "int(1) default 0 COMMENT '是否认证(0未认证,1已认证)'")
     Integer certification;
-    @Column(columnDefinition = "int(3) default 0 COMMENT '1中介 2经纪人'")
-    Integer userType;
+    @Column(columnDefinition = "int(11) default 0 comment '中介id'")
+    Integer intermediaryId;
     @Column(columnDefinition = "varchar(255) default '' comment '经纪人头像'")
     String avatarUrl;
 }
