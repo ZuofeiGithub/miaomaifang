@@ -83,6 +83,8 @@ public class HouseInfo {
     Integer visitNum;
     @Column(columnDefinition = "int(255) default 0 COMMENT '带看次数'")
     Integer seeNum;
+    @Column(columnDefinition = "datetime comment '带看时间'")
+    Date seeTime;
     @Column(columnDefinition = "int(11) default 0 COMMENT '房屋类型:1、房主售卖，2、官方直售'")
     Integer houseType;
     @Column(columnDefinition = "double(10,2) default 0.00 COMMENT '房屋期望价格'")
@@ -93,4 +95,6 @@ public class HouseInfo {
     Integer callNum;
     @Column(columnDefinition = "int(11) default 0 COMMENT '关注数'")
     Integer attentionNum;
+    @Column(columnDefinition = "boolean default 0 comment '是否停售'")
+    boolean SaleStop;
 }

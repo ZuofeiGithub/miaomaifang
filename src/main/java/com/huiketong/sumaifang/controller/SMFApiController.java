@@ -96,22 +96,22 @@ public class SMFApiController {
                 if (!ObjectUtils.isEmpty(city)) {
                     CityData cityData = new CityData();
                     if (citiesService.isOpen(city)) {
-                        cityData.setIsopen(true);
-                        cityData.setDefault_city(city);
+//                        cityData.setIsopen(true);
+//                        cityData.setDefault_city(city);
                     } else {
-                        cityData.setIsopen(false);
-                        cityData.setDefault_city("南通市");
+//                        cityData.setIsopen(false);
+//                        cityData.setDefault_city("南通市");
                     }
                     data.setCityinfo(cityData);
                 }
             } else {
                 CityData cityData = new CityData();
                 if (citiesService.isOpen(city_name)) {
-                    cityData.setIsopen(true);
-                    cityData.setDefault_city(city_name);
+//                    cityData.setIsopen(true);
+//                    cityData.setDefault_city(city_name);
                 } else {
-                    cityData.setIsopen(false);
-                    cityData.setDefault_city("南通市");
+//                    cityData.setIsopen(false);
+//                    cityData.setDefault_city("南通市");
                 }
                 data.setCityinfo(cityData);
             }
@@ -139,8 +139,87 @@ public class SMFApiController {
     }
 
 
+    @GetMapping(value = "estimates_result")
+    public BaseResp estimatesResult(){
+        BaseResp resp = new BaseResp();
+        return resp;
+    }
+
+
+    /**
+     * 带看经纪人列表
+     * @return
+     */
+    @GetMapping(value = "take_look_at_agent_list")
+    public BaseResp takeLookAtAgentList(){
+        BaseResp resp = new BaseResp();
+        return resp;
+    }
+
+    /**
+     * 通话经纪人
+     * @return
+     */
+    @GetMapping(value = "take_phone_agent_list")
+    public BaseResp takePhoneAgentList(){
+        BaseResp resp = new BaseResp();
+        return resp;
+    }
+
+    /**
+     * 调价
+     * @return
+     */
+    @GetMapping(value = "adjust_price")
+    public BaseResp adjustPrice(){
+        BaseResp resp = new BaseResp();
+        return resp;
+    }
+
+    /**
+     * 看房时间(4)
+     * @return
+     */
+    @PostMapping(value = "open_home")
+    public BaseResp openHome(Integer houseid,String seetime,String token){
+        BaseResp resp = new BaseResp();
+       CommonUser user = commonUserService.findMine(token);
+       if(!ObjectUtils.isEmpty(user)){
+           if(houseInfoService.orderTable(houseid,seetime)){
+               resp.setCode("1").setMsg("预约成功");
+           }else{
+               resp.setCode("0").setMsg("预约失败");
+           }
+
+       }else{
+           resp.setCode("0").setMsg("用户为登陆,请先登陆");
+       }
+        return resp;
+    }
+
+    /**
+     * 停售(25)
+     * @return
+     */
+    @PostMapping(value = "halt_sales")
+    public BaseResp haltSales(Integer house_id,String token){
+        BaseResp resp = new BaseResp();
+        CommonUser user = commonUserService.findMine(token);
+        if(ObjectUtils.isEmpty(user)){
+            resp.setMsg("用户未登陆,请先登陆").setCode("0");
+        }else{
+            if( houseInfoService.stopSale(house_id)){
+                resp.setMsg("下架成功").setCode("1");
+            }else{
+                resp.setMsg("下架失败").setCode("0");
+            }
+        }
+        return resp;
+    }
+
     /**
      * 退出登录(8)
+     *
      * @param token
      * @return
      */
@@ -157,8 +236,8 @@ public class SMFApiController {
 
 
     /**
-     *
      * 上传房源信息(18)
+     *
      * @param little_district
      * @param house_area
      * @param expect_price
@@ -195,6 +274,7 @@ public class SMFApiController {
 
     /**
      * 消息列表(5)
+     *
      * @param token
      * @return
      */
@@ -256,20 +336,37 @@ public class SMFApiController {
 
     /**
      * 城市列表(6)
+     *
      * @return
      */
     @GetMapping(value = "/citylist")
-    public BaseResp cityList(){
+    public BaseResp cityList() {
         BaseResp resp = new BaseResp();
+        CityData data = new CityData();
+        CityData.DefaultCityBean defaultCityBean = new CityData.DefaultCityBean();
+        CityData.CityInitials cityInitials = new CityData.CityInitials();
+        List<CityData.CityInitials> group = new ArrayList<>();
+        cityInitials.setCity_initials("N");
+        List<String> cityname = new ArrayList<>();
+        cityname.add("南京市");
+        cityname.add("南通市");
+        cityInitials.setCity_name(cityname);
+        defaultCityBean.setCity_name("南通市");
+        defaultCityBean.setIs_open("1");
+        group.add(cityInitials);
+        data.setGroup(group);
+        data.setDefault_city(defaultCityBean);
+
         return resp;
     }
 
     /**
      * 区域列表(7)
+     *
      * @return
      */
     @GetMapping(value = "/arealist")
-    public BaseResp areaList(){
+    public BaseResp areaList() {
         BaseResp resp = new BaseResp();
         return resp;
     }
@@ -347,17 +444,19 @@ public class SMFApiController {
 
     /**
      * 市场行情详情页(价格趋势)(13)
+     *
      * @param city_name
      * @return
      */
     @GetMapping(value = "market_detail")
-    public BaseResp marketDetail(String city_name){
+    public BaseResp marketDetail(String city_name) {
         BaseResp resp = new BaseResp();
         return resp;
     }
 
     /**
      * 卖房动态(14)
+     *
      * @param token
      * @param house_id
      * @return
@@ -435,6 +534,7 @@ public class SMFApiController {
 
     /**
      * 获取小区列表(1)
+     *
      * @param cityname
      * @param districtname
      * @return
@@ -463,15 +563,16 @@ public class SMFApiController {
 
     /**
      * 房屋估价(2)
+     *
      * @return
      */
     @PostMapping(value = "housevaluation")
-    public BaseResp houseValuation(String community,String house_type,String toward,String floor,String area){
+    public BaseResp houseValuation(String community, String house_type, String toward, String floor, String area) {
         BaseResp resp = new BaseResp();
         HouseInfo houseInfo = houseInfoService.findHouseByDistrict(community);
-        if(!ObjectUtils.isEmpty(houseInfo)){
-
-        }else{
+        if (!ObjectUtils.isEmpty(houseInfo)) {
+            //houseInfoService.up
+        } else {
 
         }
         return resp;
@@ -479,24 +580,25 @@ public class SMFApiController {
 
     /**
      * 发送消息(3)
+     *
      * @return
      */
     @PostMapping(value = "sendmsg")
-    public BaseResp sendMsg(){
+    public BaseResp sendMsg() {
         BaseResp resp = new BaseResp();
         return resp;
     }
 
     /**
      * 消息详情列表(4)
+     *
      * @return
      */
     @GetMapping(value = "msg_detail")
-    public BaseResp msgDetail(){
+    public BaseResp msgDetail() {
         BaseResp resp = new BaseResp();
         return resp;
     }
-
 
 
     /**
@@ -541,10 +643,11 @@ public class SMFApiController {
 
     /**
      * 最近成交(16)
+     *
      * @return
      */
     @PostMapping(value = "recently_deal_house")
-    public BaseResp recentlyDealHouse(){
+    public BaseResp recentlyDealHouse() {
         BaseResp resp = new BaseResp();
         return resp;
     }
@@ -582,11 +685,11 @@ public class SMFApiController {
     public BaseResp login(String telphone, String verifyCode, String token) {
         BaseResp resp = new BaseResp();
         try {
-            if(commonUserService.login(telphone, verifyCode, token)) {
+            if (commonUserService.login(telphone, verifyCode, token)) {
                 TokenData data = new TokenData();
                 data.setToken(token);
                 resp.setCode("1").setMsg("绑定成功").setData(data);
-            }else{
+            } else {
                 resp.setCode("0").setMsg("绑定失败");
             }
         } catch (Exception e) {

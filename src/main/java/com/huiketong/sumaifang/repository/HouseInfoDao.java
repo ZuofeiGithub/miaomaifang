@@ -2,9 +2,12 @@ package com.huiketong.sumaifang.repository;
 
 import com.huiketong.sumaifang.domain.HouseInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -34,4 +37,16 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
     List<HouseInfo> findSameDealHouse(String district);
 
     HouseInfo findHouseInfoByDistrict(String district);
+
+   // @Query(value = "update house_info set ",nativeQuery = true)
+
+    @Query(value = "update house_info set sale_stop = true where id = ?1 ",nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateSaleStopById(Integer id);
+
+    @Query(value = "update house_info set see_time = ?1 where id = ?2",nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateSeeTimeById(Date seeTime,Integer id);
 }

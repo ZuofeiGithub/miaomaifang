@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -151,5 +152,39 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     @Override
     public HouseInfo findHouseByDistrict(String district) {
         return houseInfoDao.findHouseInfoByDistrict(district);
+    }
+
+    @Override
+    public boolean stopSale(Integer houseId) {
+        try {
+
+           HouseInfo houseInfo = houseInfoDao.findHouseInfoById(houseId);
+           if(!ObjectUtils.isEmpty(houseInfo)) {
+               houseInfoDao.updateSaleStopById(houseId);
+               return true;
+           }else{
+               return false;
+           }
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean orderTable(Integer houseId, String seetime) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date time = dateFormat.parse(seetime);
+            HouseInfo houseInfo = houseInfoDao.findHouseInfoById(houseId);
+            if(!ObjectUtils.isEmpty(houseInfo)) {
+                houseInfoDao.updateSeeTimeById(time, houseId);
+                return true;
+            }else {
+                return false;
+            }
+        } catch (ParseException e) {
+            return false;
+        }
+
     }
 }

@@ -25,4 +25,8 @@ public interface HouseInfoService {
 
     HouseInfo findHouseByDistrict(String district);
 
+    boolean stopSale(Integer houseId);
+
+    boolean orderTable(Integer houseId,String seetime);
+
 }
