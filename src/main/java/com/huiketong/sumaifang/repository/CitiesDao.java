@@ -11,7 +11,7 @@ import java.util.List;
 public interface CitiesDao extends JpaRepository<Cities,Integer> {
 
     /**
-     * 更加城市名找到字段
+     * 根据城市名找到字段
      * @param city
      * @return
      */

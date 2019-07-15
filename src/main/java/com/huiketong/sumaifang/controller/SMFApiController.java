@@ -408,179 +408,11 @@ public class SMFApiController {
         defaultCityBean.setIs_open("1");
         data.setDefault_city(defaultCityBean);
         List<String> citiesList = citiesService.findOpenCities();
-
-        for (String city : citiesList) {
-            String letter = PinyinUtil.getPinYinHeadChar(city).substring(0, 1).toUpperCase();
-            CityData.CityInitials cityInitials = new CityData.CityInitials();
-            switch (letter) {
-                case "A":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname = new ArrayList<>();
-                    cityname.add(city);
-                    cityInitials.setCity_name(cityname);
-                    break;
-                case "B":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname1 = new ArrayList<>();
-                    cityname1.add(city);
-                    cityInitials.setCity_name(cityname1);
-                    break;
-                case "C":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname2 = new ArrayList<>();
-                    cityname2.add(city);
-                    cityInitials.setCity_name(cityname2);
-                    break;
-                case "D":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname3 = new ArrayList<>();
-                    cityname3.add(city);
-                    cityInitials.setCity_name(cityname3);
-                    break;
-                case "E":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname4 = new ArrayList<>();
-                    cityname4.add(city);
-                    cityInitials.setCity_name(cityname4);
-                    break;
-                case "F":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname5 = new ArrayList<>();
-                    cityname5.add(city);
-                    cityInitials.setCity_name(cityname5);
-                    break;
-                case "G":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname6 = new ArrayList<>();
-                    cityname6.add(city);
-                    cityInitials.setCity_name(cityname6);
-                    break;
-                case "H":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname7 = new ArrayList<>();
-                    cityname7.add(city);
-                    cityInitials.setCity_name(cityname7);
-                    break;
-                case "I":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname8 = new ArrayList<>();
-                    cityname8.add(city);
-                    cityInitials.setCity_name(cityname8);
-                    break;
-                case "J":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname9 = new ArrayList<>();
-                    cityname9.add(city);
-                    cityInitials.setCity_name(cityname9);
-                    break;
-                case "K":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname10 = new ArrayList<>();
-                    cityname10.add(city);
-                    cityInitials.setCity_name(cityname10);
-                    break;
-                case "L":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname11 = new ArrayList<>();
-                    cityname11.add(city);
-                    cityInitials.setCity_name(cityname11);
-                    break;
-                case "M":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname12 = new ArrayList<>();
-                    cityname12.add(city);
-                    cityInitials.setCity_name(cityname12);
-                    break;
-                case "N":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname13 = new ArrayList<>();
-                    cityname13.add(city);
-                    cityInitials.setCity_name(cityname13);
-                    break;
-                case "O":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname14 = new ArrayList<>();
-                    cityname14.add(city);
-                    cityInitials.setCity_name(cityname14);
-                    break;
-                case "P":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname15 = new ArrayList<>();
-                    cityname15.add(city);
-                    cityInitials.setCity_name(cityname15);
-                    break;
-                case "Q":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname16 = new ArrayList<>();
-                    cityname16.add(city);
-                    cityInitials.setCity_name(cityname16);
-                    break;
-
-                case "R":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname17 = new ArrayList<>();
-                    cityname17.add(city);
-                    cityInitials.setCity_name(cityname17);
-                    break;
-
-                case "S":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname18 = new ArrayList<>();
-                    cityname18.add(city);
-                    cityInitials.setCity_name(cityname18);
-                    break;
-
-                case "T":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname19 = new ArrayList<>();
-                    cityname19.add(city);
-                    cityInitials.setCity_name(cityname19);
-                    break;
-
-                case "U":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname20 = new ArrayList<>();
-                    cityname20.add(city);
-                    cityInitials.setCity_name(cityname20);
-                    break;
-
-                case "V":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname21 = new ArrayList<>();
-                    cityname21.add(city);
-                    cityInitials.setCity_name(cityname21);
-                    break;
-
-                case "W":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname22 = new ArrayList<>();
-                    cityname22.add(city);
-                    cityInitials.setCity_name(cityname22);
-                    break;
-
-                case "X":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname23 = new ArrayList<>();
-                    cityname23.add(city);
-                    cityInitials.setCity_name(cityname23);
-                    break;
-
-                case "Y":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname24 = new ArrayList<>();
-                    cityname24.add(city);
-                    cityInitials.setCity_name(cityname24);
-                    break;
-
-                case "Z":
-                    cityInitials.setCity_initials(letter);
-                    List<String> cityname25 = new ArrayList<>();
-                    cityname25.add(city);
-                    cityInitials.setCity_name(cityname25);
-                    break;
-
+        for(int i = 'A';i <= 'Z';i++) {
+            CityData.CityInitials cityInitials = getCityInitials(citiesList, (char)i+"");
+            if(cityInitials != null) {
+                group.add(cityInitials);
             }
-            group.add(cityInitials);
         }
 
 
@@ -590,14 +422,38 @@ public class SMFApiController {
         return resp;
     }
 
+    private CityData.CityInitials getCityInitials(List<String> citiesList,String litte_letter) {
+        List<String> cityname = new ArrayList<>();
+        CityData.CityInitials cityInitials = new CityData.CityInitials();
+        for (String city : citiesList) {
+            String letter = PinyinUtil.getPinYinHeadChar(city).substring(0, 1).toUpperCase();
+            if(letter.equals(litte_letter)&&!ObjectUtils.isEmpty(city)){
+                cityInitials.setCity_initials(letter);
+                cityname.add(city);
+                cityInitials.setCity_name(cityname);
+            }
+        }
+        if(cityInitials.getCity_name() != null) {
+            return cityInitials;
+        }else{
+            return null;
+        }
+    }
+
     /**
      * 区域列表(7)
      *
      * @return
      */
     @GetMapping(value = "/arealist")
-    public BaseResp areaList() {
+    public BaseResp areaList(String city_name) {
         BaseResp resp = new BaseResp();
+        Cities cities = citiesService.findCityByName(city_name);
+        if(!ObjectUtils.isEmpty(cities)){
+
+        }else{
+
+        }
         return resp;
     }
 
@@ -764,6 +620,7 @@ public class SMFApiController {
     }
 
 
+
     /**
      * 获取小区列表(1)
      *
@@ -889,7 +746,7 @@ public class SMFApiController {
      * @return
      */
     @PostMapping(value = "recently_deal_house")
-    public BaseResp recentlyDealHouse() {
+    public BaseResp recentlyDealHouse(String city_name,String street_name,Double minprice,Double maxprice,Integer choose_price,Integer choose_house_style,Integer choose_house_area,String district_name) {
         BaseResp resp = new BaseResp();
         return resp;
     }
