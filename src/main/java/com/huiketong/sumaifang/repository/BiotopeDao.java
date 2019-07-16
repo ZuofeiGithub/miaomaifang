@@ -15,4 +15,6 @@ public interface BiotopeDao extends JpaRepository<Biotope,Integer> {
     Biotope findBiotopeByName(String name);
 
     List<Biotope> findBiotopesByCityidAndNameLike(String cityId,String name);
+
+    List<Biotope> findBiotopesByAreaid(String areaid);
 }

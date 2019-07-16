@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class HomeData {
 
-    CityData cityinfo ;
+    HomeCityData cityinfo ;
     List<BannerData> bannerlist;
 
 

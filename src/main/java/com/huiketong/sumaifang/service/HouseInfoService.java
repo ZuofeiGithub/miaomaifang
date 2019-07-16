@@ -35,4 +35,10 @@ public interface HouseInfoService {
    EstimateData estimateResult(Integer house_id);
 
    Integer houseValuation(String community,String house_type, String toward, String floor, Double area);
+
+   Double countAvgCityHousePrice(String cityname);
+
+   Double countAvgAreaHousePrice(String areaId);
+
+   List<HouseInfo> findHouseInfoOnCity(String cityname);
 }

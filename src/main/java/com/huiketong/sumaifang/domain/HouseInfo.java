@@ -97,4 +97,6 @@ public class HouseInfo {
     Integer attentionNum;
     @Column(columnDefinition = "boolean default 0 comment '是否停售'")
     boolean SaleStop;
+    @Column(columnDefinition = "varchar(11) default '' comment '区域id'")
+    String areaId;
 }

@@ -19,4 +19,5 @@ public class MarketData {
     String averagePrice;
     //环比上月增长
     String increase;
+    //当前月份
 }

@@ -68,8 +68,8 @@ public interface CommonUserDao extends JpaRepository<CommonUser,Integer> {
      */
     @Transactional
     @Modifying
-    @Query(value = "update common_user set isbind = 1 where user_telphone = ?1 and token = ?2",nativeQuery = true)
-    void updateBindStatusByTelphoneAndToken(String telphone,String token);
+    @Query(value = "update common_user set isbind = 1,nick_name = ?3 where user_telphone = ?1 and token = ?2",nativeQuery = true)
+    void updateBindStatusByTelphoneAndToken(String telphone,String token,String nickname);
 
 
     /**
@@ -82,4 +82,10 @@ public interface CommonUserDao extends JpaRepository<CommonUser,Integer> {
     CommonUser  findUserByOpenId(String openid);
 
     CommonUser findCommonUserById(Integer id);
+
+
+    @Query(value = "update common_user set nick_name = ?1 where id = ?2",nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateNickName(String nickname,Integer id);
 }

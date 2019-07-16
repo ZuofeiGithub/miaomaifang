@@ -16,11 +16,11 @@ public class CommonUserServiceImpl implements CommonUserService {
     CommonUserDao commonUserDao;
 
     @Override
-    public boolean login(String userid, String code, String token) {
+    public boolean login(String userid, String code, String token,String nickname) {
         CommonUser commonUser = commonUserDao.findCommonUserByUserTelphone(userid);
         if(!ObjectUtils.isEmpty(commonUser)){
             commonUserDao.updateTelphoneVerifyCode(userid,code,token);
-            commonUserDao.updateBindStatusByTelphoneAndToken(userid,token);
+            commonUserDao.updateBindStatusByTelphoneAndToken(userid,token,nickname);
             return true;
         }else{
             return false;
@@ -73,13 +73,22 @@ public class CommonUserServiceImpl implements CommonUserService {
     /**
      * 是否已经绑定手机
      *
-     * @param telphone
+     * @param openid
      * @return
      */
     @Override
-    public boolean isBind(String telphone) {
-        CommonUser auth = commonUserDao.findCommonUserByUserTelphone(telphone);
-        return auth.isIsbind();
+    public boolean isBind(String openid) {
+        CommonUser commonUser = commonUserDao.findUserByOpenId(openid);
+        if(!ObjectUtils.isEmpty(commonUser)) {
+            CommonUser auth = commonUserDao.findCommonUserByUserTelphone(commonUser.getUserTelphone());
+            if (ObjectUtils.isEmpty(auth)) {
+                return false;
+            } else {
+                return auth.isIsbind();
+            }
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -109,5 +118,15 @@ public class CommonUserServiceImpl implements CommonUserService {
     @Override
     public CommonUser findMineById(Integer id) {
         return commonUserDao.findCommonUserById(id);
+    }
+
+    @Override
+    public boolean modifyNickName(String name,Integer id) {
+        try {
+            commonUserDao.updateNickName(name,id);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 }

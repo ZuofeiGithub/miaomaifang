@@ -241,4 +241,19 @@ public class HouseInfoServiceImpl implements HouseInfoService {
             return 0;
         }
     }
+
+    @Override
+    public Double countAvgCityHousePrice(String cityname) {
+        return houseInfoDao.countHouseAvgPriceByHouseCity(cityname);
+    }
+
+    @Override
+    public Double countAvgAreaHousePrice(String areaId) {
+        return houseInfoDao.countHouseAvgPriceByAreaId(areaId);
+    }
+
+    @Override
+    public List<HouseInfo> findHouseInfoOnCity(String cityname) {
+        return houseInfoDao.findHouseInfosByHouseCity(cityname);
+    }
 }

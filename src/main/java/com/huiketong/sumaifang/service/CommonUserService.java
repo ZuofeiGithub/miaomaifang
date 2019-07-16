@@ -4,7 +4,7 @@ package com.huiketong.sumaifang.service;
 import com.huiketong.sumaifang.domain.CommonUser;
 
 public interface CommonUserService {
-    boolean login(String userid,String code,String token);
+    boolean login(String userid,String code,String token,String nickname);
 
     boolean saveUser(String telphone,String verifyCode,String token);
 
@@ -21,4 +21,6 @@ public interface CommonUserService {
     boolean unBind(String token);
 
     CommonUser findMineById(Integer id);
+
+    boolean modifyNickName(String name,Integer id);
 }
