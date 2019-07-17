@@ -37,7 +37,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     BiotopeService biotopeService;
 
     @Override
-    public boolean uploadHouseInfo(String little_district, String city_name, Double house_area, Double expect_price, String telphone, String token) {
+    public Integer uploadHouseInfo(String little_district, String city_name, Double house_area, Double expect_price, String telphone, String token) {
 
         Cities cities = citiesDao.findCitiesByCityName(city_name);
         if (!ObjectUtils.isEmpty(cities)) {
@@ -45,6 +45,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
         }
         HouseInfo houseInfo = new HouseInfo();
         houseInfo.setDistrict(little_district);
+        houseInfo.setHouseTitle(little_district);
         houseInfo.setHouseArea(house_area);
         houseInfo.setHouseCity(city_name);
         houseInfo.setExpectPrice(expect_price);
@@ -60,9 +61,9 @@ public class HouseInfoServiceImpl implements HouseInfoService {
         houseInfo.setAssessor(2);
         try {
             houseInfoDao.save(houseInfo);
-            return true;
+            return houseInfo.getId();
         } catch (Exception e) {
-            return false;
+            return 0;
         }
     }
 

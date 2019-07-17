@@ -67,6 +67,8 @@ public class SMFApiController {
     HouseAgentService houseAgentService;
     @Autowired
     AreaStreetService areaStreetService;
+    @Autowired
+    TerraceRecordService terraceRecordService;
 
     /**
      * 首页信息(17)
@@ -325,15 +327,19 @@ public class SMFApiController {
      * @param token
      * @return
      */
-    @PostMapping(value = "/upload_house_info")
+    @PostMapping(value = "/upload_house")
     public BaseResp uploadHouseInfo(String little_district, String city_name, double house_area, Double expect_price, String token, String telphone, String verify_code) {
         BaseResp resp = new BaseResp();
         if (!ObjectUtils.isEmpty(telphone) && !ObjectUtils.isEmpty(verify_code) && ObjectUtils.isEmpty(token)) {
             String verifyCode = commonUserService.findVerifyCode(telphone);
             if (!ObjectUtils.isEmpty(verifyCode)) {
                 if (verifyCode.equals(verify_code)) {
-                    if (houseInfoService.uploadHouseInfo(little_district, city_name, house_area, expect_price, telphone, token)) {
-                        resp.setCode("1").setMsg("发布成功");
+                    int houseId = houseInfoService.uploadHouseInfo(little_district, city_name, house_area, expect_price, telphone, token);
+                    if ( houseId != 0) {
+                        UploadHouseData data = new UploadHouseData();
+                        data.setHouse_id(String.valueOf(houseId));
+                        data.setToken(token);
+                        resp.setCode("1").setMsg("发布成功").setData(data);
                     } else {
                         resp.setCode("0").setMsg("发布失败");
                     }
@@ -344,8 +350,12 @@ public class SMFApiController {
         } else if ((ObjectUtils.isEmpty(telphone) || ObjectUtils.isEmpty(verify_code)) && ObjectUtils.isEmpty(token)) {
             resp.setCode("200").setMsg("请先获取验证码");
         } else {
-            if (houseInfoService.uploadHouseInfo(little_district, city_name, house_area, expect_price, telphone, token)) {
-                resp.setCode("1").setMsg("发布成功");
+            int houseId = houseInfoService.uploadHouseInfo(little_district, city_name, house_area, expect_price, telphone, token);
+            if ( houseId != 0) {
+                UploadHouseData data = new UploadHouseData();
+                data.setToken(token);
+                data.setHouse_id(String.valueOf(houseId));
+                resp.setCode("1").setMsg("发布成功").setData(data);
             } else {
                 resp.setCode("0").setMsg("发布失败");
             }
@@ -486,17 +496,17 @@ public class SMFApiController {
             List<Areas> areasList = areasService.findAreasByCityId(cities.getCityid());
             if (areasList.size() > 0) {
                 for (Areas areas : areasList) {
-                    getAreaList(data, dataBeanList, areas);
+                    getAreaList(dataBeanList, areas);
                 }
             }
         } else {
             resp.setMsg("该城市不存在").setData("0");
         }
-        resp.setMsg("dasd").setCode("1").setData(data);
+        resp.setMsg("dasd").setCode("1").setData(dataBeanList);
         return resp;
     }
 
-    private void getAreaList(AreaListData data, List<AreaListData.DataBean> dataBeanList, Areas area) {
+    private void getAreaList(List<AreaListData.DataBean> dataBeanList, Areas area) {
         AreaListData.DataBean dataBean = new AreaListData.DataBean();
         dataBean.setArea_name(area.getArea());
         List<String> street = new ArrayList<>();
@@ -508,7 +518,7 @@ public class SMFApiController {
             }
         }
         dataBean.setChild(street);
-        data.setData(dataBeanList);
+        dataBeanList.add(dataBean);
     }
 
     /**
@@ -522,7 +532,6 @@ public class SMFApiController {
     @GetMapping(value = "/myhouses")
     public BaseResp myHouse(String token, Integer page, Integer limit) {
         BaseResp resp = new BaseResp();
-
         List<HouseInfo> houseInfoList = houseInfoService.findMyHouseList(token, page, limit);
         List<MyHouseData> houseDataList = new ArrayList<>();
         if (houseInfoList.size() > 0) {
@@ -569,7 +578,7 @@ public class SMFApiController {
      * @param token
      * @return
      */
-    @PostMapping(value = "/mine")
+    @GetMapping(value = "/mine")
     public BaseResp mine(String token) {
         BaseResp resp = new BaseResp();
         CommonUser user = commonUserService.findMine(token);
@@ -624,84 +633,75 @@ public class SMFApiController {
     @PostMapping(value = "/sellers")
     public BaseResp sellers(String token, Integer house_id) {
         BaseResp resp = new BaseResp();
-        DateFormat df = new SimpleDateFormat("yyyy");
-        SellerData data = new SellerData();
-        if (ObjectUtils.isEmpty(house_id)) {
-            List<HouseInfo> houseInfoList = houseInfoService.findMyHouseList(token, 1, 100);
-            if (houseInfoList.size() > 0) {
-                SellerData dataBeanX = new SellerData();
-                dataBeanX.setBuilding_ageX(houseInfoList.get(0).getBuildingAge().toString());
-                dataBeanX.setDistrictX(houseInfoList.get(0).getDistrict());
-//                data.setBuilding_age(df.format(houseInfoList.get(0).getBuildingAge()));
-//                data.setDistrict(houseInfoList.get(0).getDistrict());
-//                data.setHouse_area(houseInfoList.get(0).getHouseArea());
-//                data.setHouse_layer(houseInfoList.get(0).getHouseTier());
-//                data.setHouse_layout(houseInfoList.get(0).getHouseLayout());
-//                data.setHouse_orientation(houseInfoList.get(0).getHouseOrientation());
-//                data.setHouse_id(houseInfoList.get(0).getId());
-//                data.setHouse_price(houseInfoList.get(0).getHouseTotalPrice());
-//                data.setHouse_style(houseInfoList.get(0).getDecorateCondition());
-//                data.setHouse_title(houseInfoList.get(0).getHouseTitle());
-//                data.setHouse_unit_price(houseInfoList.get(0).getHouseUnitPrice());
-//                data.setProperty_rights_type(houseInfoList.get(0).getPropertyRightsType());
-//                data.setHouse_use(houseInfoList.get(0).getHouseUse());
-//                data.setSalestop(String.valueOf(houseInfoList.get(0).isSaleStop()));
-//                data.setService_telphone("18051661999");
-                List<HouseImg> houseImgList = houseImgService.findHouseImg(houseInfoList.get(0).getId());
-                if (houseImgList.size() > 0) {
-//                    data.setHouseimgs(houseImgList.get(0).getImgurl());
-                }
-                IsPassData isPassData = new IsPassData();
-                isPassData.setValue(houseInfoList.get(0).getAssessor());
-                switch (houseInfoList.get(0).getAssessor()) {
-                    case 1:
-                        isPassData.setText("通过审核");
-                        break;
-                    case 2:
-                        isPassData.setText("待审核");
-                        break;
-                    case 3:
-                        isPassData.setText("审核未通过");
-                        break;
-                    default:
-                        break;
-                }
-//                data.setIspass(isPassData);
-
-                DateFormat df1 = new SimpleDateFormat("MM/dd");
-                List<Notification> notifications = notificationService.findMyNotic(token);
-                List<NewsData> newsDataList = new ArrayList<>();
-                if (notifications.size() > 0) {
-                    for (int i = 0; i < notifications.size(); i++) {
-                        NewsData newsData = new NewsData();
-                        newsData.setTime(df1.format(notifications.get(i).getNotifyTime()));
-                        newsData.setContent(notifications.get(i).getSummarizeMsg());
-                    }
-                }
-//                data.setNews(newsDataList);
-
-//                CountData countData = new CountData();
-//                countData.setBrowse_num(houseInfoList.get(0).getVisitNum());
-//                countData.setCall_num(houseInfoList.get(0).getCallNum());
-//                countData.setFollow_num(houseInfoList.get(0).getAttentionNum());
-//                countData.setSee_num(houseInfoList.get(0).getSeeNum());
-
-//                data.setCount(countData);
-                resp.setCode("1").setData(data).setMsg("大大撒");
-            }
-        } else {
+        CommonUser commonUser = commonUserService.findMine(token);
+        if (!ObjectUtils.isEmpty(commonUser)) {
             HouseInfo houseInfo = houseInfoService.findMyHouseById(house_id);
             if (!ObjectUtils.isEmpty(houseInfo)) {
-                SellerData dataBeanX = new SellerData();
-                dataBeanX.setBuilding_age(houseInfo.getBuildingAge() == null ? "" : houseInfo.getBuildingAge().toString());
-                dataBeanX.setDistrictX(houseInfo.getDistrict());
-                resp.setCode("0").setMsg("获取卖房动态成功").setData(data);
+                SellerData data = new SellerData();
+                data.setDistrict(houseInfo.getDistrict());
+                SellerData.IspassBean ispassBean = new SellerData.IspassBean();
+                ispassBean.setValue(houseInfo.getAssessor().toString());
+                if(houseInfo.getAssessor() == 1) {
+                    ispassBean.setText("审核通过");
+                }else if(houseInfo.getAssessor() == 2){
+                    ispassBean.setText("待审核");
+                }else if(houseInfo.getAssessor() == 3){
+                    ispassBean.setText("审核未通过");
+                }
+                data.setIspass(ispassBean);
+                DateFormat format = new SimpleDateFormat("yyyy");
+                if (!ObjectUtils.isEmpty(houseInfo.getBuildingAge()))
+                    data.setBuilding_age(format.format(houseInfo.getBuildingAge()));
+                data.setHouse_use(houseInfo.getHouseUse());
+                data.setProperty_rights_type(houseInfo.getPropertyRightsType());
+                data.setHouse_title(houseInfo.getHouseTitle());
+                data.setHouse_style(houseInfo.getHouseLayout());
+                data.setHouse_id(houseInfo.getId().toString());
+                data.setHouse_orientation(houseInfo.getHouseOrientation());
+                if (!ObjectUtils.isEmpty(houseInfo.getHouseTotalPrice()))
+                    data.setHouse_price(houseInfo.getHouseTotalPrice().toString());
+                else
+                    data.setHouse_price("0");
+                data.setHouse_layer(houseInfo.getHouseTier());
+                data.setHouse_area(houseInfo.getHouseArea().toString());
+                if (!ObjectUtils.isEmpty(houseInfo.getHouseUnitPrice()))
+                    data.setHouse_unit_price(houseInfo.getHouseUnitPrice().toString());
+                else
+                    data.setHouse_unit_price("0");
+                SellerData.CountBean countBean = new SellerData.CountBean();
+
+                countBean.setBrowse_num(houseInfo.getVisitNum() == null ? "0" : houseInfo.getVisitNum().toString());
+                countBean.setCall_num(houseInfo.getCallNum() == null ? "0" : houseInfo.getCallNum().toString());
+                countBean.setFollow_num(houseInfo.getAttentionNum() == null ? "0" : houseInfo.getAttentionNum().toString());
+                countBean.setSee_num(houseInfo.getSeeNum() == null ? "0" : houseInfo.getSeeNum().toString());
+                SellerData.CountBean.DataBean dataBean = new SellerData.CountBean.DataBean();
+                List<Integer> browseList = new ArrayList<>();
+                List<Integer> callList = new ArrayList<>();
+                List<Integer> followList = new ArrayList<>();
+                List<Integer> seeList = new ArrayList<>();
+                for (int i = 0; i < 7; i++) {
+                    int browsecount = terraceRecordService.getVisitNums(i);
+                    int callcount = terraceRecordService.getCallNums(i);
+                    int followcount = terraceRecordService.getFollowNums(i);
+                    int seecount = terraceRecordService.getSeeNums(i);
+                    browseList.add(browsecount);
+                    callList.add(callcount);
+                    followList.add(followcount);
+                    seeList.add(seecount);
+                }
+                dataBean.setBrowse(browseList);
+                dataBean.setCall(callList);
+                dataBean.setFollow(followList);
+                dataBean.setSee(seeList);
+                countBean.setData(dataBean);
+                data.setCount(countBean);
+                resp.setMsg("获取卖房动态成功").setCode("1").setData(data);
             } else {
-                resp.setMsg("房子不存在").setCode("0");
+                resp.setCode("0").setMsg("房屋信息不存在");
             }
+        } else {
+            resp.setCode("0").setMsg("用户未登陆");
         }
-
-
         return resp;
     }
 
@@ -831,12 +831,30 @@ public class SMFApiController {
         List<RecentDealHouseData> dataList = new ArrayList<>();
         if (houseInfoList.size() > 0) {
 
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
             for (HouseInfo houseInfo : houseInfoList) {
                 RecentDealHouseData data = new RecentDealHouseData();
                 if (!ObjectUtils.isEmpty(houseInfo.getWorkOffTime()))
                     data.setDeal_date(dateFormat.format(houseInfo.getWorkOffTime()));
-                data.setHouse_label(houseInfo.getHouseLabel() == null ? "" : houseInfo.getHouseLabel());
+                data.setHouse_title(houseInfo.getHouseTitle());
+                data.setHouse_title_layout(houseInfo.getHouseTitle() + houseInfo.getHouseLayout());
+                data.setHouse_orientation(houseInfo.getHouseOrientation());
+                data.setHouse_layer(houseInfo.getHouseTier());
+                data.setHouse_id(houseInfo.getId().toString());
+                data.setHouse_community(houseInfo.getDistrict());
+                data.setHouse_deal_days(String.valueOf(DateUtil.getDiscrepantDays(houseInfo.getWorkOffTime(), new Date())));
+                data.setHouse_layout(houseInfo.getHouseLayout());
+                if (!ObjectUtils.isEmpty(houseInfo.getHouseTotalPrice()))
+                    data.setHouse_price(houseInfo.getHouseTotalPrice().toString());
+                else data.setHouse_price("0");
+                List<HouseImg> imgs = houseImgService.findHouseImg(houseInfo.getId());
+                if (imgs.size() > 0) {
+                    data.setHouse_img(imgs.get(0).getImgurl() == null ? "http://www.jjg630.com/uploads/tem_file/5d2700bc5c76e.png" : imgs.get(0).getImgurl());
+                } else {
+                    data.setHouse_img("http://www.jjg630.com/uploads/tem_file/5d2700bc5c76e.png");
+                }
+                data.setHouse_label(houseInfo.getHouseLabel() == null ? "高大" : houseInfo.getHouseLabel());
+                data.setHouse_unit_price(houseInfo.getHouseUnitPrice() == null ? "120" : houseInfo.getHouseUnitPrice().toString());
                 data.setHouse_area(houseInfo.getHouseArea().toString());
                 dataList.add(data);
             }
@@ -932,19 +950,21 @@ public class SMFApiController {
         WxErrorResp errorResp = new Gson().fromJson(wxService.login(code), WxErrorResp.class);
         if (!ObjectUtils.isEmpty(errorResp)) {
             if (errorResp.getErrcode() == 0) {
+                CommonUser commonUser = commonUserService.findUserByOpenId(errorResp.getOpenid());
                 boolean islogin = commonUserService.isLogin(errorResp.getOpenid());
                 boolean isbind = commonUserService.isBind(errorResp.getOpenid());
                 String token = TokenUtil.createJwtToken(errorResp.getOpenid());
-                if (isbind) {
-                    data.setIsbind("1");
+                if (!ObjectUtils.isEmpty(commonUser)) {
+                    if (isbind) {
+                        data.setIsbind("1");
+                    } else {
+                        data.setIsbind("0");
+                    }
+                    if (islogin) {
+                        data.setToken(commonUser.getToken());
+                        resp.setMsg("登陆成功").setCode("1").setData(data);
+                    }
                 } else {
-                    data.setIsbind("0");
-                }
-                if (islogin) {
-                    data.setToken(token);
-                    resp.setMsg("登陆成功").setCode("1").setData(data);
-                } else {
-
                     CommonUser auth = new CommonUser();
                     auth.setOpenid(errorResp.getOpenid());
                     auth.setToken(token);
@@ -956,8 +976,11 @@ public class SMFApiController {
                     auth.setCountry(country == null ? "" : country);
                     auth.setAvatarUrl(avatarUrl == null ? "" : avatarUrl);
                     commonUserService.save(auth);
+                    data.setToken(token);
+                    data.setIsbind("0");
                     resp.setMsg("授权成功").setCode("1").setData(data);
                 }
+
             } else {
                 resp.setMsg(errorResp.getErrmsg()).setCode(String.valueOf(errorResp.getErrcode())).setData(data);
             }

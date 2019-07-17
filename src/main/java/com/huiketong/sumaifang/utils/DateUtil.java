@@ -163,6 +163,10 @@ public class DateUtil {
         return str_date;
     }
 
+    public static int getDiscrepantDays(Date dateStart, Date dateEnd) {
+        return (int) ((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24);
+    }
+
     public static void main(String[] args) throws ParseException {
         /*
          * String a =DateAndTimeUtil.dateFormat(new Date());

@@ -68,6 +68,7 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
     @Query(value = "select avg(house_total_price) from house_info where  area_id= ?1",nativeQuery = true)
     Double countHouseAvgPriceByAreaId(String areaId);
 
+    @Query(value = "select * from house_info where house_city = ?1 and isdeal = 1",nativeQuery = true)
     List<HouseInfo> findHouseInfosByHouseCity(String cityName);
 
 }

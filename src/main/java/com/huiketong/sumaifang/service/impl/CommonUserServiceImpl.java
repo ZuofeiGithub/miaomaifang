@@ -19,7 +19,7 @@ public class CommonUserServiceImpl implements CommonUserService {
     public boolean login(String userid, String code, String token,String nickname) {
         CommonUser commonUser = commonUserDao.findCommonUserByUserTelphone(userid);
         if(!ObjectUtils.isEmpty(commonUser)){
-            commonUserDao.updateTelphoneVerifyCode(userid,code,token);
+            //commonUserDao.updateTelphoneVerifyCode(userid,code,token);
             commonUserDao.updateBindStatusByTelphoneAndToken(userid,token,nickname);
             return true;
         }else{
@@ -39,8 +39,8 @@ public class CommonUserServiceImpl implements CommonUserService {
             return true;
         } else {
             commonUserDao.updateTelphoneVerifyCode(telphone, verifyCode, token);
+            return true;
         }
-        return false;
     }
 
 
@@ -128,5 +128,10 @@ public class CommonUserServiceImpl implements CommonUserService {
         }catch (Exception e){
             return false;
         }
+    }
+
+    @Override
+    public CommonUser findUserByOpenId(String openid) {
+        return commonUserDao.findUserByOpenId(openid);
     }
 }

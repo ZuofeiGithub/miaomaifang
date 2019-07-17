@@ -23,4 +23,6 @@ public interface CommonUserService {
     CommonUser findMineById(Integer id);
 
     boolean modifyNickName(String name,Integer id);
+
+    CommonUser findUserByOpenId(String openid);
 }

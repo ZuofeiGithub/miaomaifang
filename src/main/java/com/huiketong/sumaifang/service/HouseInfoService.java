@@ -8,7 +8,7 @@ import com.huiketong.sumaifang.domain.HouseInfo;
 import java.util.List;
 
 public interface HouseInfoService {
-    boolean uploadHouseInfo(String little_district,String city_name,Double house_area,Double expect_price,String telphone,String token);
+    Integer uploadHouseInfo(String little_district,String city_name,Double house_area,Double expect_price,String telphone,String token);
 
     List<HouseInfo> getHouseInfoList();
 
