@@ -41,4 +41,6 @@ public interface HouseInfoService {
    Double countAvgAreaHousePrice(String areaId);
 
    List<HouseInfo> findHouseInfoOnCity(String cityname);
+
+    List<String> findDistrictsByCity(String city_name);
 }

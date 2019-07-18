@@ -13,19 +13,19 @@ public class EstimateData {
     String house_layout;
     String house_area;
     String house_layer;
-    String houser_total_price;
+    String house_total_price;
     String house_price_wave;
-    List<AreaHistoryAverPriceBean> area_history_aver_price;
-    List<CityHistoryAverPriceBean> city_history_aver_price;
+    AreaHistoryAverPriceBean area_history_aver_price;
+   CityHistoryAverPriceBean city_history_aver_price;
 
     @Data
     public static class AreaHistoryAverPriceBean{
-        String month;
-        String price;
+        List<String> month;
+        List<String> price;
     }
     @Data
     public static class CityHistoryAverPriceBean{
-        String month;
-        String price;
+        List<String> month;
+        List<String> price;
     }
 }

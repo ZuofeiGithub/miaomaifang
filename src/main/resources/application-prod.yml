@@ -1,1 +1,38 @@
+server:
+  port: 9107
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    url: jdbc:mysql://127.0.0.1:6612/sumaifang?useSSL=false&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: sumaifang
+    password: HncJdD3GrMZN6hk4
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+    #连接池配置
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+#对象存储
+oss:
+  file:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    keyid: LTAID7owPVleFPC5
+    keysecret: ubCTSt5xjZXmUEm77ywAj6s8xFgJG3
+    bucketname: sumaifang
+    filehost: images
+
+#微信小程序参数
+wx:
+  appid: wxade7a1fdaa226cea
+  secret: 8d8076a823f38d771087912c1625e04a
+
+tencent:
+  key: P6DBZ-PYJ6S-7SMO4-6YSGV-EV6W6-37BSV
 

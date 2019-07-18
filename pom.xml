@@ -87,6 +87,14 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.huiketong.pinyin4j</groupId>  <!--自定义-->
+            <artifactId>pinyin4j</artifactId>    <!--自定义-->
+            <version>2.5.0</version> <!--自定义-->
+            <scope>system</scope> <!--system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它-->
+            <systemPath>${basedir}/libs/pinyin4j-2.5.0.jar</systemPath> <!--项目根目录下的lib文件夹下-->
+        </dependency>
     </dependencies>
 
     <build>
@@ -94,8 +102,26 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--指定包含本地库-->
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
         </plugins>
+        <!--加载本地库文件-->
+        <resources>
+            <resource>
+                <directory>lib</directory>
+                <targetPath>BOOT-INF/lib/</targetPath>
+                <includes>
+                    <include>**/*.jar</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>BOOT-INF/classes/</targetPath>
+            </resource>
+        </resources>
     </build>
 
 </project>

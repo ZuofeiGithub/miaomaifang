@@ -74,7 +74,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
 
     @Override
     public List<HouseInfo> findMyHouseList(String token, Integer page, Integer limit) {
-        return houseInfoDao.findHouseInfosByTokenLimit(token, page, limit);
+        return houseInfoDao.findHouseInfosByTokenLimit(token, (page-1)*limit, limit);
     }
 
     @Override
@@ -218,7 +218,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
             data.setHouse_layer(houseInfo.getHouseTier());
             data.setHouse_layout(houseInfo.getHouseLayout());
             data.setHouse_price_wave("房价可能在" + (houseInfo.getHouseTotalPrice() - 9.3) + "万-" + (houseInfo.getHouseTotalPrice() + 9.3) + "万之间波动");
-            data.setHouser_total_price(houseInfo.getHouseTotalPrice().toString());
+            data.setHouse_total_price(houseInfo.getHouseTotalPrice().toString());
 //            data.setArea_history_aver_price();
 //            data.setCity_history_aver_price();
             return data;
@@ -256,5 +256,10 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     @Override
     public List<HouseInfo> findHouseInfoOnCity(String cityname) {
         return houseInfoDao.findHouseInfosByHouseCity(cityname);
+    }
+
+    @Override
+    public List<String> findDistrictsByCity(String city_name) {
+        return houseInfoDao.findDistrictByCity(city_name);
     }
 }

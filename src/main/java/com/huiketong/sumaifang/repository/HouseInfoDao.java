@@ -71,4 +71,7 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
     @Query(value = "select * from house_info where house_city = ?1 and isdeal = 1",nativeQuery = true)
     List<HouseInfo> findHouseInfosByHouseCity(String cityName);
 
+    @Query(value = "select distinct district from house_info where house_city = ?1",nativeQuery = true)
+    List<String> findDistrictByCity(String cityname);
+
 }

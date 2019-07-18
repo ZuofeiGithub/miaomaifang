@@ -16,7 +16,7 @@ public class Headline {
     Integer id;
     @Column(columnDefinition = "int(255) default '' comment '头条类型'")
     Integer headType;
-    @Column(columnDefinition = "varchar(1024) default '' comment '头条消息'")
+    @Column(columnDefinition = "varchar(255) default '' comment '头条消息'")
     String headMsg;
     @Column(columnDefinition = "datetime comment '头条时间'")
     Date createTime;

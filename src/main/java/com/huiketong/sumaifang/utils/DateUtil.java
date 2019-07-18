@@ -54,6 +54,28 @@ public class DateUtil {
         return reStr;
     }
 
+
+    /****
+     * 传入具体日期 ，返回具体日期加一个月。
+     *
+     * @param date
+     *            日期(2014-04-20)
+     * @return 2014-03-20
+     * @throws ParseException
+     */
+    public static String addMonth(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM");
+        Date dt = sdf.parse(date);
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.setTime(dt);
+
+        rightNow.add(Calendar.MONTH, 1);
+        Date dt1 = rightNow.getTime();
+        String reStr = sdf.format(dt1);
+
+        return reStr;
+    }
+
     /****
      * 获取月末最后一天
      *

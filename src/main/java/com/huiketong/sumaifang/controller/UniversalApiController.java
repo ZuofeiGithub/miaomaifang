@@ -28,9 +28,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+
+/**
+ * 通用的用户接口
+ */
 @RestController
 @RequestMapping(value = "/api")
-public class SMFApiController {
+public class UniversalApiController {
 
     @Autowired
     CommonUserService commonUserService;
@@ -164,34 +168,46 @@ public class SMFApiController {
         BaseResp resp = new BaseResp();
         EstimateData data = new EstimateData();
         HouseInfo houseInfo = houseInfoService.findMyHouseById(house_id);
-        List<EstimateData.AreaHistoryAverPriceBean> areaHistoryAverPriceBeanList = new ArrayList<>();
-        List<EstimateData.CityHistoryAverPriceBean> cityHistoryAverPriceBeanList = new ArrayList<>();
         if (!ObjectUtils.isEmpty(houseInfo)) {
-            data.setHouser_total_price(houseInfo.getHouseTotalPrice() == null ? "" : houseInfo.getHouseTotalPrice().toString());
+            java.text.DecimalFormat df =new java.text.DecimalFormat("#.00");
+            data.setHouse_price_wave(houseInfo.getHouseTotalPrice() == null ? df.format(1.2*houseInfo.getHouseArea())+"" : houseInfo.getHouseTotalPrice().toString());
             data.setHouse_layout(houseInfo.getHouseLayout());
+            data.setHouse_total_price(df.format(1.0d*houseInfo.getHouseArea().doubleValue()));
             data.setHouse_layer(houseInfo.getHouseTier());
             data.setHouse_area(houseInfo.getHouseArea().toString());
             data.setDistrict(houseInfo.getDistrict());
+            double dig = houseInfo.getHouseArea().doubleValue();
+            double min = dig*0.8;
+            double max = dig*1.2;
+            data.setHouse_price_wave(( df.format(min)+"万-"+df.format(max)+"万"));
             Double cityHousePrice = houseInfoService.countAvgCityHousePrice(houseInfo.getHouseCity());
-            EstimateData.CityHistoryAverPriceBean cityHistoryAverPriceBean = new EstimateData.CityHistoryAverPriceBean();
-            if (!ObjectUtils.isEmpty(cityHousePrice))
-                cityHistoryAverPriceBean.setPrice(cityHousePrice.toString());
             DateFormat dateFormat = new SimpleDateFormat("MM");
-            if (!ObjectUtils.isEmpty(houseInfo.getCreateTime()))
-                cityHistoryAverPriceBean.setMonth(dateFormat.format(houseInfo.getCreateTime()));
-            cityHistoryAverPriceBeanList.add(cityHistoryAverPriceBean);
-            data.setCity_history_aver_price(cityHistoryAverPriceBeanList);
-
-
             String datetime = dateFormat.format(new Date());
+            List<String> dategroup = new ArrayList<>();
+            List<String> pricegroup = new ArrayList<>();
+            EstimateData.AreaHistoryAverPriceBean areaHistoryAverPriceBean = new EstimateData.AreaHistoryAverPriceBean();
             for (int i = 0; i < 12; i++) {
-                EstimateData.AreaHistoryAverPriceBean areaHistoryAverPriceBean = new EstimateData.AreaHistoryAverPriceBean();
+                dategroup.add(datetime+"月");
+                pricegroup.add("0"+i);
+                areaHistoryAverPriceBean.setMonth(dategroup);
+                areaHistoryAverPriceBean.setPrice(pricegroup);
                 datetime = DateUtil.subMonth(datetime);
-                areaHistoryAverPriceBean.setMonth(datetime);
-                areaHistoryAverPriceBean.setPrice("0");
-                areaHistoryAverPriceBeanList.add(areaHistoryAverPriceBean);
             }
-            data.setArea_history_aver_price(areaHistoryAverPriceBeanList);
+            data.setArea_history_aver_price(areaHistoryAverPriceBean);
+
+            DateFormat dateFormat1 = new SimpleDateFormat("MM");
+            String datetime1 = dateFormat1.format(new Date());
+            List<String> dategroup1 = new ArrayList<>();
+            List<String> pricegroup1 = new ArrayList<>();
+            EstimateData.CityHistoryAverPriceBean cityHistoryAverPriceBean1 = new EstimateData.CityHistoryAverPriceBean();
+            for (int i = 0; i < 12; i++) {
+                dategroup1.add(datetime1+"月");
+                pricegroup1.add("0"+(i+30));
+                cityHistoryAverPriceBean1.setMonth(dategroup1);
+                cityHistoryAverPriceBean1.setPrice(pricegroup1);
+                datetime1 = DateUtil.subMonth(datetime1);
+            }
+            data.setCity_history_aver_price(cityHistoryAverPriceBean1);
             resp.setMsg("获取评估结果成功").setCode("1").setData(data);
         } else {
             resp.setMsg("房屋信息不存在").setCode("0");
@@ -559,8 +575,8 @@ public class SMFApiController {
                         break;
                 }
 
-                houseData.setSeeNum(houseInfoList.get(i).getSeeNum());
-                houseData.setVisitsNum(houseInfoList.get(i).getVisitNum());
+                houseData.setSeeNum(houseInfoList.get(i).getSeeNum() == null ? 0:houseInfoList.get(i).getSeeNum());
+                houseData.setVisitsNum(houseInfoList.get(i).getVisitNum() == null ? 0:houseInfoList.get(i).getVisitNum());
                 houseData.setHouse_id(houseInfoList.get(i).getId());
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd E a HH:mm:ss");
                 houseData.setSubmitTime(df.format(houseInfoList.get(i).getCreateTime()));
@@ -604,7 +620,7 @@ public class SMFApiController {
      * @return
      */
     @GetMapping(value = "market_detail")
-    public BaseResp marketDetail(String city_name) {
+    public BaseResp marketDetail(String city_name) throws ParseException {
         BaseResp resp = new BaseResp();
         MarketDetailData data = new MarketDetailData();
         if (citiesService.isOpen(city_name)) {
@@ -612,10 +628,37 @@ public class SMFApiController {
             if (averPrice != null) {
                 data.setAverage_price(averPrice.toString());
             } else {
-                data.setAverage_price("0");
+                data.setAverage_price("9000");
             }
             DateFormat dateFormat = new SimpleDateFormat("MM");
             data.setCurrent_month(dateFormat.format(new Date()));
+            data.setIncrease("1");
+            data.setAverage_price("9000");
+            data.setSelling_houses("12456");
+            MarketDetailData.PriceTrendBean priceTrendBean = new MarketDetailData.PriceTrendBean();
+            String datetime = dateFormat.format(new Date());
+            List<String> dategroup = new ArrayList<>();
+            List<String> pricegroup = new ArrayList<>();
+            for (int i = 12; i >= 0; i--) {
+                dategroup.add(datetime);
+                pricegroup.add(i+"");
+                datetime = DateUtil.subMonth(datetime);
+            }
+            priceTrendBean.setMonth(dategroup);
+            priceTrendBean.setUnitprice(pricegroup);
+            data.setPrice_trend(priceTrendBean);
+            List<MarketDetailData.AreaReferencePriceBean> beanList = new ArrayList<>();
+            List<String> districtList  =  houseInfoService.findDistrictsByCity(city_name);
+            if(districtList.size() > 0){
+                for(String district:districtList){
+                    MarketDetailData.AreaReferencePriceBean bean = new MarketDetailData.AreaReferencePriceBean();
+                    bean.setAreaname(district == null?"":district);
+                    bean.setAverage_price("1000");
+                    bean.setIncrease(1);
+                    beanList.add(bean);
+                }
+            }
+            data.setArea_reference_price(beanList);
             resp.setCode("1").setMsg("市场行情").setData(data);
         } else {
             resp.setMsg("该城市未开通服务").setCode("0");
