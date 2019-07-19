@@ -11,6 +11,7 @@ import com.huiketong.sumaifang.repository.*;
 import com.huiketong.sumaifang.service.BiotopeService;
 import com.huiketong.sumaifang.service.HouseInfoService;
 import com.huiketong.sumaifang.utils.TokenUtil;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -51,7 +52,9 @@ public class HouseInfoServiceImpl implements HouseInfoService {
         houseInfo.setExpectPrice(expect_price);
         if (!ObjectUtils.isEmpty(token)) {
             houseInfo.setToken(token);
-        } else {
+        }
+        if(!ObjectUtils.isEmpty(telphone))
+        {
             CommonUser commonUser = commonUserDao.findCommonUserByUserTelphone(telphone);
             if (!ObjectUtils.isEmpty(commonUser)) {
                 houseInfo.setToken(TokenUtil.createJwtToken(commonUser.getOpenid()));

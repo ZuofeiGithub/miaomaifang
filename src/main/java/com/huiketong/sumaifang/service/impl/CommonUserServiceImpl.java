@@ -20,7 +20,11 @@ public class CommonUserServiceImpl implements CommonUserService {
         CommonUser commonUser = commonUserDao.findCommonUserByUserTelphone(userid);
         if(!ObjectUtils.isEmpty(commonUser)){
             //commonUserDao.updateTelphoneVerifyCode(userid,code,token);
+            if(!ObjectUtils.isEmpty(nickname))
             commonUserDao.updateBindStatusByTelphoneAndToken(userid,token,nickname);
+            else{
+                commonUserDao.updateBindStatusByTelphoneAndToken(userid,token);
+            }
             return true;
         }else{
             return false;

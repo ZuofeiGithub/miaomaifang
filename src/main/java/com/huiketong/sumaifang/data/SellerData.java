@@ -43,9 +43,10 @@ public class SellerData {
     private String house_id;
     private CountBean count;
     private List<NewsBean> news;
-    private List<?> houseimgs;
+    private List<String> houseimgs;
     private List<SamesellhouseBean> samesellhouse;
-
+    private String salestop;
+    private String service_telphone;
 
     @Data
     public static class IspassBean {

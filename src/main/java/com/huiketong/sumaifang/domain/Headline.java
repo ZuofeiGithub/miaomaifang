@@ -14,7 +14,7 @@ public class Headline {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    @Column(columnDefinition = "int(255) default '' comment '头条类型'")
+    @Column(columnDefinition = "int(255) default 0 comment '头条类型'")
     Integer headType;
     @Column(columnDefinition = "varchar(255) default '' comment '头条消息'")
     String headMsg;

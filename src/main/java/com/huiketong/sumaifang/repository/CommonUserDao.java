@@ -73,6 +73,15 @@ public interface CommonUserDao extends JpaRepository<CommonUser,Integer> {
 
 
     /**
+     * 绑定
+     */
+    @Transactional
+    @Modifying
+    @Query(value = "update common_user set isbind = 1 where user_telphone = ?1 and token = ?2",nativeQuery = true)
+    void updateBindStatusByTelphoneAndToken(String telphone,String token);
+
+
+    /**
      * 根据openid找到用户
      * @param openid
      * @return
