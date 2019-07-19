@@ -169,17 +169,17 @@ public class UniversalApiController {
         EstimateData data = new EstimateData();
         HouseInfo houseInfo = houseInfoService.findMyHouseById(house_id);
         if (!ObjectUtils.isEmpty(houseInfo)) {
-            java.text.DecimalFormat df =new java.text.DecimalFormat("#.00");
-            data.setHouse_price_wave(houseInfo.getHouseTotalPrice() == null ? df.format(1.2*houseInfo.getHouseArea())+"" : houseInfo.getHouseTotalPrice().toString());
+            java.text.DecimalFormat df = new java.text.DecimalFormat("#.00");
+            data.setHouse_price_wave(houseInfo.getHouseTotalPrice() == null ? df.format(1.2 * houseInfo.getHouseArea()) + "" : houseInfo.getHouseTotalPrice().toString());
             data.setHouse_layout(houseInfo.getHouseLayout());
-            data.setHouse_total_price(df.format(1.0d*houseInfo.getHouseArea().doubleValue()));
+            data.setHouse_total_price(df.format(1.0d * houseInfo.getHouseArea().doubleValue()));
             data.setHouse_layer(houseInfo.getHouseTier());
             data.setHouse_area(houseInfo.getHouseArea().toString());
             data.setDistrict(houseInfo.getDistrict());
             double dig = houseInfo.getHouseArea().doubleValue();
-            double min = dig*0.8;
-            double max = dig*1.2;
-            data.setHouse_price_wave(( df.format(min)+"万-"+df.format(max)+"万"));
+            double min = dig * 0.8;
+            double max = dig * 1.2;
+            data.setHouse_price_wave((df.format(min) + "万-" + df.format(max) + "万"));
             Double cityHousePrice = houseInfoService.countAvgCityHousePrice(houseInfo.getHouseCity());
             DateFormat dateFormat = new SimpleDateFormat("MM");
             String datetime = dateFormat.format(new Date());
@@ -187,8 +187,8 @@ public class UniversalApiController {
             List<String> pricegroup = new ArrayList<>();
             EstimateData.AreaHistoryAverPriceBean areaHistoryAverPriceBean = new EstimateData.AreaHistoryAverPriceBean();
             for (int i = 0; i < 12; i++) {
-                dategroup.add(datetime+"月");
-                pricegroup.add("0"+i);
+                dategroup.add(datetime + "月");
+                pricegroup.add("0" + i);
                 areaHistoryAverPriceBean.setMonth(dategroup);
                 areaHistoryAverPriceBean.setPrice(pricegroup);
                 datetime = DateUtil.subMonth(datetime);
@@ -201,8 +201,8 @@ public class UniversalApiController {
             List<String> pricegroup1 = new ArrayList<>();
             EstimateData.CityHistoryAverPriceBean cityHistoryAverPriceBean1 = new EstimateData.CityHistoryAverPriceBean();
             for (int i = 0; i < 12; i++) {
-                dategroup1.add(datetime1+"月");
-                pricegroup1.add("0"+(i+30));
+                dategroup1.add(datetime1 + "月");
+                pricegroup1.add("0" + (i + 30));
                 cityHistoryAverPriceBean1.setMonth(dategroup1);
                 cityHistoryAverPriceBean1.setPrice(pricegroup1);
                 datetime1 = DateUtil.subMonth(datetime1);
@@ -351,31 +351,31 @@ public class UniversalApiController {
             if (!ObjectUtils.isEmpty(verifyCode)) {
                 if (verifyCode.equals(verify_code)) {
                     int houseId = houseInfoService.uploadHouseInfo(little_district, city_name, house_area, expect_price, telphone, token);
-                    if ( houseId != 0) {
+                    if (houseId != 0) {
                         UploadHouseData data = new UploadHouseData();
                         data.setHouse_id(String.valueOf(houseId));
-                        notificationService.saveHouseInfo(1,"房主提交了卖房意向",token,houseId,new Date());
-                        commonUserService.login(telphone,verify_code,token,"");
+                        notificationService.saveHouseInfo(1, "房主提交了卖房意向", token, houseId, new Date());
+                        commonUserService.login(telphone, verify_code, token, "");
                         data.setToken(token);
                         resp.setCode("1").setMsg("发布成功").setData(data);
                     } else {
                         resp.setCode("0").setMsg("发布失败");
                     }
-                }else{
+                } else {
                     resp.setCode("0").setMsg("验证码错误");
                 }
             } else {
                 resp.setCode("300").setMsg("该手机号码不存在");
             }
-        } else if ((ObjectUtils.isEmpty(telphone)&&ObjectUtils.isEmpty(verify_code)) && !ObjectUtils.isEmpty(token)) {
+        } else if ((ObjectUtils.isEmpty(telphone) && ObjectUtils.isEmpty(verify_code)) && !ObjectUtils.isEmpty(token)) {
 
             int houseId = houseInfoService.uploadHouseInfo(little_district, city_name, house_area, expect_price, telphone, token);
-            if ( houseId != 0) {
+            if (houseId != 0) {
                 UploadHouseData data = new UploadHouseData();
                 data.setToken(token);
                 data.setHouse_id(String.valueOf(houseId));
-                notificationService.saveHouseInfo(1,"房主提交了卖房意向",token,houseId,new Date());
-                commonUserService.login(telphone,verify_code,token,"");
+                notificationService.saveHouseInfo(1, "房主提交了卖房意向", token, houseId, new Date());
+                commonUserService.login(telphone, verify_code, token, "");
                 resp.setCode("1").setMsg("发布成功").setData(data);
             } else {
                 resp.setCode("0").setMsg("发布失败");
@@ -580,8 +580,8 @@ public class UniversalApiController {
                         break;
                 }
 
-                houseData.setSeeNum(houseInfoList.get(i).getSeeNum() == null ? 0:houseInfoList.get(i).getSeeNum());
-                houseData.setVisitsNum(houseInfoList.get(i).getVisitNum() == null ? 0:houseInfoList.get(i).getVisitNum());
+                houseData.setSeeNum(houseInfoList.get(i).getSeeNum() == null ? 0 : houseInfoList.get(i).getSeeNum());
+                houseData.setVisitsNum(houseInfoList.get(i).getVisitNum() == null ? 0 : houseInfoList.get(i).getVisitNum());
                 houseData.setHouse_id(houseInfoList.get(i).getId());
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd E a HH:mm:ss");
                 houseData.setSubmitTime(df.format(houseInfoList.get(i).getCreateTime()));
@@ -646,18 +646,18 @@ public class UniversalApiController {
             List<String> pricegroup = new ArrayList<>();
             for (int i = 12; i >= 0; i--) {
                 dategroup.add(datetime);
-                pricegroup.add(i+"");
+                pricegroup.add(i + "");
                 datetime = DateUtil.subMonth(datetime);
             }
             priceTrendBean.setMonth(dategroup);
             priceTrendBean.setUnitprice(pricegroup);
             data.setPrice_trend(priceTrendBean);
             List<MarketDetailData.AreaReferencePriceBean> beanList = new ArrayList<>();
-            List<String> districtList  =  houseInfoService.findDistrictsByCity(city_name);
-            if(districtList.size() > 0){
-                for(String district:districtList){
+            List<String> districtList = houseInfoService.findDistrictsByCity(city_name);
+            if (districtList.size() > 0) {
+                for (String district : districtList) {
                     MarketDetailData.AreaReferencePriceBean bean = new MarketDetailData.AreaReferencePriceBean();
-                    bean.setAreaname(district == null?"":district);
+                    bean.setAreaname(district == null ? "" : district);
                     bean.setAverage_price("1000");
                     bean.setIncrease(1);
                     beanList.add(bean);
@@ -682,50 +682,58 @@ public class UniversalApiController {
     public BaseResp sellers(String token, Integer house_id) {
         BaseResp resp = new BaseResp();
         CommonUser commonUser = commonUserService.findMine(token);
+
         if (!ObjectUtils.isEmpty(commonUser)) {
-            HouseInfo houseInfo = houseInfoService.findMyHouseById(house_id);
+            HouseInfo houseInfo;
+            if (ObjectUtils.isEmpty(house_id)) {
+                List<HouseInfo> houseInfoList = houseInfoService.findMyHouseList(token, 1, 100);
+                houseInfo = houseInfoList.get(0);
+
+            } else {
+                houseInfo = houseInfoService.findMyHouseById(house_id);
+            }
             if (!ObjectUtils.isEmpty(houseInfo)) {
                 SellerData data = new SellerData();
-                data.setDistrict(houseInfo.getDistrict() == null ? "":houseInfo.getDistrict());
+                data.setDistrict(houseInfo.getDistrict() == null ? "" : houseInfo.getDistrict());
                 SellerData.IspassBean ispassBean = new SellerData.IspassBean();
                 ispassBean.setValue(houseInfo.getAssessor().toString());
-                if(houseInfo.getAssessor() == 1) {
+                if (houseInfo.getAssessor() == 1) {
                     ispassBean.setText("审核通过");
-                }else if(houseInfo.getAssessor() == 2){
+                } else if (houseInfo.getAssessor() == 2) {
                     ispassBean.setText("待审核");
-                }else if(houseInfo.getAssessor() == 3){
+                } else if (houseInfo.getAssessor() == 3) {
                     ispassBean.setText("审核未通过");
                 }
                 data.setIspass(ispassBean);
                 DateFormat format = new SimpleDateFormat("yyyy");
                 if (!ObjectUtils.isEmpty(houseInfo.getBuildingAge()))
                     data.setBuilding_age(format.format(houseInfo.getBuildingAge()));
-                data.setHouse_use(houseInfo.getHouseUse() == null ? "":houseInfo.getHouseUse());
-                data.setProperty_rights_type(houseInfo.getPropertyRightsType() == null ? "":houseInfo.getPropertyRightsType());
-                data.setHouse_title(houseInfo.getHouseTitle() == null ? "":houseInfo.getHouseTitle());
-                data.setHouse_style(houseInfo.getHouseLayout() == null ? "":houseInfo.getHouseLayout());
+                data.setHouse_use(houseInfo.getHouseUse() == null ? "" : houseInfo.getHouseUse());
+                data.setProperty_rights_type(houseInfo.getPropertyRightsType() == null ? "" : houseInfo.getPropertyRightsType());
+                data.setHouse_title(houseInfo.getHouseTitle() == null ? "" : houseInfo.getHouseTitle());
+                data.setHouse_style(houseInfo.getHouseLayout() == null ? "" : houseInfo.getHouseLayout());
                 data.setHouse_id(houseInfo.getId().toString());
-                data.setHouse_orientation(houseInfo.getHouseOrientation() == null ? "":houseInfo.getHouseOrientation());
+                data.setHouse_orientation(houseInfo.getHouseOrientation() == null ? "" : houseInfo.getHouseOrientation());
                 if (!ObjectUtils.isEmpty(houseInfo.getHouseTotalPrice()))
-                    data.setHouse_price(houseInfo.getHouseTotalPrice().toString() == null ? "":houseInfo.getHouseTotalPrice().toString());
+                    data.setHouse_price(houseInfo.getHouseTotalPrice().toString() == null ? "" : houseInfo.getHouseTotalPrice().toString());
                 else
                     data.setHouse_price("0");
-                data.setHouse_layer(houseInfo.getHouseTier() == null ? "":houseInfo.getHouseTier());
+                data.setHouse_layer(houseInfo.getHouseTier() == null ? "" : houseInfo.getHouseTier());
                 data.setHouse_area(houseInfo.getHouseArea().toString());
                 if (!ObjectUtils.isEmpty(houseInfo.getHouseUnitPrice()))
                     data.setHouse_unit_price(houseInfo.getHouseUnitPrice().toString());
                 else
                     data.setHouse_unit_price("0");
-                data.setSalestop(String.valueOf(houseInfo.isSaleStop()));
+                data.setSalestop(houseInfo.isSaleStop() == true?"1":"0");
                 data.setService_telphone("18051661999");
                 List<String> houseImgs = new ArrayList<>();
                 List<HouseImg> houseImgList = houseImgService.findHouseImg(house_id);
-                if(houseImgList.size() > 0) {
-                    for(HouseImg houseImg:houseImgList) {
+                if (houseImgList.size() > 0) {
+                    for (HouseImg houseImg : houseImgList) {
                         houseImgs.add(houseImg.getImgurl());
                         data.setHouseimgs(houseImgs);
                     }
-                }else{
+                } else {
                     houseImgs.add("https://sumaifang.oss-cn-hangzhou.aliyuncs.com/static/images/dynamic_banner_default.jpg");
                     data.setHouseimgs(houseImgs);
                 }
@@ -758,9 +766,9 @@ public class UniversalApiController {
                 data.setCount(countBean);
                 List<Notification> notificationList = notificationService.findMyNotic(token);
                 DateFormat dateFormat = new SimpleDateFormat("MM/dd");
-                if(notificationList.size() > 0){
+                if (notificationList.size() > 0) {
                     List<SellerData.NewsBean> beanList = new ArrayList<>();
-                    for(Notification notification : notificationList){
+                    for (Notification notification : notificationList) {
                         SellerData.NewsBean bean = new SellerData.NewsBean();
                         bean.setTime(dateFormat.format(notification.getNotifyTime()));
                         bean.setContent(notification.getSummarizeMsg());
@@ -771,8 +779,10 @@ public class UniversalApiController {
 
                 resp.setMsg("获取卖房动态成功").setCode("1").setData(data);
             } else {
-                resp.setCode("1").setMsg("房屋信息不存在").setData(null);
+                resp.setCode("1").setMsg("房屋信息不存在").setData(new ArrayList<>());
             }
+
+
         } else {
             resp.setCode("0").setMsg("用户未登陆");
         }
