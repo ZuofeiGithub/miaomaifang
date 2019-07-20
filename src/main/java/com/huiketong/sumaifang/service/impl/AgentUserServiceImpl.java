@@ -99,4 +99,14 @@ public class AgentUserServiceImpl implements AgentUserService {
     public void bindUser(String token,String phone) {
         agentUserDao.updateBindStatus(1,token,phone);
     }
+
+    @Override
+    public AgentUser findbindUserByToken(String token) {
+        return agentUserDao.findAgentUserByTokenAndIsbind(token,1);
+    }
+
+    @Override
+    public void updateUserInfo(String headimg, String wx_account, String telphone, String company, String stores, String introduce, String token) {
+        agentUserDao.modifyUserInfo(headimg,wx_account,telphone,company,stores,introduce,token);
+    }
 }

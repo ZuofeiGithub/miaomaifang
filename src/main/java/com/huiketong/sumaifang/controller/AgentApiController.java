@@ -113,8 +113,14 @@ public class AgentApiController {
         return resp;
     }
     @PostMapping(value = "/modify_info")
-    public BaseResp modifyInfo(){
+    public BaseResp modifyInfo(String token,String headimg,String wx_account,String telphone,String company,String stores,String introduce){
         BaseResp resp = new BaseResp();
+        AgentUser agentUser = agentUserService.findbindUserByToken(token);
+        if(!ObjectUtils.isEmpty(agentUser)){
+            agentUserService.updateUserInfo(headimg,wx_account,telphone,company,stores,introduce,token);
+        }else{
+            resp.setMsg("用户未绑定").setCode("0");
+        }
         return resp;
     }
     @GetMapping(value = "/house_detail")

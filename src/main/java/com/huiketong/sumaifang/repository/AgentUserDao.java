@@ -44,4 +44,11 @@ public interface AgentUserDao extends JpaRepository<AgentUser, Integer> {
     @Modifying
     @Transactional
     void updateBindStatus(int status,String token,String phone);
+
+    AgentUser findAgentUserByTokenAndIsbind(String token,Integer isbind);
+
+    @Query(value = "update agent_user set avatar_url = ?1,wxaccount = ?2,user_phone = ?3,company_info = ?4,stores = ?5,introduce = ?6 where token = ?7",nativeQuery = true)
+    @Modifying
+    @Transactional
+    void modifyUserInfo(String headimg, String wx_account, String telphone, String company, String stores, String introduce, String token);
 }

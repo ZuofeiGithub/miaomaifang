@@ -16,4 +16,8 @@ public interface AgentUserService {
     AgentUser findUserByTokenAndTelphone(String token,String telphone);
 
     void bindUser(String token,String phone);
+
+    AgentUser findbindUserByToken(String token);
+
+    void updateUserInfo(String headimg, String wx_account, String telphone, String company, String stores, String introduce, String token);
 }

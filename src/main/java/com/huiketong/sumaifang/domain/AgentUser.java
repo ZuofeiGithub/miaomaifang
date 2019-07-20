@@ -51,4 +51,6 @@ public class AgentUser {
     String wxaccount;
     @Column(columnDefinition = "varchar(255) default '' comment '介绍'")
     String introduce;
+    @Column(columnDefinition = "varchar(255) default '' comment '所属门店'")
+    String stores;
 }
