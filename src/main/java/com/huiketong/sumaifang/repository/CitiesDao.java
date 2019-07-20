@@ -19,4 +19,7 @@ public interface CitiesDao extends JpaRepository<Cities,Integer> {
     Cities findCitiesByCityName(String city);
 
     List<Cities> findAllByIsopen(boolean bopen);
+
+    @Query(value = "select * from cities where city = ?1 and isopen = ?2",nativeQuery = true)
+    Cities findOpenCitys(String cityName,Integer isOpen);
 }

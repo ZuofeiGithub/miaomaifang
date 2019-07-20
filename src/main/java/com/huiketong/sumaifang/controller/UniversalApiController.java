@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DateFormat;
@@ -1033,8 +1034,8 @@ public class UniversalApiController {
     public BaseResp wxlogin(String code, String nickName, Integer gender, String language, String city, String province, String country, String avatarUrl) {
         BaseResp resp = new BaseResp();
         LoginData data = new LoginData();
-        WxErrorResp errorResp = new Gson().fromJson(wxService.login(code), WxErrorResp.class);
-        if (!ObjectUtils.isEmpty(errorResp)) {
+        try {
+            WxErrorResp errorResp = new Gson().fromJson(wxService.login(code), WxErrorResp.class);
             if (errorResp.getErrcode() == 0) {
                 CommonUser commonUser = commonUserService.findUserByOpenId(errorResp.getOpenid());
                 boolean islogin = commonUserService.isLogin(errorResp.getOpenid());
@@ -1068,8 +1069,10 @@ public class UniversalApiController {
                 }
 
             } else {
-                resp.setMsg(errorResp.getErrmsg()).setCode(String.valueOf(errorResp.getErrcode())).setData(data);
+                resp.setMsg(errorResp.getErrmsg()).setCode(String.valueOf(errorResp.getErrcode()));
             }
+        }catch (ResourceAccessException e){
+            resp.setCode("0").setMsg("网络错误");
         }
         return resp;
     }
