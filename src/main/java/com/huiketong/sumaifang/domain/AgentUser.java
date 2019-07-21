@@ -53,4 +53,6 @@ public class AgentUser {
     String introduce;
     @Column(columnDefinition = "varchar(255) default '' comment '所属门店'")
     String stores;
+    @Column(columnDefinition = "varchar(255) default '' comment '密码'")
+    String password;
 }

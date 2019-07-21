@@ -1,10 +1,12 @@
 package com.huiketong.sumaifang.service.impl;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.huiketong.sumaifang.domain.AgentUser;
 import com.huiketong.sumaifang.domain.Cities;
 import com.huiketong.sumaifang.repository.AgentUserDao;
 import com.huiketong.sumaifang.repository.CitiesDao;
 import com.huiketong.sumaifang.service.AgentUserService;
+import com.huiketong.sumaifang.utils.AlicomDysmsUtil;
 import com.huiketong.sumaifang.utils.PhoneFormatCheckUtil;
 import com.huiketong.sumaifang.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +78,8 @@ public class AgentUserServiceImpl implements AgentUserService {
             if (!ObjectUtils.isEmpty(existUser)) { //如果存在用户
                 if(tel_code.equals(existUser.getPhoneCode())) {
                     Date registerTime = new Date();
-                    agentUserDao.updateUserInfo(city_name, user_name, user_telphone, company, token, registerTime,1);
+                    agentUserDao.updateUserInfo(city_name==null?existUser.getCityName():city_name , user_name == null?existUser.getUserName():user_name, user_telphone ==null?existUser.getUserPhone():user_telphone,
+                            company ==null?existUser.getCompanyInfo():company, token, registerTime,1);
                 }else{
                     return 204;
                 }
@@ -108,5 +111,41 @@ public class AgentUserServiceImpl implements AgentUserService {
     @Override
     public void updateUserInfo(String headimg, String wx_account, String telphone, String company, String stores, String introduce, String token) {
         agentUserDao.modifyUserInfo(headimg,wx_account,telphone,company,stores,introduce,token);
+    }
+
+    @Override
+    public Integer modifyPwd(String telphone, String verify_code, String newpassword) {
+        AgentUser agentUser = agentUserDao.findAgentUserByUserPhoneAndIsbind(telphone,1);
+       if(!ObjectUtils.isEmpty(agentUser)){
+           if(verify_code.equals(agentUser.getPhoneCode())){
+               try {
+                   agentUserDao.modifyPwd(newpassword,agentUser.getId());
+                   return 0;
+               }catch (Exception e){
+                   return 1;
+               }
+           }else{
+               return 2;
+           }
+       }else{
+            return 3;
+       }
+    }
+
+    @Override
+    public Integer getVerifyCode(String telphone) {
+        AgentUser agentUser = agentUserDao.findAgentUserByUserPhoneAndIsbind(telphone,1);
+        if(!ObjectUtils.isEmpty(agentUser)){
+            String code = AlicomDysmsUtil.getCode();
+            try {
+                AlicomDysmsUtil.sendSms(telphone,code,"");
+                agentUserDao.updateVerifyCode(code,telphone);
+                return 0;
+            } catch (Exception e) {
+                return 2;
+            }
+        }else{
+            return 1;//用户不存在
+        }
     }
 }

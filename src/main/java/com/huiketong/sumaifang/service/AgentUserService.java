@@ -20,4 +20,8 @@ public interface AgentUserService {
     AgentUser findbindUserByToken(String token);
 
     void updateUserInfo(String headimg, String wx_account, String telphone, String company, String stores, String introduce, String token);
+
+    Integer modifyPwd(String telphone, String verify_code, String newpassword);
+
+    Integer getVerifyCode(String telphone);
 }
