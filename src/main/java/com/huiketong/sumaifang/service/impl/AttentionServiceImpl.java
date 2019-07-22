@@ -69,4 +69,16 @@ public class AttentionServiceImpl implements AttentionService {
              return new ArrayList<>();
          }
     }
+
+    @Override
+    public boolean isAttention(Integer house_id, String token) {
+        AgentUser agentUser = agentUserService.findbindUserByToken(token);
+        if(!ObjectUtils.isEmpty(agentUser)) {
+            Attention attention = attentionDao.findAttentionByAgentIdAndHouseId(agentUser.getId(), house_id);
+            if(!ObjectUtils.isEmpty(attention)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

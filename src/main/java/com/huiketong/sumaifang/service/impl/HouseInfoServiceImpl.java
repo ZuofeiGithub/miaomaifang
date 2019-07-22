@@ -11,7 +11,6 @@ import com.huiketong.sumaifang.repository.*;
 import com.huiketong.sumaifang.service.BiotopeService;
 import com.huiketong.sumaifang.service.HouseInfoService;
 import com.huiketong.sumaifang.utils.TokenUtil;
-import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -156,8 +155,8 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     }
 
     @Override
-    public HouseInfo findHouseByDistrict(String district) {
-        return houseInfoDao.findHouseInfoByDistrict(district);
+    public List<HouseInfo> findHouseByDistrict(String district) {
+        return houseInfoDao.findHouseInfosByDistrict(district);
     }
 
     @Override
@@ -264,5 +263,19 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     @Override
     public List<String> findDistrictsByCity(String city_name) {
         return houseInfoDao.findDistrictByCity(city_name);
+    }
+
+    /**
+     * 平台推荐房源
+     * @return
+     */
+    @Override
+    public List<HouseInfo> findRecommendHouse() {
+        return houseInfoDao.findHouseInfosByRecommend(1);
+    }
+
+    @Override
+    public List<HouseInfo> findIsSellHouse(String cityName, Integer page, Integer limit) {
+        return houseInfoDao.findSellHouseByCity( cityName,(page-1)*limit,limit);
     }
 }

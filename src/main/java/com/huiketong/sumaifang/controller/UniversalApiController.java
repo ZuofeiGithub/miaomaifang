@@ -63,7 +63,7 @@ public class UniversalApiController {
     @Autowired
     MessageService messageService;
     @Autowired
-    ChatMessageService chatMessageService;
+    ChatIndexService chatIndexService;
     @Autowired
     AreasService areasService;
     @Autowired
@@ -416,25 +416,7 @@ public class UniversalApiController {
                         }
                     } else if (message.getMsgType() == 2) {
                         MessageData data = new MessageData();
-                        ChatMessage chatMessage = chatMessageService.findChatMsgById(message.getMsgId());
-                        if (chatMessage.getUserType() == 1) {
-                            CommonUser commonUser1 = commonUserService.findMineById(chatMessage.getReceiverId());
-
-                            data.setMsgtitle(commonUser1.getNickName());
-                            data.setMsgtype(String.valueOf(2));
-                            DateFormat dateFormat = new SimpleDateFormat("MM/dd");
-                            data.setMsgdate(dateFormat.format(chatMessage.getCreateTime()));
-                            data.setMsgcontent(chatMessage.getContent());
-                            data.setMsgicon(commonUser1.getAvatarUrl());
-                        } else if (chatMessage.getUserType() == 2) {
-                            AgentUser agentUser = agentUserService.findAgentById(chatMessage.getSenderId());
-                            data.setMsgtitle(agentUser.getUserName());
-                            data.setMsgtype(String.valueOf(2));
-                            DateFormat dateFormat = new SimpleDateFormat("MM/dd");
-                            data.setMsgdate(dateFormat.format(chatMessage.getCreateTime()));
-                            data.setMsgcontent(chatMessage.getContent());
-                            data.setMsgicon(agentUser.getAvatarUrl());
-                        }
+                        ChatIndex chatMessage = chatIndexService.findChatMsgById(message.getMsgId());
                         messageDataList.add(data);
                     }
                 }

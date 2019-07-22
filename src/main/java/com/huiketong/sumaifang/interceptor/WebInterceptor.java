@@ -29,15 +29,16 @@ public class WebInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-        String basePath = request.getContextPath();
-        String path = request.getRequestURI();
-        if (!doLoginInterceptor(path, basePath)) {//是否进行登陆拦截
-            return true;
-        }
-        StringBuffer url = request.getRequestURL();
-        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).append(request.getServletContext().getContextPath()).append("/login?token=").toString();
-        response.sendRedirect(tempContextUrl);
-        return false;
+//        String basePath = request.getContextPath();
+//        String path = request.getRequestURI();
+//        if (!doLoginInterceptor(path, basePath)) {//是否进行登陆拦截
+//            return true;
+//        }
+//        StringBuffer url = request.getRequestURL();
+//        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).append(request.getServletContext().getContextPath()).append("/login?token=").toString();
+//        response.sendRedirect(tempContextUrl);
+//        return false;
+        return true;
     }
 
     /**

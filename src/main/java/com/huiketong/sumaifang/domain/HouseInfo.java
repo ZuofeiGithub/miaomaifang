@@ -99,4 +99,6 @@ public class HouseInfo {
     boolean SaleStop;
     @Column(columnDefinition = "varchar(11) default '' comment '区域id'")
     String areaId;
+    @Column(columnDefinition = "int(3) default 0 comment '0不推荐,1推荐'")
+    Integer recommend;
 }

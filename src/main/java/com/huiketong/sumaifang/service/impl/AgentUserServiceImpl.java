@@ -133,19 +133,36 @@ public class AgentUserServiceImpl implements AgentUserService {
     }
 
     @Override
-    public Integer getVerifyCode(String telphone) {
-        AgentUser agentUser = agentUserDao.findAgentUserByUserPhoneAndIsbind(telphone,1);
+    public Integer getVerifyCode(String telphone,String token) {
+        AgentUser agentUser = agentUserDao.findRegisterUser(telphone,token);
+        String code = AlicomDysmsUtil.getCode();
         if(!ObjectUtils.isEmpty(agentUser)){
-            String code = AlicomDysmsUtil.getCode();
+
             try {
-                AlicomDysmsUtil.sendSms(telphone,code,"");
+                AlicomDysmsUtil.sendSms(telphone,code,"SMS_169898923");
                 agentUserDao.updateVerifyCode(code,telphone);
                 return 0;
             } catch (Exception e) {
                 return 2;
             }
         }else{
-            return 1;//用户不存在
+            AgentUser agentUser1 = agentUserDao.findAgentUserByToken(token);
+            if(!ObjectUtils.isEmpty(agentUser1)){
+                agentUserDao.updateVerifyByToken(telphone,code,token);
+                return 0;
+            }else{
+                return 1;//用户不存在
+            }
         }
+    }
+
+    @Override
+    public AgentUser findUserByPhoneAndIsBind(String telphone, Integer isbind) {
+        return agentUserDao.findAgentUserByUserPhoneAndIsbind(telphone,isbind);
+    }
+
+    @Override
+    public AgentUser findUserByToken(String token) {
+        return agentUserDao.findAgentUserByToken(token);
     }
 }

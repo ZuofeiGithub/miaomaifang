@@ -36,7 +36,7 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
     @Query(value = "select * from house_info where isdeal = 1 and district like concat('%',district,'%')",nativeQuery = true)
     List<HouseInfo> findSameDealHouse(String district);
 
-    HouseInfo findHouseInfoByDistrict(String district);
+    List<HouseInfo> findHouseInfosByDistrict(String district);
 
    // @Query(value = "update house_info set ",nativeQuery = true)
 
@@ -73,5 +73,11 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
 
     @Query(value = "select distinct district from house_info where house_city = ?1",nativeQuery = true)
     List<String> findDistrictByCity(String cityname);
+
+    List<HouseInfo> findHouseInfosByRecommend(Integer reco);
+
+
+    @Query(value = "select * from house_info where house_city = ?1 and  sale_stop = 1 and assessor = 1 limit ?2,?3",nativeQuery = true)
+    List<HouseInfo> findSellHouseByCity(String cityname,Integer page,Integer limit);
 
 }

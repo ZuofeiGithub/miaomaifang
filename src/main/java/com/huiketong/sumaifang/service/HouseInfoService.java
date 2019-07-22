@@ -24,7 +24,7 @@ public interface HouseInfoService {
 
     List<SameDealHouseData> findSameDealHouse(Integer house_id);
 
-    HouseInfo findHouseByDistrict(String district);
+    List<HouseInfo> findHouseByDistrict(String district);
 
     boolean stopSale(Integer houseId,Integer salestop);
 
@@ -43,4 +43,9 @@ public interface HouseInfoService {
    List<HouseInfo> findHouseInfoOnCity(String cityname);
 
     List<String> findDistrictsByCity(String city_name);
+
+
+    List<HouseInfo> findRecommendHouse();
+
+    List<HouseInfo> findIsSellHouse(String cityName, Integer page, Integer limit);
 }

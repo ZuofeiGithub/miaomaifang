@@ -23,5 +23,9 @@ public interface AgentUserService {
 
     Integer modifyPwd(String telphone, String verify_code, String newpassword);
 
-    Integer getVerifyCode(String telphone);
+    Integer getVerifyCode(String telphone,String token);
+
+    AgentUser findUserByPhoneAndIsBind(String telphone,Integer isbind);
+
+    AgentUser findUserByToken(String token);
 }

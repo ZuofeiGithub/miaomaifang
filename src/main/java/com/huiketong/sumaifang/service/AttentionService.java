@@ -13,4 +13,6 @@ public interface AttentionService {
     Integer attenHouse(Integer houseId, String token);
 
     List<Attention> findAttentionList(String token);
+
+    boolean isAttention(Integer house_id, String token);
 }

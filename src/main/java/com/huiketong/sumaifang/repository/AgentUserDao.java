@@ -37,7 +37,7 @@ public interface AgentUserDao extends JpaRepository<AgentUser, Integer> {
     @Transactional
     void updateUserInfo(String city_name, String user_name, String user_telphone, String company, String token, Date registerTime,Integer isbind);
 
-    @Query(value = "select * from agent_user where user_phone = ?1 and token = ?2",nativeQuery = true)
+    @Query(value = "select * from agent_user where user_phone = ?1 and token = ?2 and isbind = 1",nativeQuery = true)
     AgentUser findRegisterUser(String user_telphone, String token);
 
     @Query(value = "update agent_user set isbind = ?1 where token = ?2 and user_phone = ?3",nativeQuery = true)
@@ -60,5 +60,12 @@ public interface AgentUserDao extends JpaRepository<AgentUser, Integer> {
     void modifyPwd(String newpassword, Integer id);
 
     @Query(value = "update agent_user set phone_code = ?1 where user_phone = ?2 and isbind = 1",nativeQuery = true)
+    @Modifying
+    @Transactional
     void updateVerifyCode(String code, String telphone);
+
+    @Query(value = "update agent_user set user_phone = ?1,phone_code = ?2 where token = ?3 and isbind = 0",nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateVerifyByToken(String telphone, String code, String token);
 }
