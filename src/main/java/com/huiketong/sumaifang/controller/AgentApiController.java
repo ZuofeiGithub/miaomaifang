@@ -79,9 +79,9 @@ public class AgentApiController {
                     LoginData data = new LoginData();
                     AgentUser agentUserExists = agentUserService.findByOpenId(errorResp.getOpenid());
                     if (!ObjectUtils.isEmpty(agentUserExists)) {
-                        String token1 = agentUserService.updateToken(agentUserExists.getOpenid());
+                        //String token1 = agentUserService.updateToken(agentUserExists.getOpenid());
 
-                        data.setToken(token1);
+                        data.setToken(token);
                         data.setIsbind(agentUserExists.getIsbind().toString());
                         resp.setCode("1").setMsg("微信登陆成功").setData(data);
                     } else {
@@ -551,8 +551,6 @@ public class AgentApiController {
                 group.add(cityInitials);
             }
         }
-
-
         data.setGroup(group);
 
         resp.setData(data).setMsg("获取城市列表成功").setCode("1");

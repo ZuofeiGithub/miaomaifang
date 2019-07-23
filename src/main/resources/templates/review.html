@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>审核房源</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="/css/public.css" media="all"/>
+    <link href="/imageupload/css/common.css" type="text/css" rel="stylesheet">
+    <link href="/imageupload/css/index.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">气源费</label>
+                <div class="layui-input-inline">
+                    <select name="air" lay-verify="required" lay-search="">
+                        <option value="1">已缴纳</option>
+                        <option value="0">未缴纳</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产权类型</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="property_rights_type" lay-verify="property_rights_type" placeholder="" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">维修基金</label>
+                <div class="layui-input-inline">
+                    <select name="maintain" lay-verify="required" lay-search="">
+                        <option value="1">已缴纳</option>
+                        <option value="0">未缴纳</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">有无户口</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="residence_booklet" lay-verify="residence_booklet" placeholder="" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">房屋布局</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <select name="room" lay-verify="required" lay-search="">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                        </select>
+                    </div>
+                    <div class="layui-form-mid">室</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <select name="hall" lay-verify="required" lay-search="">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                        </select>
+                    </div>
+                    <div class="layui-form-mid">厅</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <select name="toilet" lay-verify="required" lay-search="">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                        </select>
+                    </div>
+                    <div class="layui-form-mid">卫</div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">房屋层级</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <select name="tier" lay-verify="required" lay-search="">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                        </select>
+                    </div>
+                    <div class="layui-form-mid">/</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <select name="all" lay-verify="required" lay-search="">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+
+                    <label class="layui-form-label">房屋朝向</label>
+                    <div class="layui-input-block">
+                        <select name="orientation" lay-verify="required" lay-search="">
+                            <option value="南北朝向">南北朝向</option>
+                            <option value="东南朝向">东南朝向</option>
+                            <option value="东朝向">东朝向</option>
+                            <option value="西南朝向">西南朝向</option>
+                            <option value="北朝向">北朝向</option>
+                            <option value="西朝向">西朝向</option>
+                        </select>
+                    </div>
+            </div>
+            <div class="layui-form-item">
+
+                    <label class="layui-form-label">房屋用途</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="use" lay-verify="user" placeholder="" autocomplete="off"
+                               class="layui-input">
+                    </div>
+            </div>
+            <div class="layui-form-item">
+
+                    <label class="layui-form-label">卖房原因</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="sell_house_reason" lay-verify="sell_house_reason" placeholder="" autocomplete="off"
+                               class="layui-input">
+                    </div>
+
+            </div>
+            <div class="layui-form-item">
+
+                    <label class="layui-form-label">两税是否承担</label>
+                    <div class="layui-input-block">
+                        <select name="orientation" lay-verify="required" lay-search="">
+                            <option value="0">不承担</option>
+                            <option value="1">承担</option>
+                        </select>
+                    </div>
+
+            </div>
+
+
+
+            <div class="layui-form-item">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                    <legend>上传房源图</legend>
+                </fieldset>
+
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn" >多图片上传</button>
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                        预览图：
+                        <div class="layui-upload-list clear" id="demo2">
+                            <img src="/imageupload/img/a11.png" class="add-img" id="test2">
+                        </div>
+                    </blockquote>
+                </div>
+                <!--<div class="layui-upload">-->
+                    <!--<div class="img-box full">-->
+                        <!--<section class=" img-section">-->
+                            <!--&lt;!&ndash;<p class="up-p">作品图片：<span class="up-span">最多可以上传5张图片，马上上传</span></p>&ndash;&gt;-->
+                            <!--<div class="z_photo upimg-div clear">-->
+
+                                <!--<section class="z_file fl" id="uploadImg">-->
+
+                                    <!--<input type="file" name="file" id="file" class="file" value="" accept="image/jpg,image/jpeg,image/png,image/bmp" multiple="">-->
+                                <!--</section>-->
+                            <!--</div>-->
+                        <!--</section>-->
+                    <!--</div>-->
+                    <!--<aside class="mask works-mask">-->
+                        <!--<div class="mask-content">-->
+                            <!--<p class="del-p">您确定要删除作品图片吗？</p>-->
+                            <!--<p class="check-p"><span class="del-com wsdel-ok">确定</span><span class="wsdel-no">取消</span></p>-->
+                        <!--</div>-->
+                    <!--</aside>-->
+                <!--</div>-->
+
+            </div>
+
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+</body>
+<script src="/jquery/jquery.min.js"></script>
+<script src="/imageupload/js/imgUp.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/houseinfomanager/review.js"></script>
+
+
+</html>

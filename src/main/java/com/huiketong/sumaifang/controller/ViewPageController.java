@@ -24,4 +24,13 @@ public class ViewPageController {
     public String houseinfo(){
         return "houseinfomanager/houseinfomanager";
     }
+
+    @GetMapping("/review")
+    public String review(){
+        return "review";
+    }
+    @GetMapping("/imageupload")
+    public String imageUpload(){
+        return "imageupload";
+    }
 }

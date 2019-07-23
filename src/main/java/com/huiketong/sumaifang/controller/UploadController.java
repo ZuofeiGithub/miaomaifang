@@ -1,6 +1,7 @@
 package com.huiketong.sumaifang.controller;
 
 import com.huiketong.sumaifang.utils.AliyunOSSUtil;
+import com.huiketong.sumaifang.vo.UploadResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,8 @@ public class UploadController {
 
     @RequestMapping(value = "upload_image",method = RequestMethod.POST)
     @ResponseBody
-    public String uploadImage(MultipartFile file){
+    public UploadResp uploadImage(MultipartFile file){
+        UploadResp resp = new UploadResp();
         logger.info("===========>文件上传");
         try {
             if(null != file){
@@ -33,12 +35,19 @@ public class UploadController {
                     file.transferTo(newfile);
                     //上传到OSS
                     String imageUrl = AliyunOSSUtil.upload(newfile);
+                    UploadResp.DataBean dataBean = new UploadResp.DataBean();
+                    dataBean.setSrc(imageUrl);
+                    resp.setCode(0);
+                    resp.setMsg("上传成功");
+                    resp.setData(dataBean);
                 }
             }
         }catch (Exception ex){
-
+            resp.setCode(0);
+            resp.setMsg("上传出错");
+            resp.setData(null);
         }
-        return "上传成功";
+        return resp;
     }
 
     @GetMapping(value = "upload")

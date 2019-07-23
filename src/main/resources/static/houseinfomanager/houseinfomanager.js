@@ -16,10 +16,12 @@ layui.use(['layer', 'table'], function () {
             {field: 'housePrice', title: '期望售价'},
             {
                 field: 'assessor', title: '是否审核', align: 'center', width: 100, templet: function (d) {
-                    if (d.assessor == 0) {
-                        return "<a class='layui-btn-primary layui-btn-sm'>未审核</a>"
-                    } else {
-                        return "<a class='layui-btn-normal layui-btn-sm'>已审核</a>"
+                    if (d.assessor == 2) {
+                        return "<a class='layui-btn-primary layui-btn-sm'>待审核</a>"
+                    } else if(d.assessor == 1) {
+                        return "<a class='layui-btn-normal layui-btn-sm'>审核通过</a>"
+                    } else if(d.assessor == 3){
+                        return "<a class='layui-btn-warm layui-btn-sm'>审核未通过</a>"
                     }
                 }
             },
@@ -34,10 +36,10 @@ layui.use(['layer', 'table'], function () {
         var tr = obj.tr; //获得当前行 tr 的DOM对象
 
         if (layEvent === 'assessor') { //审核
-            console.log(data);
             layer.open({
+                title:'审核房源信息',
                 type: 2,
-                content: ['http://sentsin.com', 'no'],
+                content: '/review',
                 area: screen() < 2 ? ['90%', '80%'] : ['1280px', '720px'],
             });
 
