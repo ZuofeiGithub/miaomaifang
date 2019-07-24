@@ -17,4 +17,11 @@ public class WXServiceImpl implements WXService {
 
         return restTemplate.getForObject(authcode_session_url, String.class);
     }
+
+    @Override
+    public String agent_login(String code) {
+        String authcode_session_url = WXUrl.AUTHCODE2SESSIONURL.replace("APPID", WXProperties.AGENTAPPID).replace("SECRET",WXProperties.AGENTSECRET).replace("JSCODE",code);
+
+        return restTemplate.getForObject(authcode_session_url, String.class);
+    }
 }

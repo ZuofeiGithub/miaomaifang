@@ -18,4 +18,5 @@ public class HomeData {
 
     MarketData market;
     List<OrganizationData> orglist;
+    String buyer_num;
 }

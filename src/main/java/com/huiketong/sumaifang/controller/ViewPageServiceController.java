@@ -1,5 +1,7 @@
 package com.huiketong.sumaifang.controller;
 
+import com.huiketong.sumaifang.domain.HouseImg;
+import com.huiketong.sumaifang.service.HouseImgService;
 import com.huiketong.sumaifang.vo.HouseInfoTableResp;
 import com.huiketong.sumaifang.domain.HouseInfo;
 import com.huiketong.sumaifang.service.HouseInfoService;
@@ -27,6 +29,8 @@ public class ViewPageServiceController {
     SysUserService sysUserService;
     @Autowired
     HouseInfoService houseInfoService;
+    @Autowired
+    HouseImgService houseImgService;
     @GetMapping(value = "/get_verify_code")
     public void getVerifyCode(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("image/jpeg");
@@ -90,6 +94,51 @@ public class ViewPageServiceController {
         }
 
         resp.setData(dataBeanList);
+        return resp;
+    }
+
+
+    /**
+     * 上传房源图片
+     * @param houseid
+     * @param imgurl
+     * @return
+     */
+    @PostMapping(value = "saveImg")
+    @ResponseBody
+    public BaseResp saveImg(Integer houseid,String imgurl){
+        BaseResp resp = new BaseResp();
+        if(houseImgService.save(houseid,imgurl)){
+            resp.setMsg("图片存储完成").setCode("0");
+        }else{
+            resp.setMsg("图片存储失败").setCode("1");
+        }
+        return resp;
+    }
+
+    /**
+     *
+     * @param air 气源费是否已缴纳
+     * @param property_rights_type 产权类型
+     * @param maintain 维修基金是否已经缴纳
+     * @param residence_booklet 有无户口
+     * @param room 室
+     * @param hall 厅
+     * @param toilet 卫
+     * @param tier 第几层
+     * @param all 总楼层
+     * @param orientation 房屋朝向
+     * @param use 房屋用途
+     * @param sell_house_reason 卖房原因
+     * @param two_taxes_assume 两税是否承担
+     * @return
+     */
+    @PostMapping(value = "approve")
+    @ResponseBody
+    public BaseResp approve(Integer houseid,Integer air,String property_rights_type,Integer maintain,String residence_booklet,Integer room,Integer hall,Integer toilet,Integer tier,Integer all,String orientation,
+    String use,String sell_house_reason,Integer two_taxes_assume){
+        BaseResp resp = new BaseResp();
+        System.out.println(houseid);
         return resp;
     }
 }

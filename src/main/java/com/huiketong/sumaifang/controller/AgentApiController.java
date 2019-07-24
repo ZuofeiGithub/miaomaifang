@@ -74,7 +74,7 @@ public class AgentApiController {
             resp.setCode("1").setMsg("用户已经存在").setData(data);
         }else{
             try {
-                WxErrorResp errorResp = new Gson().fromJson(wxService.login(code), WxErrorResp.class);
+                WxErrorResp errorResp = new Gson().fromJson(wxService.agent_login(code), WxErrorResp.class);
                 if (errorResp.getErrcode() == 0) {
                     LoginData data = new LoginData();
                     AgentUser agentUserExists = agentUserService.findByOpenId(errorResp.getOpenid());

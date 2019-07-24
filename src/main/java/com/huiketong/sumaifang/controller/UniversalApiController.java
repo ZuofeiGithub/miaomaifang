@@ -152,7 +152,6 @@ public class UniversalApiController {
 
         List<HeadlineNewsData> newsDataList = headlineService.findHeadlineByCity(city_name);
         data.setTipslist(newsDataList);
-
         resp.setCode("1").setMsg("获取首页信息成功").setData(data);
         return resp;
     }
@@ -548,7 +547,7 @@ public class UniversalApiController {
                     for (int j = 0; j < houseImgList.size(); j++)
                         houseData.setHouseImg(houseImgList.get(j).getImgurl());
                 } else {
-                    houseData.setHouseImg("http://pic9.nipic.com/20100810/383152_151720000466_2.jpg");
+                    houseData.setHouseImg("https://sumaifang.oss-cn-hangzhou.aliyuncs.com/static/images/dynamic_banner_default.jpg");
                 }
 
                 switch (houseInfoList.get(i).getAssessor()) {
@@ -665,12 +664,14 @@ public class UniversalApiController {
     public BaseResp sellers(String token, Integer house_id) {
         BaseResp resp = new BaseResp();
         CommonUser commonUser = commonUserService.findMine(token);
-
+        HouseInfo houseInfo = null;
         if (!ObjectUtils.isEmpty(commonUser)) {
-            HouseInfo houseInfo;
+
             if (ObjectUtils.isEmpty(house_id)) {
                 List<HouseInfo> houseInfoList = houseInfoService.findMyHouseList(token, 1, 100);
-                houseInfo = houseInfoList.get(0);
+                if(houseInfoList.size() > 0) {
+                    houseInfo = houseInfoList.get(0);
+                }
 
             } else {
                 houseInfo = houseInfoService.findMyHouseById(house_id);
@@ -679,13 +680,17 @@ public class UniversalApiController {
                 SellerData data = new SellerData();
                 data.setDistrict(houseInfo.getDistrict() == null ? "" : houseInfo.getDistrict());
                 SellerData.IspassBean ispassBean = new SellerData.IspassBean();
-                ispassBean.setValue(houseInfo.getAssessor().toString());
-                if (houseInfo.getAssessor() == 1) {
-                    ispassBean.setText("审核通过");
-                } else if (houseInfo.getAssessor() == 2) {
+                ispassBean.setValue(houseInfo.getAssessor() == null ? "0":houseInfo.getAssessor().toString());
+                if(houseInfo.getAssessor() != null) {
+                    if (houseInfo.getAssessor() == 1) {
+                        ispassBean.setText("审核通过");
+                    } else if (houseInfo.getAssessor() == 2) {
+                        ispassBean.setText("待审核");
+                    } else if (houseInfo.getAssessor() == 3) {
+                        ispassBean.setText("审核未通过");
+                    }
+                }else{
                     ispassBean.setText("待审核");
-                } else if (houseInfo.getAssessor() == 3) {
-                    ispassBean.setText("审核未通过");
                 }
                 data.setIspass(ispassBean);
                 DateFormat format = new SimpleDateFormat("yyyy");
@@ -905,14 +910,14 @@ public class UniversalApiController {
                 RecentDealHouseData data = new RecentDealHouseData();
                 if (!ObjectUtils.isEmpty(houseInfo.getWorkOffTime()))
                     data.setDeal_date(dateFormat.format(houseInfo.getWorkOffTime()));
-                data.setHouse_title(houseInfo.getHouseTitle());
-                data.setHouse_title_layout(houseInfo.getHouseTitle() + houseInfo.getHouseLayout());
-                data.setHouse_orientation(houseInfo.getHouseOrientation());
-                data.setHouse_layer(houseInfo.getHouseTier());
+                data.setHouse_title(houseInfo.getHouseTitle() == null ? "":houseInfo.getHouseTitle());
+                data.setHouse_title_layout(houseInfo.getHouseTitle() == null ? "":houseInfo.getHouseTitle() + houseInfo.getHouseLayout()==null ? "":houseInfo.getHouseLayout());
+                data.setHouse_orientation(houseInfo.getHouseOrientation() == null ?"": houseInfo.getHouseOrientation());
+                data.setHouse_layer(houseInfo.getHouseTier() == null ?"": houseInfo.getHouseTier());
                 data.setHouse_id(houseInfo.getId().toString());
-                data.setHouse_community(houseInfo.getDistrict());
-                data.setHouse_deal_days(String.valueOf(DateUtil.getDiscrepantDays(houseInfo.getWorkOffTime(), new Date())));
-                data.setHouse_layout(houseInfo.getHouseLayout());
+                data.setHouse_community(houseInfo.getDistrict() == null ? "":houseInfo.getDistrict());
+                data.setHouse_deal_days(houseInfo.getWorkOffTime() == null ? "0":String.valueOf(DateUtil.getDiscrepantDays(houseInfo.getWorkOffTime(), new Date())));
+                data.setHouse_layout(houseInfo.getHouseLayout() == null ? "" :houseInfo.getHouseLayout());
                 if (!ObjectUtils.isEmpty(houseInfo.getHouseTotalPrice()))
                     data.setHouse_price(houseInfo.getHouseTotalPrice().toString());
                 else data.setHouse_price("0");
@@ -969,12 +974,22 @@ public class UniversalApiController {
         try {
             DateFormat format = new SimpleDateFormat("FMyyyyMMddmmss");
             String nickname = format.format(new Date());
-            if (commonUserService.login(telphone, verifyCode, token, nickname)) {
-                TokenData data = new TokenData();
-                data.setToken(token);
-                resp.setCode("1").setMsg("绑定成功").setData(data);
-            } else {
-                resp.setCode("0").setMsg("绑定失败");
+            Integer result = commonUserService.login(telphone, verifyCode, token, nickname);
+            switch (result) {
+                case 1:
+                    TokenData data = new TokenData();
+                    data.setToken(token);
+                    resp.setCode("1").setMsg("绑定成功").setData(data);
+                    break;
+                case 2:
+                    resp.setCode("0").setMsg("验证码错误");
+                    break;
+                case 3:
+                    resp.setCode("0").setMsg("用户不存在");
+                    break;
+                case 4:
+                    resp.setCode("0").setMsg("请先获取验证码");
+                    break;
             }
         } catch (Exception e) {
             resp.setMsg("绑定失败").setCode("2");
@@ -1022,7 +1037,6 @@ public class UniversalApiController {
                 CommonUser commonUser = commonUserService.findUserByOpenId(errorResp.getOpenid());
                 boolean islogin = commonUserService.isLogin(errorResp.getOpenid());
                 boolean isbind = commonUserService.isBind(errorResp.getOpenid());
-                String token = TokenUtil.createJwtToken(errorResp.getOpenid());
                 if (!ObjectUtils.isEmpty(commonUser)) {
                     if (isbind) {
                         data.setIsbind("1");
@@ -1034,6 +1048,7 @@ public class UniversalApiController {
                         resp.setMsg("登陆成功").setCode("1").setData(data);
                     }
                 } else {
+                    String token = TokenUtil.createJwtToken(errorResp.getOpenid());
                     CommonUser auth = new CommonUser();
                     auth.setOpenid(errorResp.getOpenid());
                     auth.setToken(token);

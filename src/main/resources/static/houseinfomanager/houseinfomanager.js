@@ -34,12 +34,12 @@ layui.use(['layer', 'table'], function () {
         var data = obj.data; //获得当前行数据
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr; //获得当前行 tr 的DOM对象
-
+        console.log(data)
         if (layEvent === 'assessor') { //审核
             layer.open({
                 title:'审核房源信息',
                 type: 2,
-                content: '/review',
+                content: '/review?id='+data.id,
                 area: screen() < 2 ? ['90%', '80%'] : ['1280px', '720px'],
             });
 

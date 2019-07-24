@@ -134,7 +134,7 @@ public class AgentUserServiceImpl implements AgentUserService {
 
     @Override
     public Integer getVerifyCode(String telphone,String token) {
-        AgentUser agentUser = agentUserDao.findRegisterUser(telphone,token);
+        AgentUser agentUser = agentUserDao.findAgentUserByTokenAndIsbind(token,0);
         String code = AlicomDysmsUtil.getCode();
         if(!ObjectUtils.isEmpty(agentUser)){
 

@@ -30,8 +30,10 @@ oss:
 
 #微信小程序参数
 wx:
-  appid: wxade7a1fdaa226cea
-  secret: 8d8076a823f38d771087912c1625e04a
+  appid: wx5f157f9f66ff10d8
+  secret: 0c8f2a1d0ac28e9bd0a7be846da401b3
+  agent_appid: wxbd2bc847eb6223b5
+  agent_secret: 2cf684e07568a5a177c9e4462a77ae8a
 
 tencent:
   key: P6DBZ-PYJ6S-7SMO4-6YSGV-EV6W6-37BSV

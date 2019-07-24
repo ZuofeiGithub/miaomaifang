@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface HouseImgService {
     List<HouseImg> findHouseImg(Integer house_id);
+
+    boolean save(Integer houseid, String imgurl);
 }

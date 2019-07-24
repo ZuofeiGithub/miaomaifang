@@ -45,7 +45,8 @@ public class AliyunOSSUtil {
             }
 
             //创建文件路径
-            String fileUrl = fileHost + "/" + (dateStr + "/" + UUID.randomUUID().toString().replace("-", "") + "-" + file.getName());
+            //String fileUrl = fileHost + "/" + (dateStr + "/" + UUID.randomUUID().toString().replace("-", "") + "-" + file.getName());
+            String fileUrl = fileHost + "/" + file.getName();
             //上传文件
             PutObjectResult request = ossClient.putObject(new PutObjectRequest(bucketName, fileUrl, file));
             //设置权限 这里是公开读

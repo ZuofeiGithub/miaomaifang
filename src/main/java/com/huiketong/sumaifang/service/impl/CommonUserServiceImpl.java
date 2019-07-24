@@ -16,24 +16,32 @@ public class CommonUserServiceImpl implements CommonUserService {
     CommonUserDao commonUserDao;
 
     @Override
-    public boolean login(String userid, String code, String token,String nickname) {
-        CommonUser commonUser = commonUserDao.findCommonUserByUserTelphone(userid);
-        if(!ObjectUtils.isEmpty(commonUser)){
+    public Integer login(String userid, String code, String token, String nickname) {
+        CommonUser commonUser = commonUserDao.findCommonUserByTokenAndIsbind(token,false);
+        if (!ObjectUtils.isEmpty(commonUser)) {
             //commonUserDao.updateTelphoneVerifyCode(userid,code,token);
-            if(!ObjectUtils.isEmpty(nickname))
-            commonUserDao.updateBindStatusByTelphoneAndToken(userid,token,nickname);
-            else{
-                commonUserDao.updateBindStatusByTelphoneAndToken(userid,token);
+            if(commonUser.getVerifyCode() != null) {
+                if (commonUser.getVerifyCode().equals(code)) {
+                    if (!ObjectUtils.isEmpty(nickname))
+                        commonUserDao.updateBindStatusByTelphoneAndToken(userid, token, nickname);
+                    else {
+                        commonUserDao.updateBindStatusByTelphoneAndToken(userid, token);
+                    }
+                    return 1;
+                } else {
+                    return 2;
+                }
+            }else{
+                return 4;
             }
-            return true;
-        }else{
-            return false;
+        } else {
+            return 3;
         }
     }
 
     @Override
     public boolean saveUser(String telphone, String verifyCode, String token) {
-        CommonUser commonUser = commonUserDao.findCommonUserByTokenAndIsbind(token,false);
+        CommonUser commonUser = commonUserDao.findCommonUserByTokenAndIsbind(token, false);
         if (commonUser == null) {
             commonUser = new CommonUser();
             commonUser.setUserTelphone(telphone);
@@ -83,14 +91,14 @@ public class CommonUserServiceImpl implements CommonUserService {
     @Override
     public boolean isBind(String openid) {
         CommonUser commonUser = commonUserDao.findUserByOpenId(openid);
-        if(!ObjectUtils.isEmpty(commonUser)) {
-            CommonUser auth = commonUserDao.findCommonUserByUserTelphone(commonUser.getUserTelphone());
+        if (!ObjectUtils.isEmpty(commonUser)) {
+            CommonUser auth = commonUserDao.findCommonUserByOpenidAndUserTelphone(openid,commonUser.getUserTelphone());
             if (ObjectUtils.isEmpty(auth)) {
                 return false;
             } else {
                 return auth.isIsbind();
             }
-        }else{
+        } else {
             return false;
         }
     }
@@ -106,7 +114,7 @@ public class CommonUserServiceImpl implements CommonUserService {
 
     @Override
     public CommonUser findMine(String token) {
-        return commonUserDao.findCommonUserByTokenAndIsbind(token,true);
+        return commonUserDao.findCommonUserByTokenAndIsbind(token, true);
     }
 
     @Override
@@ -114,7 +122,7 @@ public class CommonUserServiceImpl implements CommonUserService {
         try {
             commonUserDao.updateBindStatusByToken(token);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -125,11 +133,11 @@ public class CommonUserServiceImpl implements CommonUserService {
     }
 
     @Override
-    public boolean modifyNickName(String name,Integer id) {
+    public boolean modifyNickName(String name, Integer id) {
         try {
-            commonUserDao.updateNickName(name,id);
+            commonUserDao.updateNickName(name, id);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -137,5 +145,10 @@ public class CommonUserServiceImpl implements CommonUserService {
     @Override
     public CommonUser findUserByOpenId(String openid) {
         return commonUserDao.findUserByOpenId(openid);
+    }
+
+    @Override
+    public CommonUser findUserByOpenIdAndTelphone(String openid, String telphone) {
+        return commonUserDao.findCommonUserByOpenidAndUserTelphone(openid,telphone);
     }
 }

@@ -33,7 +33,8 @@ public class BiotopeServiceImpl implements BiotopeService {
 
     @Override
     public List<Biotope> findBiotopList(String cityId, String name) {
-        return biotopeDao.findBiotopesByCityidAndNameLike(cityId,name);
+        return biotopeDao.findBiotopesByCityidAndNameLike(cityId,"%"+name+"%");
+
     }
 
 

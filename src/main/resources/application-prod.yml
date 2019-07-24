@@ -32,6 +32,8 @@ oss:
 wx:
   appid: wx5f157f9f66ff10d8
   secret: 0c8f2a1d0ac28e9bd0a7be846da401b3
+  agent_appid: wxbd2bc847eb6223b5
+  agent_secret: 2cf684e07568a5a177c9e4462a77ae8a
 
 tencent:
   key: P6DBZ-PYJ6S-7SMO4-6YSGV-EV6W6-37BSV

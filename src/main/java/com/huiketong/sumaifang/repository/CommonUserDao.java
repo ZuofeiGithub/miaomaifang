@@ -97,4 +97,6 @@ public interface CommonUserDao extends JpaRepository<CommonUser,Integer> {
     @Modifying
     @Transactional
     void updateNickName(String nickname,Integer id);
+
+    CommonUser findCommonUserByOpenidAndUserTelphone(String openid,String telphone);
 }
