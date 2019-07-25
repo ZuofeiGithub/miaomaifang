@@ -23,9 +23,9 @@ layui.use(['form','layarea'], function(){
                 if(resp.code == 0){
                     layer.msg("开通成功");
                 }
-            })
+            });
 
-        }
+        });
         return false;
     });
 });

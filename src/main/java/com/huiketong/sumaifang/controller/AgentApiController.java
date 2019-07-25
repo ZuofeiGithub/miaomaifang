@@ -293,7 +293,7 @@ public class AgentApiController {
                 if (houseImgList.size() > 0) {
                     List<String> house_img_url = new ArrayList<>();
                     for (HouseImg img : houseImgList) {
-                        house_img_url.add(img.getImgurl());
+                        house_img_url.add(img.getImgurl() == null ? "":img.getImgurl());
                     }
                     data.setHouse_img_list(house_img_url);
                 }
@@ -320,7 +320,7 @@ public class AgentApiController {
 
                 RestTemplate restTemplate = new RestTemplate();
                 Map<String, String> map = new HashMap<>();
-                map.put("address", houseInfo.getHouseDetailAddress());
+                map.put("address", houseInfo.getHouseDetailAddress() == null ? "南通市崇川区中江电商港九鼎装饰":houseInfo.getHouseDetailAddress());
                 map.put("key", TencentProperties.KEY);
                 GeoCoderResp geoCoderResp = restTemplate.getForObject(TencentUrl.GEOCODERURL, GeoCoderResp.class, map);
                 if (geoCoderResp.getStatus() == 0) {

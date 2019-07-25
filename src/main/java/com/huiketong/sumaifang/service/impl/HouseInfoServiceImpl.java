@@ -114,16 +114,16 @@ public class HouseInfoServiceImpl implements HouseInfoService {
             if (houseInfoList.size() > 0) {
                 for (HouseInfo houseInfo1 : houseInfoList) {
                     SameSellHouseData data = new SameSellHouseData();
-                    data.setHouse_area(houseInfo1.getHouseArea().toString());
+                    data.setHouse_area(houseInfo1.getHouseArea() == null ? "0":houseInfo1.getHouseArea().toString());
                     data.setHouse_id(houseInfo1.getId());
                     List<HouseImg> houseImgList = houseImgDao.findHouseImgsByHouseId(house_id);
                     if (houseImgList.size() > 0) {
                         data.setHouse_img(houseImgList.get(0).getImgurl());
                     }
-                    data.setHouse_layout(houseInfo1.getHouseLayout());
-                    data.setHouse_orientation(houseInfo1.getHouseOrientation());
-                    data.setHouse_total_price(houseInfo1.getHouseTotalPrice().toString());
-                    data.setHouse_unit_price(houseInfo1.getHouseUnitPrice().toString());
+                    data.setHouse_layout(houseInfo1.getHouseLayout()==null ? "":houseInfo1.getHouseLayout());
+                    data.setHouse_orientation(houseInfo1.getHouseOrientation() == null ? "":houseInfo1.getHouseOrientation());
+                    data.setHouse_total_price(houseInfo1.getHouseTotalPrice() == null ? "0":houseInfo1.getHouseTotalPrice().toString());
+                    data.setHouse_unit_price(houseInfo1.getHouseUnitPrice() == null ? "0":houseInfo1.getHouseUnitPrice().toString());
                     sellHouseDataList.add(data);
                 }
             }
@@ -147,10 +147,11 @@ public class HouseInfoServiceImpl implements HouseInfoService {
                         data.setHouse_img(houseImgList.get(0).getImgurl());
                     }
                     data.setHouse_layout(houseInfo1.getHouseLayout());
-                    data.setHouse_orientation(houseInfo1.getHouseOrientation());
-                    data.setHouse_total_price(houseInfo1.getHouseTotalPrice().toString());
-                    data.setHouse_unit_price(houseInfo1.getHouseUnitPrice().toString());
+                    data.setHouse_orientation(houseInfo1.getHouseOrientation() == null ? "":houseInfo1.getHouseOrientation());
+                    data.setHouse_total_price(houseInfo1.getHouseTotalPrice() == null ? "0":houseInfo1.getHouseTotalPrice().toString());
+                    data.setHouse_unit_price(houseInfo1.getHouseUnitPrice() == null ? "0":houseInfo1.getHouseUnitPrice().toString());
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+                    if(!ObjectUtils.isEmpty(houseInfo1.getWorkOffTime()))
                     data.setWork_off_time(dateFormat.format(houseInfo1.getWorkOffTime()));
                     sellHouseDataList.add(data);
                 }

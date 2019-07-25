@@ -8,4 +8,6 @@ public interface BiotopeService {
     boolean saveBiotopeInfo(String areaId,String name);
 
     List<Biotope>  findBiotopList(String cityId,String name);
+
+    List<Biotope> findBiotopList(String cityId);
 }

@@ -37,5 +37,10 @@ public class BiotopeServiceImpl implements BiotopeService {
 
     }
 
+    @Override
+    public List<Biotope> findBiotopList(String cityId) {
+        return biotopeDao.findAllByCityid(cityId);
+    }
+
 
 }

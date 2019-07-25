@@ -1,7 +1,11 @@
 package com.huiketong.sumaifang.controller;
 
+import com.huiketong.sumaifang.domain.Biotope;
+import com.huiketong.sumaifang.domain.Cities;
 import com.huiketong.sumaifang.domain.HouseImg;
 import com.huiketong.sumaifang.domain.HouseInfo;
+import com.huiketong.sumaifang.service.BiotopeService;
+import com.huiketong.sumaifang.service.CitiesService;
 import com.huiketong.sumaifang.service.HouseImgService;
 import com.huiketong.sumaifang.service.HouseInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,10 @@ public class ViewPageController {
     HouseInfoService houseInfoService;
     @Autowired
     HouseImgService houseImgService;
+    @Autowired
+    CitiesService citiesService;
+    @Autowired
+    BiotopeService biotopeService;
     @GetMapping("/login")
     public String login(){
         return "/login/login";
@@ -68,5 +76,21 @@ public class ViewPageController {
     @GetMapping("/setting")
     public String setting(){
         return "setting/setting";
+    }
+
+    @GetMapping("/add_house")
+    public String addHouse(Model model){
+        Cities cities = citiesService.findCityByName("南通市");
+        if(!ObjectUtils.isEmpty(cities)) {
+            List<Biotope> biotopeList = biotopeService.findBiotopList(cities.getCityid());
+            if(biotopeList.size() >0 ){
+                List<String> district = new ArrayList<>();
+                for(Biotope biotope:biotopeList){
+                    district.add(biotope.getName());
+                }
+                model.addAttribute("districts",district);
+            }
+        }
+        return "houseinfomanager/add_house";
     }
 }

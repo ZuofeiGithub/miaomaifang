@@ -10,9 +10,15 @@
 <div class="layui-card">
     <blockquote  class="layui-card-header layui-elem-quote">房源管理</blockquote >
     <div class="layui-card-body">
-        <table id="house_manager_id" lay-skin="line" lay-filter="house_manager_filter"></table>
+        <table class="layui-hide" id="house_manager_id" lay-skin="line" lay-filter="housefilter"></table>
     </div>
 </div>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add_house">添加房源</button>
+    </div>
+</script>
 <script type="text/html" id="houseInfo_tool_bar">
     <div class="layui-btn-group">
         {{#  if(d.assessor == 2){ }}

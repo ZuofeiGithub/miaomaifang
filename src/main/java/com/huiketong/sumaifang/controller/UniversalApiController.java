@@ -875,7 +875,7 @@ public class UniversalApiController {
             //获取地址坐标
             RestTemplate restTemplate = new RestTemplate();
             Map<String, String> map = new HashMap<>();
-            map.put("address", houseInfo.getHouseDetailAddress());
+            map.put("address", houseInfo.getHouseDetailAddress() == null ? "":houseInfo.getHouseDetailAddress());
             map.put("key", TencentProperties.KEY);
             GeoCoderResp geoCoderResp = restTemplate.getForObject(TencentUrl.GEOCODERURL, GeoCoderResp.class, map);
             if (geoCoderResp.getStatus() == 0) {

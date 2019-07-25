@@ -6,6 +6,7 @@ import com.huiketong.sumaifang.repository.HousePriceDao;
 import com.huiketong.sumaifang.service.HousePriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,18 +31,19 @@ public class HousePriceServiceImpl implements HousePriceService {
 
 
                 DateFormat dateFormat = new SimpleDateFormat("MM/dd");
+                if(!ObjectUtils.isEmpty(housePrice.getOfferTime()))
                 timelist.add(dateFormat.format(housePrice.getOfferTime()));
 
 
-                pricelist.add(housePrice.getOfferPrice().toString());
+                pricelist.add(housePrice.getOfferPrice() == null ? "0":housePrice.getOfferPrice().toString());
                 data.setDatetimelist(timelist);
                 data.setPricelist(pricelist);
                 PriceTimeMachineData.MessageBean bean = new PriceTimeMachineData.MessageBean();
                 bean.setMsgtime(dateFormat.format(housePrice.getOfferTime()));
                 if(housePrice.getOfferType() == 1) {
-                    bean.setMsg("报价" + housePrice.getOfferPrice().toString() + "万元");
+                    bean.setMsg("报价" + housePrice.getOfferPrice() == null ? "0" :housePrice.getOfferPrice().toString() + "万元");
                 }else if(housePrice.getOfferType() == 2){
-                    bean.setMsg("调价"+housePrice.getOfferPrice().toString()+"万元");
+                    bean.setMsg("调价"+housePrice.getOfferPrice() == null ? "0":housePrice.getOfferPrice().toString()+"万元");
                 }
                 beanList.add(bean);
                 data.setMessages(beanList);
