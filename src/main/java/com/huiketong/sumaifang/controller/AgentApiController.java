@@ -9,13 +9,11 @@ import com.huiketong.sumaifang.domain.Attention;
 import com.huiketong.sumaifang.domain.HouseImg;
 import com.huiketong.sumaifang.domain.HouseInfo;
 import com.huiketong.sumaifang.service.*;
+import com.huiketong.sumaifang.utils.AliyunOSSUtil;
 import com.huiketong.sumaifang.utils.DateUtil;
 import com.huiketong.sumaifang.utils.MD5Util;
 import com.huiketong.sumaifang.utils.PinyinUtil;
-import com.huiketong.sumaifang.vo.BaseResp;
-import com.huiketong.sumaifang.vo.GeoCoderResp;
-import com.huiketong.sumaifang.vo.LocationResp;
-import com.huiketong.sumaifang.vo.WxErrorResp;
+import com.huiketong.sumaifang.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -176,12 +177,30 @@ public class AgentApiController {
      * @return
      */
     @PostMapping(value = "/modify_info")
-    public BaseResp modifyInfo(String token, String headimg, String wx_account, String telphone, String company, String stores, String introduce) {
+    public BaseResp modifyInfo(String token, MultipartFile  headimg, String wx_account, String telphone, String company, String stores, String introduce) {
         BaseResp resp = new BaseResp();
+        String imageUrl = null;
+        try {
+            if(null != headimg){
+                String filename = headimg.getOriginalFilename();
+                if(!"".equals(filename.trim())){
+                    File newfile = new File(filename);
+                    FileOutputStream os  = new FileOutputStream(newfile);
+                    os.write(headimg.getBytes());
+                    os.close();
+                    headimg.transferTo(newfile);
+                    //上传到OSS
+                   imageUrl = AliyunOSSUtil.upload(newfile);
+
+                }
+            }
+        }catch (Exception ex){
+
+        }
         AgentUser agentUser = agentUserService.findbindUserByToken(token);
         if (!ObjectUtils.isEmpty(agentUser)) {
-            agentUserService.updateUserInfo(headimg == null || headimg == "" ? agentUser.getAvatarUrl() : headimg, wx_account == null || wx_account == "" ? agentUser.getWxaccount() : wx_account,
-                    telphone == null || telphone == "" ? agentUser.getUserPhone() : telphone, company == null || company == "" ? agentUser.getCompanyInfo() : company,
+            agentUserService.updateUserInfo(imageUrl == null ? agentUser.getAvatarUrl():imageUrl, wx_account == null || wx_account == "" ? agentUser.getWxaccount() : wx_account,
+                    telphone == null || telphone == "" ? agentUser.getCallTelphone() : telphone, company == null || company == "" ? agentUser.getCompanyInfo() : company,
                     stores == null || stores == "" ? agentUser.getStores() : stores, introduce == null || introduce == "" ? agentUser.getIntroduce() : introduce, token);
             resp.setCode("1").setMsg("修改信息成功");
         } else {
@@ -629,7 +648,7 @@ public class AgentApiController {
             data.setIntroduce(agentUser.getIntroduce() == null ? "":agentUser.getIntroduce());
             data.setName(agentUser.getUserName() == null ? "":agentUser.getUserName());
             data.setShop(agentUser.getStores() == null ? "":agentUser.getStores());
-            data.setTelphone(agentUser.getUserPhone() == null ? "":agentUser.getUserPhone());
+            data.setTelphone(agentUser.getCallTelphone() == null ? "":agentUser.getCallTelphone());
             data.setWxaccount(agentUser.getWxaccount() == null ? "":agentUser.getWxaccount());
             resp.setCode("1").setMsg("获取用户信息成功").setData(data);
         }else{

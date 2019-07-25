@@ -54,6 +54,7 @@ public class HouseInfoTableResp {
         Double houseArea;
         Double housePrice;
         Integer assessor;
+        boolean SaleStop;
 
         public Integer getId() {
             return id;
@@ -93,6 +94,14 @@ public class HouseInfoTableResp {
 
         public void setAssessor(Integer assessor) {
             this.assessor = assessor;
+        }
+
+        public boolean isSaleStop() {
+            return SaleStop;
+        }
+
+        public void setSaleStop(boolean saleStop) {
+            SaleStop = saleStop;
         }
     }
 }

@@ -15,8 +15,8 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
     @Override
     <S extends HouseInfo> S save(S s);
 
-    @Override
-    List<HouseInfo> findAll();
+    @Query(value = "select * from house_info limit ?1,?2",nativeQuery = true)
+    List<HouseInfo> findAllByLimit(Integer page,Integer limit);
 
     @Query(value = "select * from house_info where token = ?1 limit ?2,?3",nativeQuery = true)
     List<HouseInfo> findHouseInfosByTokenLimit(String token,Integer page,Integer limit);
@@ -80,4 +80,8 @@ public interface HouseInfoDao extends JpaRepository<HouseInfo,Integer> {
     @Query(value = "select * from house_info where house_city = ?1 and  sale_stop = 1 and assessor = 1 limit ?2,?3",nativeQuery = true)
     List<HouseInfo> findSellHouseByCity(String cityname,Integer page,Integer limit);
 
+    @Query(value = "update house_info set air_source_expense = ?2,property_rights_type = ?3,maintenance_funds = ?4,residence_booklet= ?5,house_layout = ?6,house_tier = ?7,house_orientation = ?8,house_use = ?9,sell_house_reason = ?10,two_taxes_assume = ?11,assessor = 1 where id = ?1",nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateInfoByHouseId(Integer houseid, Integer air, String property_rights_type, Integer maintain, String residence_booklet, String layout, String floor, String orientation, String use, String sell_house_reason, Integer two_taxes_assume);
 }

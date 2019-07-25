@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.List;
+
 
 @Service
 public class CommonUserServiceImpl implements CommonUserService {
@@ -117,6 +119,7 @@ public class CommonUserServiceImpl implements CommonUserService {
         return commonUserDao.findCommonUserByTokenAndIsbind(token, true);
     }
 
+
     @Override
     public boolean unBind(String token) {
         try {
@@ -150,5 +153,10 @@ public class CommonUserServiceImpl implements CommonUserService {
     @Override
     public CommonUser findUserByOpenIdAndTelphone(String openid, String telphone) {
         return commonUserDao.findCommonUserByOpenidAndUserTelphone(openid,telphone);
+    }
+
+    @Override
+    public List<CommonUser> findBuyersOnCity(String cityname) {
+        return commonUserDao.findCommonUsersOnCity(cityname);
     }
 }

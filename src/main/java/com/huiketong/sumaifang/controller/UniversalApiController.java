@@ -152,6 +152,8 @@ public class UniversalApiController {
 
         List<HeadlineNewsData> newsDataList = headlineService.findHeadlineByCity(city_name);
         data.setTipslist(newsDataList);
+        List<CommonUser> commonUserList = commonUserService.findBuyersOnCity(city_name);
+        data.setBuyer_num(String.valueOf(commonUserList.size()));
         resp.setCode("1").setMsg("获取首页信息成功").setData(data);
         return resp;
     }

@@ -1,9 +1,44 @@
 {
 	"contentManagement": [
 		{
-			"title": "房源管理",
+			"title": "基本设置",
+			"icon": "icon-text",
+			"href": "/setting",
+			"spread": false
+		},
+		{
+			"title": "轮播设置",
+			"icon": "icon-text",
+			"href": "",
+			"spread": false
+		},
+		{
+			"title": "小区管理",
+			"icon": "icon-text",
+			"href": "",
+			"spread": false
+		},
+		{
+			"title": "经纪人管理",
+			"icon": "icon-text",
+			"href": "",
+			"spread": false
+		},
+		{
+			"title": "门店管理",
+			"icon": "icon-text",
+			"href": "",
+			"spread": false
+		},
+		{
+			"title": "新房管理",
 			"icon": "icon-text",
 			"href": "/houseinfomanager",
+			"spread": false
+		},{
+			"title": "用户管理",
+			"icon": "icon-text",
+			"href": "",
 			"spread": false
 		}
 	],

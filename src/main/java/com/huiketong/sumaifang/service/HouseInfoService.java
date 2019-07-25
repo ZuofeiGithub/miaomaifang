@@ -10,7 +10,9 @@ import java.util.List;
 public interface HouseInfoService {
     Integer uploadHouseInfo(String little_district,String city_name,Double house_area,Double expect_price,String telphone,String token);
 
-    List<HouseInfo> getHouseInfoList();
+    List<HouseInfo> getHouseInfoList(Integer page,Integer limit);
+
+    List<HouseInfo> findAll();
 
     List<HouseInfo> findMyHouseList(String token,Integer page,Integer limit);
 
@@ -48,4 +50,6 @@ public interface HouseInfoService {
     List<HouseInfo> findRecommendHouse();
 
     List<HouseInfo> findIsSellHouse(String cityName, Integer page, Integer limit);
+
+    Integer approveHouse(Integer houseid, Integer air, String property_rights_type, Integer maintain, String residence_booklet, String s, String s1, String orientation, String use, String sell_house_reason, Integer two_taxes_assume);
 }

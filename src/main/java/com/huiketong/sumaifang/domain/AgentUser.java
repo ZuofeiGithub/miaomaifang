@@ -55,4 +55,6 @@ public class AgentUser {
     String stores;
     @Column(columnDefinition = "varchar(255) default '' comment '密码'")
     String password;
+    @Column(columnDefinition = "varchar(255) default '' comment '呼叫电话'")
+    String callTelphone;
 }

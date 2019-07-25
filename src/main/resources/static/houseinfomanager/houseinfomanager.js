@@ -17,16 +17,27 @@ layui.use(['layer', 'table'], function () {
             {
                 field: 'assessor', title: '是否审核', align: 'center', width: 100, templet: function (d) {
                     if (d.assessor == 2) {
-                        return "<a class='layui-btn-primary layui-btn-sm'>待审核</a>"
+                        return "<a class='layui-btn-primary layui-btn-sm'>待审</a>"
                     } else if(d.assessor == 1) {
-                        return "<a class='layui-btn-normal layui-btn-sm'>审核通过</a>"
+                        return "<a class='layui-btn-normal layui-btn-sm'>已审</a>"
                     } else if(d.assessor == 3){
-                        return "<a class='layui-btn-warm layui-btn-sm'>审核未通过</a>"
+                        return "<a class='layui-btn-warm layui-btn-sm'>被拒</a>"
                     }
                 }
             },
+            {
+                field:'SaleStop',title:'是否停售',align:'center',width:100,templet:function (d) {
+                    console.log(d.SaleStop);
+                }
+            },
             {fixed: 'right', title: '操作', align: "center", toolbar: '#houseInfo_tool_bar', width: 150}
-        ]]
+        ]],
+        page:true
+        ,text: {
+            none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+        }
+        ,limit:10
+        ,limits:[10,20,30,40,50,60,70,80,90]
     });
 
     //监听工具条
@@ -44,7 +55,7 @@ layui.use(['layer', 'table'], function () {
             });
 
         } else if (layEvent === 'sold_out') { //下架
-
+            //$.post()
         }
     });
 

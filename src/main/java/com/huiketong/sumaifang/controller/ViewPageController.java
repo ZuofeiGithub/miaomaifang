@@ -44,6 +44,11 @@ public class ViewPageController {
         HouseInfo houseInfo = houseInfoService.findMyHouseById(id);
         if(!ObjectUtils.isEmpty(houseInfo)){
             model.addAttribute("houseInfo",houseInfo);
+            model.addAttribute("room",houseInfo.getHouseLayout() == null ? "0":houseInfo.getHouseLayout().substring(0,1));
+            model.addAttribute("hall",houseInfo.getHouseLayout() == null ? "0":houseInfo.getHouseLayout().substring(2,3));
+            model.addAttribute("toilet",houseInfo.getHouseLayout() == null ? "0":houseInfo.getHouseLayout().substring(4,5));
+            model.addAttribute("tier",houseInfo.getHouseTier() == null ? "0":houseInfo.getHouseTier().substring(0,1));
+            model.addAttribute("all",houseInfo.getHouseTier() == null ? "0":houseInfo.getHouseTier().substring(2,3));
         }
         List<HouseImg> houseImgList = houseImgService.findHouseImg(id);
         if(houseImgList.size() > 0){
@@ -58,5 +63,10 @@ public class ViewPageController {
     @GetMapping("/imageupload")
     public String imageUpload(){
         return "imageupload";
+    }
+
+    @GetMapping("/setting")
+    public String setting(){
+        return "setting/setting";
     }
 }

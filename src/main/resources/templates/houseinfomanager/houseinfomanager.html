@@ -18,9 +18,13 @@
         {{#  if(d.assessor == 2){ }}
         <a class="layui-btn layui-btn-xs" lay-event="assessor">审核</a>
         {{#  } else { }}
-        <a class="layui-btn layui-btn-xs layui-disabled">已审核</a>
+        <a class="layui-btn layui-btn-xs layui-disabled">已审</a>
         {{#  } }}
+        {{# if(d.SaleStop == false){}}
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="sold_out">下架</a>
+        {{# } else if(d.SaleStop == true) {}}
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="sold_out">上架</a>
+        {{# }}}
     </div>
 </script>
 </body>

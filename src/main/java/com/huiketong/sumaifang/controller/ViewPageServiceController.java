@@ -76,11 +76,16 @@ public class ViewPageServiceController {
 
     @GetMapping(value = "get_house_info_list")
     @ResponseBody
-    public HouseInfoTableResp getHouseInfoList(){
+    public HouseInfoTableResp getHouseInfoList(Integer page,Integer limit){
         HouseInfoTableResp resp = new HouseInfoTableResp();
         List<HouseInfoTableResp.DataBean> dataBeanList = new ArrayList<>();
-
-        List<HouseInfo> houseInfoList = houseInfoService.getHouseInfoList();
+        List<HouseInfo> allhouseInfo = houseInfoService.findAll();
+        if(allhouseInfo.size() > 0){
+            resp.setCount(allhouseInfo.size());
+        }
+        resp.setCode(0);
+        resp.setMsg("");
+        List<HouseInfo> houseInfoList = houseInfoService.getHouseInfoList(page,limit);
         if(houseInfoList.size() > 0){
             for(HouseInfo houseInfo:houseInfoList){
                 HouseInfoTableResp.DataBean dataBean = new HouseInfoTableResp.DataBean();
@@ -89,6 +94,7 @@ public class ViewPageServiceController {
                 dataBean.setHouseArea(houseInfo.getHouseArea());
                 dataBean.setHousePrice(houseInfo.getHouseTotalPrice());
                 dataBean.setAssessor(houseInfo.getAssessor());
+                dataBean.setSaleStop(houseInfo.isSaleStop());
                 dataBeanList.add(dataBean);
             }
         }
@@ -138,7 +144,22 @@ public class ViewPageServiceController {
     public BaseResp approve(Integer houseid,Integer air,String property_rights_type,Integer maintain,String residence_booklet,Integer room,Integer hall,Integer toilet,Integer tier,Integer all,String orientation,
     String use,String sell_house_reason,Integer two_taxes_assume){
         BaseResp resp = new BaseResp();
-        System.out.println(houseid);
+
+       Integer result = houseInfoService.approveHouse(houseid,air,property_rights_type,maintain,residence_booklet,room+"室"+hall+"厅"+toilet+"卫",tier+"/"+all,orientation,use,sell_house_reason,two_taxes_assume);
+        switch (result){
+            case 0:
+                resp.setCode("0").setMsg("认证成功");
+                break;
+            case 1:
+                resp.setCode("1").setMsg("认证失败");
+                break;
+        }
+        return resp;
+    }
+
+    @PostMapping(value = "opencity")
+    public BaseResp openCity(String cityname){
+        BaseResp resp = new BaseResp();
         return resp;
     }
 }

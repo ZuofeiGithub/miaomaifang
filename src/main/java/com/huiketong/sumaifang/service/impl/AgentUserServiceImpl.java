@@ -78,7 +78,7 @@ public class AgentUserServiceImpl implements AgentUserService {
             if (!ObjectUtils.isEmpty(existUser)) { //如果存在用户
                 if(tel_code.equals(existUser.getPhoneCode())) {
                     Date registerTime = new Date();
-                    agentUserDao.updateUserInfo(city_name==null?existUser.getCityName():city_name , user_name == null?existUser.getUserName():user_name, user_telphone ==null?existUser.getUserPhone():user_telphone,
+                    agentUserDao.updateUserInfo(city_name==null?existUser.getCityName():city_name , user_name == null?existUser.getUserName():user_name, user_telphone ==null?existUser.getCallTelphone():user_telphone,
                             company ==null?existUser.getCompanyInfo():company, token, registerTime,1);
                 }else{
                     return 204;
@@ -140,7 +140,7 @@ public class AgentUserServiceImpl implements AgentUserService {
 
             try {
                 AlicomDysmsUtil.sendSms(telphone,code,"SMS_169898923");
-                agentUserDao.updateVerifyCode(code,telphone);
+                agentUserDao.updateVerifyCode(code,telphone,token,0);
                 return 0;
             } catch (Exception e) {
                 return 2;

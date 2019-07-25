@@ -70,7 +70,12 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     }
 
     @Override
-    public List<HouseInfo> getHouseInfoList() {
+    public List<HouseInfo> getHouseInfoList(Integer page,Integer limit) {
+        return houseInfoDao.findAllByLimit((page-1)*limit,limit);
+    }
+
+    @Override
+    public List<HouseInfo> findAll() {
         return houseInfoDao.findAll();
     }
 
@@ -277,5 +282,16 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     @Override
     public List<HouseInfo> findIsSellHouse(String cityName, Integer page, Integer limit) {
         return houseInfoDao.findSellHouseByCity( cityName,(page-1)*limit,limit);
+    }
+
+    @Override
+    public Integer approveHouse(Integer houseid, Integer air, String property_rights_type, Integer maintain, String residence_booklet, String layout, String floor, String orientation, String use, String sell_house_reason, Integer two_taxes_assume) {
+        try {
+            houseInfoDao.updateInfoByHouseId(houseid,air,property_rights_type,maintain,residence_booklet,layout,floor,orientation,use,sell_house_reason,two_taxes_assume);
+            return 0;
+        }catch (Exception e){
+            return 1;
+        }
+
     }
 }

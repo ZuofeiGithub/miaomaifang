@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 public interface CommonUserDao extends JpaRepository<CommonUser,Integer> {
@@ -99,4 +100,7 @@ public interface CommonUserDao extends JpaRepository<CommonUser,Integer> {
     void updateNickName(String nickname,Integer id);
 
     CommonUser findCommonUserByOpenidAndUserTelphone(String openid,String telphone);
+
+    @Query(value = "select * from common_user where city = ?1",nativeQuery = true)
+    List<CommonUser> findCommonUsersOnCity(String cityname);
 }

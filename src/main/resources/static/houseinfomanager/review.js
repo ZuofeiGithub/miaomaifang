@@ -77,7 +77,13 @@ layui.use(['form', 'layedit', 'laydate','upload'], function(){
         // })
         data.field.houseid = house_id;
         $.post("/back/approve",data.field,function (resp) {
-            
+            if(resp.code == "0"){
+                layer.msg(resp.msg);
+            }else{
+                layer.msg(resp.msg);
+            }
+            form.render();
+
         })
         return false;
     });
@@ -123,14 +129,13 @@ layui.use(['form', 'layedit', 'laydate','upload'], function(){
     upload.render({
         elem: '#addZmImg'
         , url: '/upload/upload_image'
+        ,accept: 'file'
         ,auto:false
         ,bindAction:'#uploadimg'
         , multiple: true
         ,choose: function(obj){
             //将每次选择的文件追加到文件队列
-            var files = obj.pushFile();
-            console.log(files)
-
+            var files = this.files = obj.pushFile();
             //预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
             obj.preview(function(index, file, result){
                 // console.log(index); //得到文件索引
@@ -138,13 +143,13 @@ layui.use(['form', 'layedit', 'laydate','upload'], function(){
                 // console.log(result); //得到文件base64编码，比如图片
                 $('#imgZmList').prepend('<li style="position:relative"><img name="imgZmList" src="' + result + '"width="150" height="113"><div class="title_cover"  name="imgZmName" onclick="divClick(this)"></div><div class="img_close" id="del" onclick="deleteElement(this)">X</div></li>');
                 form.render();
-                imgMove("imgZmList");
+                //imgMove("imgZmList");
                 //obj.resetFile(index, file, '123.jpg'); //重命名文件名，layui 2.3.0 开始新增
 
                 //这里还可以做一些 append 文件列表 DOM 的操作
-                // $('#del').click(function () {
-                //     delete files[index];
-                // })
+                $('#del').click(function () {
+                    delete files[index];
+                })
                 //obj.upload(index, file); //对上传失败的单个文件重新上传，一般在某个事件中使用
                 //delete files[index]; //删除列表中对应的文件，一般在某个事件中使用
             });
@@ -157,8 +162,10 @@ layui.use(['form', 'layedit', 'laydate','upload'], function(){
             //     imgMove("imgZmList");
             // });
         }
-        , done: function (res) {
-            console.log(res);
+        , done: function (res,index, upload) {
+            if(res.code == 0) {
+                return delete this.files[index];
+            }
             $.post('/back/saveImg',{houseid:house_id,imgurl:res.data.src},function (resp) {
                     if(resp.code == "0"){
                         layer.msg(resp.msg);

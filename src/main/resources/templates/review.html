@@ -23,15 +23,15 @@
                 <label class="layui-form-label">气源费</label>
                 <div class="layui-input-inline">
                     <select name="air" lay-verify="required" lay-search="">
-                        <option value="1">已缴纳</option>
-                        <option value="0">未缴纳</option>
+                        <option th:selected="${houseInfo.airSourceExpense == true}" value="1">已缴纳</option>
+                        <option th:selected="${houseInfo.airSourceExpense == false}" value="0">未缴纳</option>
                     </select>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">产权类型</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="property_rights_type" lay-verify="property_rights_type" placeholder="" autocomplete="off"
+                    <input type="text" th:value="${houseInfo.propertyRightsType}" name="property_rights_type" lay-verify="property_rights_type" placeholder="" autocomplete="off"
                            class="layui-input">
                 </div>
             </div>
@@ -40,15 +40,15 @@
                 <label class="layui-form-label">维修基金</label>
                 <div class="layui-input-inline">
                     <select name="maintain" lay-verify="required" lay-search="">
-                        <option value="1">已缴纳</option>
-                        <option value="0">未缴纳</option>
+                        <option th:selected="${houseInfo.maintenanceFunds == true}" value="1">已缴纳</option>
+                        <option th:selected="${houseInfo.maintenanceFunds == false}" value="0">未缴纳</option>
                     </select>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">有无户口</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="residence_booklet" lay-verify="residence_booklet" placeholder="" autocomplete="off"
+                    <input type="text" th:value="${houseInfo.residenceBooklet}" name="residence_booklet" lay-verify="residence_booklet" placeholder="" autocomplete="off"
                            class="layui-input">
                 </div>
             </div>
@@ -57,46 +57,46 @@
                     <label class="layui-form-label">房屋布局</label>
                     <div class="layui-input-inline" style="width: 100px;">
                         <select name="room" lay-verify="required" lay-search="">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
+                            <option th:selected="${room == '0'}" value="0">0</option>
+                            <option th:selected="${room == '1'}" value="1">1</option>
+                            <option th:selected="${room == '2'}" value="2">2</option>
+                            <option th:selected="${room == '3'}" value="3">3</option>
+                            <option th:selected="${room == '4'}" value="4">4</option>
+                            <option th:selected="${room == '5'}" value="5">5</option>
+                            <option th:selected="${room == '6'}" value="6">6</option>
+                            <option th:selected="${room == '7'}" value="7">7</option>
+                            <option th:selected="${room == '8'}" value="8">8</option>
+                            <option th:selected="${room == '9'}" value="9">9</option>
                         </select>
                     </div>
                     <div class="layui-form-mid">室</div>
                     <div class="layui-input-inline" style="width: 100px;">
                         <select name="hall" lay-verify="required" lay-search="">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
+                            <option th:selected="${hall == '0'}" value="0">0</option>
+                            <option th:selected="${hall == '1'}" value="1">1</option>
+                            <option th:selected="${hall == '2'}" value="2">2</option>
+                            <option th:selected="${hall == '3'}" value="3">3</option>
+                            <option th:selected="${hall == '4'}" value="4">4</option>
+                            <option th:selected="${hall == '5'}" value="5">5</option>
+                            <option th:selected="${hall == '6'}" value="6">6</option>
+                            <option th:selected="${hall == '7'}" value="7">7</option>
+                            <option th:selected="${hall == '8'}" value="8">8</option>
+                            <option th:selected="${hall == '9'}" value="9">9</option>
                         </select>
                     </div>
                     <div class="layui-form-mid">厅</div>
                     <div class="layui-input-inline" style="width: 100px;">
                         <select name="toilet" lay-verify="required" lay-search="">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
+                            <option th:selected="${toilet == '0'}" value="0">0</option>
+                            <option th:selected="${toilet == '1'}" value="1">1</option>
+                            <option th:selected="${toilet == '2'}" value="2">2</option>
+                            <option th:selected="${toilet == '3'}" value="3">3</option>
+                            <option th:selected="${toilet == '4'}" value="4">4</option>
+                            <option th:selected="${toilet == '5'}" value="5">5</option>
+                            <option th:selected="${toilet == '6'}" value="6">6</option>
+                            <option th:selected="${toilet == '7'}" value="7">7</option>
+                            <option th:selected="${toilet == '8'}" value="8">8</option>
+                            <option th:selected="${toilet == '9'}" value="9">9</option>
                         </select>
                     </div>
                     <div class="layui-form-mid">卫</div>
@@ -108,73 +108,73 @@
                     <label class="layui-form-label">房屋层级</label>
                     <div class="layui-input-inline" style="width: 100px;">
                         <select name="tier" lay-verify="required" lay-search="">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                            <option value="21">21</option>
-                            <option value="22">22</option>
-                            <option value="23">23</option>
-                            <option value="24">24</option>
-                            <option value="25">25</option>
-                            <option value="26">26</option>
-                            <option value="27">27</option>
-                            <option value="28">28</option>
-                            <option value="29">29</option>
-                            <option value="30">30</option>
+                            <option th:selected="${tier == '0'}" value="0">0</option>
+                            <option th:selected="${tier == '1'}" value="1">1</option>
+                            <option th:selected="${tier == '2'}" value="2">2</option>
+                            <option th:selected="${tier == '3'}" value="3">3</option>
+                            <option th:selected="${tier == '4'}" value="4">4</option>
+                            <option th:selected="${tier == '5'}" value="5">5</option>
+                            <option th:selected="${tier == '6'}" value="6">6</option>
+                            <option th:selected="${tier == '7'}" value="7">7</option>
+                            <option th:selected="${tier == '8'}" value="8">8</option>
+                            <option th:selected="${tier == '9'}" value="9">9</option>
+                            <option th:selected="${tier == '10'}" value="10">10</option>
+                            <option th:selected="${tier == '11'}" value="11">11</option>
+                            <option th:selected="${tier == '12'}" value="12">12</option>
+                            <option th:selected="${tier == '13'}" value="13">13</option>
+                            <option th:selected="${tier == '14'}" value="14">14</option>
+                            <option th:selected="${tier == '15'}" value="15">15</option>
+                            <option th:selected="${tier == '16'}" value="16">16</option>
+                            <option th:selected="${tier == '17'}" value="17">17</option>
+                            <option th:selected="${tier == '18'}" value="18">18</option>
+                            <option th:selected="${tier == '19'}" value="19">19</option>
+                            <option th:selected="${tier == '20'}" value="20">20</option>
+                            <option th:selected="${tier == '21'}" value="21">21</option>
+                            <option th:selected="${tier == '22'}" value="22">22</option>
+                            <option th:selected="${tier == '23'}" value="23">23</option>
+                            <option th:selected="${tier == '24'}" value="24">24</option>
+                            <option th:selected="${tier == '25'}" value="25">25</option>
+                            <option th:selected="${tier == '26'}" value="26">26</option>
+                            <option th:selected="${tier == '27'}" value="27">27</option>
+                            <option th:selected="${tier == '28'}" value="28">28</option>
+                            <option th:selected="${tier == '29'}" value="29">29</option>
+                            <option th:selected="${tier == '30'}" value="30">30</option>
                         </select>
                     </div>
                     <div class="layui-form-mid">/</div>
                     <div class="layui-input-inline" style="width: 100px;">
                         <select name="all" lay-verify="required" lay-search="">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                            <option value="21">21</option>
-                            <option value="22">22</option>
-                            <option value="23">23</option>
-                            <option value="24">24</option>
-                            <option value="25">25</option>
-                            <option value="26">26</option>
-                            <option value="27">27</option>
-                            <option value="28">28</option>
-                            <option value="29">29</option>
-                            <option value="30">30</option>
+                            <option th:selected="${all == '0'}" value="0">0</option>
+                            <option th:selected="${all == '1'}" value="1">1</option>
+                            <option th:selected="${all == '2'}" value="2">2</option>
+                            <option th:selected="${all == '3'}" value="3">3</option>
+                            <option th:selected="${all == '4'}" value="4">4</option>
+                            <option th:selected="${all == '5'}" value="5">5</option>
+                            <option th:selected="${all == '6'}" value="6">6</option>
+                            <option th:selected="${all == '7'}" value="7">7</option>
+                            <option th:selected="${all == '8'}" value="8">8</option>
+                            <option th:selected="${all == '9'}" value="9">9</option>
+                            <option th:selected="${all == '10'}" value="10">10</option>
+                            <option th:selected="${all == '11'}" value="11">11</option>
+                            <option th:selected="${all == '12'}" value="12">12</option>
+                            <option th:selected="${all == '13'}" value="13">13</option>
+                            <option th:selected="${all == '14'}" value="14">14</option>
+                            <option th:selected="${all == '15'}" value="15">15</option>
+                            <option th:selected="${all == '16'}" value="16">16</option>
+                            <option th:selected="${all == '17'}" value="17">17</option>
+                            <option th:selected="${all == '18'}" value="18">18</option>
+                            <option th:selected="${all == '19'}" value="19">19</option>
+                            <option th:selected="${all == '20'}" value="20">20</option>
+                            <option th:selected="${all == '21'}" value="21">21</option>
+                            <option th:selected="${all == '22'}" value="22">22</option>
+                            <option th:selected="${all == '23'}" value="23">23</option>
+                            <option th:selected="${all == '24'}" value="24">24</option>
+                            <option th:selected="${all == '25'}" value="25">25</option>
+                            <option th:selected="${all == '26'}" value="26">26</option>
+                            <option th:selected="${all == '27'}" value="27">27</option>
+                            <option th:selected="${all == '28'}" value="28">28</option>
+                            <option th:selected="${all == '29'}" value="29">29</option>
+                            <option th:selected="${all == '30'}" value="30">30</option>
                         </select>
                     </div>
                 </div>
@@ -198,7 +198,7 @@
 
                     <label class="layui-form-label">房屋用途</label>
                     <div class="layui-input-block">
-                        <input type="text" name="use" lay-verify="user" placeholder="" autocomplete="off"
+                        <input type="text" name="use" th:value="${houseInfo.houseUse}" lay-verify="user" placeholder="" autocomplete="off"
                                class="layui-input">
                     </div>
             </div>
@@ -206,7 +206,7 @@
 
                     <label class="layui-form-label">卖房原因</label>
                     <div class="layui-input-block">
-                        <input type="text" name="sell_house_reason" lay-verify="sell_house_reason" placeholder="" autocomplete="off"
+                        <input type="text" th:value="${houseInfo.sellHouseReason}" name="sell_house_reason" lay-verify="sell_house_reason" placeholder="" autocomplete="off"
                                class="layui-input">
                     </div>
 
@@ -216,8 +216,8 @@
                     <label class="layui-form-label">两税是否承担</label>
                     <div class="layui-input-block">
                         <select name="two_taxes_assume" lay-verify="required" lay-search="">
-                            <option value="0">不承担</option>
-                            <option value="1">承担</option>
+                            <option th:selected="${houseInfo.twoTaxesAssume == 0}" value="0">不承担</option>
+                            <option th:selected="${houseInfo.twoTaxesAssume == 1}" value="1">承担</option>
                         </select>
                     </div>
 

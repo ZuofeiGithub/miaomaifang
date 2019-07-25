@@ -3,6 +3,8 @@ package com.huiketong.sumaifang.service;
 
 import com.huiketong.sumaifang.domain.CommonUser;
 
+import java.util.List;
+
 public interface CommonUserService {
     Integer login(String userid, String code, String token, String nickname);
 
@@ -27,4 +29,6 @@ public interface CommonUserService {
     CommonUser findUserByOpenId(String openid);
 
     CommonUser findUserByOpenIdAndTelphone(String openid,String telphone);
+
+    List<CommonUser> findBuyersOnCity(String cityname);
 }
