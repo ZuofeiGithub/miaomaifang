@@ -7,10 +7,7 @@ import com.huiketong.sumaifang.constant.TencentUrl;
 import com.huiketong.sumaifang.data.*;
 import com.huiketong.sumaifang.domain.*;
 import com.huiketong.sumaifang.service.*;
-import com.huiketong.sumaifang.utils.AlicomDysmsUtil;
-import com.huiketong.sumaifang.utils.DateUtil;
-import com.huiketong.sumaifang.utils.PinyinUtil;
-import com.huiketong.sumaifang.utils.TokenUtil;
+import com.huiketong.sumaifang.utils.*;
 import com.huiketong.sumaifang.vo.BaseResp;
 import com.huiketong.sumaifang.vo.GeoCoderResp;
 import com.huiketong.sumaifang.vo.LocationResp;
@@ -875,13 +872,39 @@ public class UniversalApiController {
             //获取地址坐标
             RestTemplate restTemplate = new RestTemplate();
             Map<String, String> map = new HashMap<>();
-            map.put("address", houseInfo.getHouseDetailAddress() == null ? "":houseInfo.getHouseDetailAddress());
+            map.put("address", houseInfo.getHouseDetailAddress() == null ? "南通市":houseInfo.getHouseDetailAddress());
             map.put("key", TencentProperties.KEY);
             GeoCoderResp geoCoderResp = restTemplate.getForObject(TencentUrl.GEOCODERURL, GeoCoderResp.class, map);
             if (geoCoderResp.getStatus() == 0) {
                 data.setLatitude(String.valueOf(geoCoderResp.getResult().getLocation().getLat()));
                 data.setLongitude(String.valueOf(geoCoderResp.getResult().getLocation().getLng()));
             }
+
+            List<HouseImg> houseImgList = houseImgService.findHouseImg(house_id);
+            List<String> houseImgUrlList = new ArrayList<>();
+            if(houseImgList.size() > 0) {
+
+                for(HouseImg houseImg:houseImgList){
+                    houseImgUrlList.add(houseImg.getImgurl());
+                }
+                data.setHouseimgs(houseImgUrlList);
+            }else{
+                houseImgUrlList.add("https://sumaifang.oss-cn-hangzhou.aliyuncs.com/static/images/dynamic_banner_default.jpg");
+                data.setHouseimgs(houseImgUrlList);
+            }
+            data.setHouse_title_layout(houseInfo.getHouseTitle() == null ? "":houseInfo.getHouseTitle());
+            data.setBuilding_age(houseInfo.getBuildingAge() == null ? "2010":new SimpleDateFormat("YYYY").format(houseInfo.getBuildingAge()));
+            data.setHouse_area(houseInfo.getHouseArea() == null ? "0":houseInfo.getHouseArea().toString());
+            data.setHouse_address(houseInfo.getHouseAddress() == null ? "":houseInfo.getHouseAddress());
+            data.setDecorate_condition(houseInfo.getDecorateCondition() == null ? "":houseInfo.getDecorateCondition());
+            data.setHouse_layout(houseInfo.getHouseLayout() == null ? "":houseInfo.getHouseLayout());
+            data.setHouse_orientation(houseInfo.getHouseOrientation() == null ? "":houseInfo.getHouseOrientation());
+            data.setHouse_price(houseInfo.getHouseTotalPrice() == null ? "0":houseInfo.getHouseTotalPrice().toString());
+            data.setHouse_tier(houseInfo.getHouseTier() == null ? "0":houseInfo.getHouseTier());
+            data.setHouse_unit_price(houseInfo.getHouseUnitPrice() == null ? "0":houseInfo.getHouseUnitPrice().toString());
+            data.setHouse_use(houseInfo.getHouseUse() == null ? "":houseInfo.getHouseUse());
+            data.setHouselabel(houseInfo.getHouseLabel() == null ? "":houseInfo.getHouseLabel());
+            data.setProperty_rights_type(houseInfo.getPropertyRightsType() == null ? "有产权":houseInfo.getPropertyRightsType());
             PriceTimeMachineData priceTimeMachineData = housePriceService.findHouseData(house_id);
             data.setPrice_time_machine(priceTimeMachineData);
             List<SameSellHouseData> sameSellHouseDataList = houseInfoService.findSameSellHouse(house_id);
@@ -889,6 +912,7 @@ public class UniversalApiController {
 
             List<SameDealHouseData> sameDealHouseDataList = houseInfoService.findSameDealHouse(house_id);
             data.setSamedealhouse(sameDealHouseDataList);
+            resp.setMsg("获取房屋详情成功").setCode("1").setData(data);
         } else {
             resp.setCode("0").setMsg("没有房屋信息");
         }
@@ -953,7 +977,7 @@ public class UniversalApiController {
         BaseResp resp = new BaseResp();
         String code = AlicomDysmsUtil.getCode(); //验证码
         try {
-            AlicomDysmsUtil.sendSms(telphone, code, "SMS_169898923");
+            AlicomDysmsUtil.sendSms(telphone, code, "12");
             commonUserService.saveUser(telphone, code, token);
             resp.setCode("1").setMsg("获取验证码成功");
         } catch (ClientException e) {
@@ -1050,7 +1074,8 @@ public class UniversalApiController {
                         resp.setMsg("登陆成功").setCode("1").setData(data);
                     }
                 } else {
-                    String token = TokenUtil.createJwtToken(errorResp.getOpenid());
+//                    String token = TokenUtil.createJwtToken(errorResp.getOpenid());
+                    String token = MD5Util.MD5Encode(errorResp.getOpenid(),"utf8");
                     CommonUser auth = new CommonUser();
                     auth.setOpenid(errorResp.getOpenid());
                     auth.setToken(token);

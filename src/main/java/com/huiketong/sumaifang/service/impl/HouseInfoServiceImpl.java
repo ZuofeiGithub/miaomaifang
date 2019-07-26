@@ -10,7 +10,9 @@ import com.huiketong.sumaifang.domain.HouseInfo;
 import com.huiketong.sumaifang.repository.*;
 import com.huiketong.sumaifang.service.BiotopeService;
 import com.huiketong.sumaifang.service.HouseInfoService;
+import com.huiketong.sumaifang.utils.MD5Util;
 import com.huiketong.sumaifang.utils.TokenUtil;
+import jdk.nashorn.internal.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -52,11 +54,11 @@ public class HouseInfoServiceImpl implements HouseInfoService {
         if (!ObjectUtils.isEmpty(token)) {
             houseInfo.setToken(token);
         }
-        if(!ObjectUtils.isEmpty(telphone))
-        {
+        if (!ObjectUtils.isEmpty(telphone)) {
             CommonUser commonUser = commonUserDao.findCommonUserByUserTelphone(telphone);
             if (!ObjectUtils.isEmpty(commonUser)) {
-                houseInfo.setToken(TokenUtil.createJwtToken(commonUser.getOpenid()));
+                //houseInfo.setToken(TokenUtil.createJwtToken(commonUser.getOpenid()));\
+                houseInfo.setToken(MD5Util.MD5Encode(commonUser.getOpenid(),"utf8"));
             }
         }
         houseInfo.setCreateTime(new Date());
@@ -70,8 +72,8 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     }
 
     @Override
-    public List<HouseInfo> getHouseInfoList(Integer page,Integer limit) {
-        return houseInfoDao.findAllByLimit((page-1)*limit,limit);
+    public List<HouseInfo> getHouseInfoList(Integer page, Integer limit) {
+        return houseInfoDao.findAllByLimit((page - 1) * limit, limit);
     }
 
     @Override
@@ -81,7 +83,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
 
     @Override
     public List<HouseInfo> findMyHouseList(String token, Integer page, Integer limit) {
-        return houseInfoDao.findHouseInfosByTokenLimit(token, (page-1)*limit, limit);
+        return houseInfoDao.findHouseInfosByTokenLimit(token, (page - 1) * limit, limit);
     }
 
     @Override
@@ -114,16 +116,19 @@ public class HouseInfoServiceImpl implements HouseInfoService {
             if (houseInfoList.size() > 0) {
                 for (HouseInfo houseInfo1 : houseInfoList) {
                     SameSellHouseData data = new SameSellHouseData();
-                    data.setHouse_area(houseInfo1.getHouseArea() == null ? "0":houseInfo1.getHouseArea().toString());
+                    data.setHouse_area(houseInfo1.getHouseArea() == null ? "0" : houseInfo1.getHouseArea().toString());
                     data.setHouse_id(houseInfo1.getId());
                     List<HouseImg> houseImgList = houseImgDao.findHouseImgsByHouseId(house_id);
                     if (houseImgList.size() > 0) {
                         data.setHouse_img(houseImgList.get(0).getImgurl());
                     }
-                    data.setHouse_layout(houseInfo1.getHouseLayout()==null ? "":houseInfo1.getHouseLayout());
-                    data.setHouse_orientation(houseInfo1.getHouseOrientation() == null ? "":houseInfo1.getHouseOrientation());
-                    data.setHouse_total_price(houseInfo1.getHouseTotalPrice() == null ? "0":houseInfo1.getHouseTotalPrice().toString());
-                    data.setHouse_unit_price(houseInfo1.getHouseUnitPrice() == null ? "0":houseInfo1.getHouseUnitPrice().toString());
+                    else{
+                        data.setHouse_img("https://sumaifang.oss-cn-hangzhou.aliyuncs.com/static/images/dynamic_banner_default.jpg");
+                    }
+                    data.setHouse_layout(houseInfo1.getHouseLayout() == null ? "" : houseInfo1.getHouseLayout());
+                    data.setHouse_orientation(houseInfo1.getHouseOrientation() == null ? "" : houseInfo1.getHouseOrientation());
+                    data.setHouse_total_price(houseInfo1.getHouseTotalPrice() == null ? "0" : houseInfo1.getHouseTotalPrice().toString());
+                    data.setHouse_unit_price(houseInfo1.getHouseUnitPrice() == null ? "0" : houseInfo1.getHouseUnitPrice().toString());
                     sellHouseDataList.add(data);
                 }
             }
@@ -145,15 +150,19 @@ public class HouseInfoServiceImpl implements HouseInfoService {
                     List<HouseImg> houseImgList = houseImgDao.findHouseImgsByHouseId(house_id);
                     if (houseImgList.size() > 0) {
                         data.setHouse_img(houseImgList.get(0).getImgurl());
+                    }else{
+                        data.setHouse_img("https://sumaifang.oss-cn-hangzhou.aliyuncs.com/static/images/dynamic_banner_default.jpg");
                     }
-                    data.setHouse_layout(houseInfo1.getHouseLayout());
-                    data.setHouse_orientation(houseInfo1.getHouseOrientation() == null ? "":houseInfo1.getHouseOrientation());
-                    data.setHouse_total_price(houseInfo1.getHouseTotalPrice() == null ? "0":houseInfo1.getHouseTotalPrice().toString());
-                    data.setHouse_unit_price(houseInfo1.getHouseUnitPrice() == null ? "0":houseInfo1.getHouseUnitPrice().toString());
+                    data.setHouse_layout(houseInfo1.getHouseLayout() == null ? "南北":houseInfo1.getHouseLayout());
+                    data.setHouse_orientation(houseInfo1.getHouseOrientation() == null ? "" : houseInfo1.getHouseOrientation());
+                    data.setHouse_total_price(houseInfo1.getHouseTotalPrice() == null ? "0" : houseInfo1.getHouseTotalPrice().toString());
+                    data.setHouse_unit_price(houseInfo1.getHouseUnitPrice() == null ? "0" : houseInfo1.getHouseUnitPrice().toString());
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
-                    if(!ObjectUtils.isEmpty(houseInfo1.getWorkOffTime()))
-                    data.setWork_off_time(dateFormat.format(houseInfo1.getWorkOffTime()));
-                    sellHouseDataList.add(data);
+                    if (!ObjectUtils.isEmpty(houseInfo1.getWorkOffTime()))
+                        data.setWork_off_time(dateFormat.format(houseInfo1.getWorkOffTime()));
+                    else
+                        data.setWork_off_time(dateFormat.format(new Date()));
+                        sellHouseDataList.add(data);
                 }
             }
         }
@@ -166,12 +175,12 @@ public class HouseInfoServiceImpl implements HouseInfoService {
     }
 
     @Override
-    public boolean stopSale(Integer houseId,Integer salestop) {
+    public boolean stopSale(Integer houseId, Integer salestop) {
         try {
 
             HouseInfo houseInfo = houseInfoDao.findHouseInfoById(houseId);
             if (!ObjectUtils.isEmpty(houseInfo)) {
-                houseInfoDao.updateSaleStopById(houseId,salestop);
+                houseInfoDao.updateSaleStopById(houseId, salestop);
                 return true;
             } else {
                 return false;
@@ -273,6 +282,7 @@ public class HouseInfoServiceImpl implements HouseInfoService {
 
     /**
      * 平台推荐房源
+     *
      * @return
      */
     @Override
@@ -282,15 +292,15 @@ public class HouseInfoServiceImpl implements HouseInfoService {
 
     @Override
     public List<HouseInfo> findIsSellHouse(String cityName, Integer page, Integer limit) {
-        return houseInfoDao.findSellHouseByCity( cityName,(page-1)*limit,limit);
+        return houseInfoDao.findSellHouseByCity(cityName, (page - 1) * limit, limit);
     }
 
     @Override
     public Integer approveHouse(Integer houseid, Integer air, String property_rights_type, Integer maintain, String residence_booklet, String layout, String floor, String orientation, String use, String sell_house_reason, Integer two_taxes_assume) {
         try {
-            houseInfoDao.updateInfoByHouseId(houseid,air,property_rights_type,maintain,residence_booklet,layout,floor,orientation,use,sell_house_reason,two_taxes_assume);
+            houseInfoDao.updateInfoByHouseId(houseid, air, property_rights_type, maintain, residence_booklet, layout, floor, orientation, use, sell_house_reason, two_taxes_assume);
             return 0;
-        }catch (Exception e){
+        } catch (Exception e) {
             return 1;
         }
 

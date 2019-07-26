@@ -27,6 +27,11 @@ public class ViewPageController {
     CitiesService citiesService;
     @Autowired
     BiotopeService biotopeService;
+
+    @GetMapping("/")
+    public String index(){
+        return "index";
+    }
     @GetMapping("/login")
     public String login(){
         return "/login/login";
@@ -92,5 +97,15 @@ public class ViewPageController {
             }
         }
         return "houseinfomanager/add_house";
+    }
+
+    @GetMapping("record")
+    public String record(){
+        return "record_house";
+    }
+
+    @GetMapping("recorduser")
+    public String recordUser(){
+        return "record_user";
     }
 }

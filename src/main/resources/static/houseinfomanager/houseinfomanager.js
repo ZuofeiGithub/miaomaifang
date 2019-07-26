@@ -27,8 +27,12 @@ layui.use(['layer', 'table'], function () {
                 }
             },
             {
-                field:'SaleStop',title:'是否停售',align:'center',width:100,templet:function (d) {
-                    console.log(d.SaleStop);
+                field:'salestop',title:'是否停售',align:'center',width:100,templet:function (d) {
+                    if(d.salestop == false){
+                        return "<a class='layui-btn-primary'>未售</a>"
+                    }else{
+                        return "<a class='layui-btn-normal'>在售</a>"
+                    }
                 }
             },
             {fixed: 'right', title: '操作', align: "center", toolbar: '#houseInfo_tool_bar', width: 150}
@@ -68,6 +72,9 @@ layui.use(['layer', 'table'], function () {
                 type: 2,
                 content: '/review?id='+data.id,
                 area: screen() < 2 ? ['90%', '80%'] : ['1280px', '720px'],
+                cancel:function (index, layero) {
+                    table.reload('house_manager_id');
+                }
             });
 
         } else if (layEvent === 'sold_out') { //下架

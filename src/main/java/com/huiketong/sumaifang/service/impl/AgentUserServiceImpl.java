@@ -7,6 +7,7 @@ import com.huiketong.sumaifang.repository.AgentUserDao;
 import com.huiketong.sumaifang.repository.CitiesDao;
 import com.huiketong.sumaifang.service.AgentUserService;
 import com.huiketong.sumaifang.utils.AlicomDysmsUtil;
+import com.huiketong.sumaifang.utils.MD5Util;
 import com.huiketong.sumaifang.utils.PhoneFormatCheckUtil;
 import com.huiketong.sumaifang.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,8 @@ public class AgentUserServiceImpl implements AgentUserService {
 
     @Override
     public String updateToken(String openid) {
-        String token = TokenUtil.createJwtToken(openid);
+        //String token = TokenUtil.createJwtToken(openid);
+        String token = MD5Util.MD5Encode(openid,"utf8");
         agentUserDao.updatToken(token, openid);
         return token;
     }
@@ -42,7 +44,8 @@ public class AgentUserServiceImpl implements AgentUserService {
     @Override
     public String saveAgentInfo(String openid, String nickName, Integer gender, String language, String city, String province, String country, String avatarUrl) {
         AgentUser agentUser = new AgentUser();
-        String token = TokenUtil.createJwtToken(openid);
+//        String token = TokenUtil.createJwtToken(openid);
+        String token = MD5Util.MD5Encode(openid,"utf8");
         agentUser.setCertification(0);//未认证
         agentUser.setCityName(city == null ? "" : city);
         agentUser.setAvatarUrl(avatarUrl == null ? "" : city);

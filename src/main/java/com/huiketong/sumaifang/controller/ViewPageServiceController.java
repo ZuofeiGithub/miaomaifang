@@ -31,6 +31,7 @@ public class ViewPageServiceController {
     HouseInfoService houseInfoService;
     @Autowired
     HouseImgService houseImgService;
+
     @GetMapping(value = "/get_verify_code")
     public void getVerifyCode(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("image/jpeg");
@@ -43,31 +44,31 @@ public class ViewPageServiceController {
 
     @PostMapping(value = "login")
     @ResponseBody
-    public BaseResp login(HttpSession session,String userName,String password,String code){
+    public BaseResp login(HttpSession session, String userName, String password, String code) {
         BaseResp resp = new BaseResp();
-       String verify_code = (String) session.getAttribute(RandomValidateCodeUtil.RANDOMCODEKEY);
-       if(verify_code.toLowerCase().equals(code.toLowerCase())){
-           if(sysUserService.login(userName,password)) {
-               resp.setCode("0").setMsg("登陆成功").setData(userName);
-           }else{
-               resp.setCode("1").setMsg("密码错误");
-           }
-       }else{
+        String verify_code = (String) session.getAttribute(RandomValidateCodeUtil.RANDOMCODEKEY);
+        if (verify_code.toLowerCase().equals(code.toLowerCase())) {
+            if (sysUserService.login(userName, password)) {
+                resp.setCode("0").setMsg("登陆成功").setData(userName);
+            } else {
+                resp.setCode("1").setMsg("密码错误");
+            }
+        } else {
             resp.setCode("1").setMsg("验证码不正确");
-       }
+        }
 
 
-      return resp;
+        return resp;
     }
 
     @PostMapping(value = "register")
     @ResponseBody
-    public BaseResp register(String userName,String password){
+    public BaseResp register(String userName, String password) {
         BaseResp resp = new BaseResp();
-        boolean success  = sysUserService.registerSysUser(userName,password);
-        if(success){
+        boolean success = sysUserService.registerSysUser(userName, password);
+        if (success) {
             resp.setCode("0").setMsg("注册成功");
-        }else {
+        } else {
             resp.setCode("1").setMsg("注册失败");
         }
         return resp;
@@ -76,25 +77,29 @@ public class ViewPageServiceController {
 
     @GetMapping(value = "get_house_info_list")
     @ResponseBody
-    public HouseInfoTableResp getHouseInfoList(Integer page,Integer limit){
+    public HouseInfoTableResp getHouseInfoList(Integer page, Integer limit) {
         HouseInfoTableResp resp = new HouseInfoTableResp();
         List<HouseInfoTableResp.DataBean> dataBeanList = new ArrayList<>();
         List<HouseInfo> allhouseInfo = houseInfoService.findAll();
-        if(allhouseInfo.size() > 0){
+        if (allhouseInfo.size() > 0) {
             resp.setCount(allhouseInfo.size());
         }
         resp.setCode(0);
         resp.setMsg("");
-        List<HouseInfo> houseInfoList = houseInfoService.getHouseInfoList(page,limit);
-        if(houseInfoList.size() > 0){
-            for(HouseInfo houseInfo:houseInfoList){
+        List<HouseInfo> houseInfoList = houseInfoService.getHouseInfoList(page, limit);
+        if (houseInfoList.size() > 0) {
+            for (HouseInfo houseInfo : houseInfoList) {
                 HouseInfoTableResp.DataBean dataBean = new HouseInfoTableResp.DataBean();
                 dataBean.setId(houseInfo.getId());
                 dataBean.setHouseAddress(houseInfo.getHouseAddress());
                 dataBean.setHouseArea(houseInfo.getHouseArea());
                 dataBean.setHousePrice(houseInfo.getHouseTotalPrice());
                 dataBean.setAssessor(houseInfo.getAssessor());
-                dataBean.setSaleStop(houseInfo.isSaleStop());
+                if (houseInfo.getAssessor() == 1)
+                    dataBean.setSalestop(houseInfo.isSaleStop() == true ? true : false);
+                else {
+                    dataBean.setSalestop(true);
+                }
                 dataBeanList.add(dataBean);
             }
         }
@@ -106,47 +111,47 @@ public class ViewPageServiceController {
 
     /**
      * 上传房源图片
+     *
      * @param houseid
      * @param imgurl
      * @return
      */
     @PostMapping(value = "saveImg")
     @ResponseBody
-    public BaseResp saveImg(Integer houseid,String imgurl){
+    public BaseResp saveImg(Integer houseid, String imgurl) {
         BaseResp resp = new BaseResp();
-        if(houseImgService.save(houseid,imgurl)){
+        if (houseImgService.save(houseid, imgurl)) {
             resp.setMsg("图片存储完成").setCode("0");
-        }else{
+        } else {
             resp.setMsg("图片存储失败").setCode("1");
         }
         return resp;
     }
 
     /**
-     *
-     * @param air 气源费是否已缴纳
+     * @param air                  气源费是否已缴纳
      * @param property_rights_type 产权类型
-     * @param maintain 维修基金是否已经缴纳
-     * @param residence_booklet 有无户口
-     * @param room 室
-     * @param hall 厅
-     * @param toilet 卫
-     * @param tier 第几层
-     * @param all 总楼层
-     * @param orientation 房屋朝向
-     * @param use 房屋用途
-     * @param sell_house_reason 卖房原因
-     * @param two_taxes_assume 两税是否承担
+     * @param maintain             维修基金是否已经缴纳
+     * @param residence_booklet    有无户口
+     * @param room                 室
+     * @param hall                 厅
+     * @param toilet               卫
+     * @param tier                 第几层
+     * @param all                  总楼层
+     * @param orientation          房屋朝向
+     * @param use                  房屋用途
+     * @param sell_house_reason    卖房原因
+     * @param two_taxes_assume     两税是否承担
      * @return
      */
     @PostMapping(value = "approve")
     @ResponseBody
-    public BaseResp approve(Integer houseid,Integer air,String property_rights_type,Integer maintain,String residence_booklet,Integer room,Integer hall,Integer toilet,Integer tier,Integer all,String orientation,
-    String use,String sell_house_reason,Integer two_taxes_assume){
+    public BaseResp approve(Integer houseid, Integer air, String property_rights_type, Integer maintain, String residence_booklet, Integer room, Integer hall, Integer toilet, Integer tier, Integer all, String orientation,
+                            String use, String sell_house_reason, Integer two_taxes_assume) {
         BaseResp resp = new BaseResp();
 
-       Integer result = houseInfoService.approveHouse(houseid,air,property_rights_type,maintain,residence_booklet,room+"室"+hall+"厅"+toilet+"卫",tier+"/"+all,orientation,use,sell_house_reason,two_taxes_assume);
-        switch (result){
+        Integer result = houseInfoService.approveHouse(houseid, air, property_rights_type, maintain, residence_booklet, room + "室" + hall + "厅" + toilet + "卫", tier + "/" + all, orientation, use, sell_house_reason, two_taxes_assume);
+        switch (result) {
             case 0:
                 resp.setCode("0").setMsg("认证成功");
                 break;
@@ -158,7 +163,7 @@ public class ViewPageServiceController {
     }
 
     @PostMapping(value = "opencity")
-    public BaseResp openCity(String cityname){
+    public BaseResp openCity(String cityname) {
         BaseResp resp = new BaseResp();
         return resp;
     }

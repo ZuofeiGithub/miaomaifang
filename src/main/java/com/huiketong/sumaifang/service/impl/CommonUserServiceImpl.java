@@ -3,10 +3,14 @@ package com.huiketong.sumaifang.service.impl;
 import com.huiketong.sumaifang.domain.CommonUser;
 import com.huiketong.sumaifang.repository.CommonUserDao;
 import com.huiketong.sumaifang.service.CommonUserService;
+import com.huiketong.sumaifang.utils.MD5Util;
 import com.huiketong.sumaifang.utils.TokenUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import sun.rmi.runtime.Log;
 
 import java.util.List;
 
@@ -14,6 +18,7 @@ import java.util.List;
 @Service
 public class CommonUserServiceImpl implements CommonUserService {
 
+    private Logger logger = LoggerFactory.getLogger(CommonUserServiceImpl.class);
     @Autowired
     CommonUserDao commonUserDao;
 
@@ -48,7 +53,9 @@ public class CommonUserServiceImpl implements CommonUserService {
             commonUser = new CommonUser();
             commonUser.setUserTelphone(telphone);
             commonUser.setVerifyCode(verifyCode);
-            commonUser.setToken(TokenUtil.createJwtToken(telphone));
+            //commonUser.setToken(TokenUtil.createJwtToken(telphone));
+            commonUser.setToken(MD5Util.MD5Encode(telphone,"utf8"));
+            logger.error("用户不存在重新生成token");
             commonUserDao.save(commonUser);
             return true;
         } else {

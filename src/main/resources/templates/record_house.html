@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>极速卖房</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="record" style="margin-top: 30px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">城市</label>
+        <div class="layui-input-inline">
+            <select name="interest" lay-filter="aihao">
+                <option value=""></option>
+                <option value="南通市">南通市</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">小区</label>
+        <div class="layui-input-inline">
+            <input type="text" name="district" lay-verify="district" autocomplete="off" placeholder="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">面积</label>
+        <div class="layui-input-inline">
+            <input type="text" name="area" lay-verify="area" autocomplete="off" placeholder="" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">平方米</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">期望售价</label>
+        <div class="layui-input-inline">
+            <input type="text" name="expect_price" lay-verify="expect_price" autocomplete="off" placeholder="" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">万元</div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="next">下一步</button>
+        </div>
+    </div>
+</form>
+</body>
+<script src="layui/layui.js"></script>
+<script>
+    layui.use(['form'],function () {
+        var form = layui.form;
+        form.on('submit(next)',function (data) {
+            parent.layer.closeAll();
+            parent.layer.open({
+                title: false,
+                type:2,
+                content:['/recorduser','no'],
+                area: ['500px', '300px'],
+                offset: 'auto',
+                scrollbar:false,
+                move: false,
+                closeBtn: 2,
+                fixed: false,
+            });
+        })
+    })
+</script>
+</html>

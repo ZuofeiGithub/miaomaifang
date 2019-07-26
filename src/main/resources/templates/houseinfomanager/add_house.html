@@ -8,7 +8,8 @@
 </head>
 <body>
 <div class="layui-row">
-    <form class="layui-form layui-col-lg-offset2 layui-col-lg8 layui-col-md-offset2 layui-col-md8" style="margin-top: 5%" action="">
+    <form class="layui-form layui-col-lg-offset2 layui-col-lg8 layui-col-md-offset2 layui-col-md8"
+          style="margin-top: 5%" action="">
         <div class="layui-form-item">
             <label class="layui-form-label">房屋名称</label>
             <div class="layui-input-block">
@@ -19,8 +20,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">所属区域</label>
             <div class="layui-input-block">
-                <select name="district"  lay-verify="required" lay-search="">
-                    <option th:each="district:${districts}"  th:value="${district}" th:text="${district}"></option>
+                <select name="district" lay-verify="required" lay-search="">
+                    <option th:each="district:${districts}" th:value="${district}" th:text="${district}"></option>
                 </select>
             </div>
         </div>
@@ -34,9 +35,16 @@
         <div class="layui-form-item">
             <label class="layui-form-label">房屋出售总价</label>
             <div class="layui-input-inline">
-                <input type="number" name="total_price"  autocomplete="off" class="layui-input">
+                <input type="number" name="total_price" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-form-mid layui-word-aux">万元</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">建筑年代</label>
+
+        </div>
+        <div class="layui-form-item">
+
         </div>
     </form>
 </div>

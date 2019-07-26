@@ -48,6 +48,10 @@ public class HousePriceServiceImpl implements HousePriceService {
                 beanList.add(bean);
                 data.setMessages(beanList);
             }
+        }else{
+            data.setMessages(beanList);
+            data.setPricelist(timelist);
+            data.setDatetimelist(timelist);
         }
         return data;
     }

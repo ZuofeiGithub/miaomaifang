@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>极速卖房</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="record" style="margin-top: 30px">
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="district" lay-verify="district" autocomplete="off" placeholder="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">验证码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="area" lay-verify="area" autocomplete="off" placeholder="" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux"><a class="layui-btn">获取验证码<i></i></a></div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="next">确认卖房</button>
+        </div>
+    </div>
+</form>
+</body>
+<script src="layui/layui.js"></script>
+<script>
+    // layui.use(['form'],function () {
+    //     var form = layui.form;
+    //     form.on('submit(next)',function (data) {
+    //         parent.layer.closeAll();
+    //         parent.layer.open({
+    //             title: false,
+    //             type:2,
+    //             content:['/recorduser','no'],
+    //             area: ['500px', '300px'],
+    //             offset: 'auto',
+    //             scrollbar:false,
+    //             move: false,
+    //             closeBtn: 2,
+    //             fixed: false,
+    //         });
+    //     })
+    // })
+</script>
+</html>
